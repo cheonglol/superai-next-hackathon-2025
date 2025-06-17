@@ -1,1 +1,1 @@
-{"root":["./src/vite-env.d.ts"],"version":"5.8.3"}
+{"root":["./src/vite-env.d.ts","./src/config/api.ts","./src/config/constants.ts","./src/hooks/usereviewsdata.ts","./src/http/client.ts","./src/services/mockdataservice.ts","./src/services/reviewsservice.ts","./src/types/api.ts","./src/types/reviews.ts","./src/utils/formatters.ts","./src/utils/validation.ts"],"errors":true,"version":"5.8.3"}
