@@ -1,0 +1,2 @@
+echo "Running linters and formatters..."
+npx lint-staged

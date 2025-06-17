@@ -7,6 +7,7 @@
     "node": "22.x"
   },
   "scripts": {
+    "prepare": "husky install",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -19,12 +20,21 @@
   "dependencies": {
     "@aws-sdk/client-elastic-beanstalk": "^3.830.0",
     "@aws-sdk/client-s3": "^3.830.0",
+    "@types/dotenv": "^8.2.3",
     "dotenv": "^16.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/node": "^22.15.21",
+    "@types/uuid": "^10.0.0",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "eslint-config-prettier": "^10.1.5",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.0.0",
     "@eslint/js": "^9.25.0",
+    "prettier": "^3.5.3",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react-swc": "^3.9.0",
