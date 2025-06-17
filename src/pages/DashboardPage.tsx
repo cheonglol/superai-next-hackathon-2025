@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, MessageSquare, Share2, TrendingUp, Star, Users, Eye, Heart } from 'lucide-react';
+import { BarChart3, MessageSquare, Share2, TrendingUp, Star, Users, Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const DashboardPage: React.FC = () => {

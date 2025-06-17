@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TrendingUp, Hash, Eye, Heart, MessageCircle, Share2, Clock, Filter } from 'lucide-react';
+import { TrendingUp, Hash, Eye, Heart, MessageCircle, Share2, Clock } from 'lucide-react';
 
 const TrendingContentPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');

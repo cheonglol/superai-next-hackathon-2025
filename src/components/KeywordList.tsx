@@ -4,10 +4,9 @@ import { SENTIMENT_COLORS } from '@/config/constants';
 
 interface KeywordListProps {
   keywords: KeywordData[];
-  categoryColor: string;
 }
 
-export function KeywordList({ keywords, categoryColor }: KeywordListProps): JSX.Element {
+export function KeywordList({ keywords }: KeywordListProps): JSX.Element {
   const maxCount = Math.max(...keywords.map(k => k.count));
 
   return (

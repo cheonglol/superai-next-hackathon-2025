@@ -32,10 +32,9 @@ export function useReviewsData(filters: ReviewsFilters): UseReviewsDataReturn {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchData();
-  }, [filters.selectedPeriod, filters.comparisonPeriod]);
+  }, [filters.selectedPeriod, filters.comparisonPeriod, fetchData]);
 
   return {
     data,

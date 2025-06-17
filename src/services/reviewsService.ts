@@ -1,7 +1,6 @@
 import { httpClient } from '@/http/client';
 import { API_CONFIG } from '@/config/api';
 import type { ReviewsAnalytics, ReviewsFilters } from '@/types/reviews';
-import type { ApiResponse } from '@/types/api';
 
 export class ReviewsService {
   async getAnalytics(filters: ReviewsFilters): Promise<ReviewsAnalytics> {

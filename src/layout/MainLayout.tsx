@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { BarChart3, MessageSquare, Share2, TrendingUp, Menu, X } from 'lucide-react';
-import { routes } from '@/routes';
 
 interface MainLayoutProps {
   children: React.ReactNode;
