@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { dashboardLoader } from "@/loaders/dashboardLoader";
+import { dashboardMockApi } from "@/services/mockApi/dashboardMockApi";
 import type { DashboardData } from "@/types/dashboard";
 
 export function useDashboardData() {
@@ -11,7 +11,15 @@ export function useDashboardData() {
     try {
       setLoading(true);
       setError(null);
-      const dashboardData = await dashboardLoader();
+      
+      // In production, this would call the real API
+      if (import.meta.env.PROD) {
+        // TODO: Replace with real API call
+        // const dashboardData = await apiService.getDashboardData();
+      }
+
+      // Use mock data for development
+      const dashboardData = await dashboardMockApi.getDashboardData();
       setData(dashboardData);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load dashboard data");

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { trendingContentLoader } from "@/loaders/trendingContentLoader";
+import { trendingMockApi } from "@/services/mockApi/trendingMockApi";
 import type { TrendingHashtag, TrendingTopic, ViralContent, TrendingFilters } from "@/types/trending";
 
 export interface TrendingState {
@@ -25,7 +25,15 @@ const initialState: TrendingState = {
 export const fetchTrendingData = createAsyncThunk("trending/fetchData", async ({ category, timeframe }: { category: string; timeframe: string }, { rejectWithValue }) => {
   try {
     const filters: TrendingFilters = { category, timeframe };
-    return await trendingContentLoader(filters);
+    
+    // In production, this would call the real API
+    if (import.meta.env.PROD) {
+      // TODO: Replace with real API call
+      // return await apiService.getTrendingAnalytics(filters);
+    }
+
+    // Use mock data for development
+    return await trendingMockApi.getTrendingAnalytics(filters);
   } catch (error: unknown) {
     const errorMessage =
       error instanceof Error

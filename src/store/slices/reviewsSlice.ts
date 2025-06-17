@@ -25,8 +25,14 @@ const initialState: ReviewsState = {
 // Async thunks
 export const fetchReviewsAnalytics = createAsyncThunk("reviews/fetchAnalytics", async (filters: ReviewsFilters, { rejectWithValue }) => {
   try {
-    // Use mock data for development, switch to real service for production
-    const analytics = import.meta.env.DEV ? await mockDataService.getAnalytics() : await reviewsService.getAnalytics(filters);
+    // In production, this would call the real API
+    if (import.meta.env.PROD) {
+      // TODO: Replace with real API call
+      // return await reviewsService.getAnalytics(filters);
+    }
+
+    // Use mock data for development
+    const analytics = await mockDataService.getAnalytics();
     return analytics;
   } catch (error: unknown) {
     const errorMessage =

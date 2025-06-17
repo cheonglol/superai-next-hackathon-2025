@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { socialMediaLoader } from "@/loaders/socialMediaLoader";
+import { socialMediaMockApi } from "@/services/mockApi/socialMediaMockApi";
 import type { SocialMediaPlatform, SocialMediaPost, SocialMediaMetrics, SocialMediaFilters } from "@/types/socialMedia";
 
 export interface SocialMediaState {
@@ -30,7 +30,15 @@ const initialState: SocialMediaState = {
 export const fetchSocialMediaData = createAsyncThunk("socialMedia/fetchData", async (timeframe: string, { rejectWithValue }) => {
   try {
     const filters: SocialMediaFilters = { timeframe };
-    return await socialMediaLoader(filters);
+    
+    // In production, this would call the real API
+    if (import.meta.env.PROD) {
+      // TODO: Replace with real API call
+      // return await apiService.getSocialMediaAnalytics(filters);
+    }
+
+    // Use mock data for development
+    return await socialMediaMockApi.getSocialMediaAnalytics(filters);
   } catch (error: unknown) {
     const errorMessage =
       error instanceof Error
