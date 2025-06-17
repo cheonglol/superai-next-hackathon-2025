@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { trendingContentLoader } from "@/loaders/trendingContentLoader";
 import type { TrendingHashtag, TrendingTopic, ViralContent, TrendingFilters } from "@/types/trending";
 
-interface TrendingState {
+export interface TrendingState {
   hashtags: TrendingHashtag[];
   topics: TrendingTopic[];
   viralContent: ViralContent[];

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { socialMediaLoader } from "@/loaders/socialMediaLoader";
 import type { SocialMediaPlatform, SocialMediaPost, SocialMediaMetrics, SocialMediaFilters } from "@/types/socialMedia";
 
-interface SocialMediaState {
+export interface SocialMediaState {
   platforms: SocialMediaPlatform[];
   topPosts: SocialMediaPost[];
   metrics: SocialMediaMetrics;

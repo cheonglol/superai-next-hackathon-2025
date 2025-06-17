@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface UiState {
+export interface UiState {
   sidebarOpen: boolean;
   theme: "light" | "dark";
   notifications: Notification[];

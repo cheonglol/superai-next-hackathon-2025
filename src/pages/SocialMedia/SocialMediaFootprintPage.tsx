@@ -1,9 +1,9 @@
 import React from "react";
 import { Share2, Users, Eye, Heart, MessageCircle, BarChart3, TrendingUp, Calendar } from "lucide-react";
-import { useSocialMediaData } from "@/hooks/useSocialMediaData";
 import { PageHeader } from "@/components/common/PageHeader";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
+import { useSocialMediaData } from "@/hooks/useSocialMediaData";
 
 const SocialMediaFootprintPage: React.FC = () => {
   const { platforms, topPosts, metrics, selectedTimeframe, loading, error, updateTimeframe, refetch } = useSocialMediaData();

@@ -3,7 +3,7 @@ import type { ReviewsAnalytics, ReviewsFilters } from "@/types/reviews";
 import { reviewsService } from "@/services/reviewsService";
 import { mockDataService } from "@/services/mockDataService";
 
-interface ReviewsState {
+export interface ReviewsState {
   data: ReviewsAnalytics | null;
   filters: ReviewsFilters;
   loading: boolean;

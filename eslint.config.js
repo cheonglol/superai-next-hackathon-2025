@@ -31,6 +31,28 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "import/no-unresolved": "error",
+      "import/extensions": [
+        "error",
+        "ignorePackages",
+        {
+          ts: "never",
+          tsx: "never",
+          js: "never",
+          jsx: "never",
+        },
+      ],
+      // Enforce using path aliases instead of relative imports from src
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["src/*"],
+              message: "Use path aliases (e.g., @/hooks/...) instead of 'src/...' imports",
+            },
+          ],
+        },
+      ],
     },
   }
 );

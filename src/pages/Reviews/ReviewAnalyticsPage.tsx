@@ -1,6 +1,5 @@
 import React from "react";
 import { Download, Star, MessageCircle, ChefHat, Clock, Users, Heart, DollarSign } from "lucide-react";
-import { useReviewsData } from "@/hooks/useReviewsData";
 import { useAppDispatch } from "@/store";
 import { exportReviewsReport } from "@/store/slices/reviewsSlice";
 import { MetricCard } from "@/components/MetricCard";
@@ -12,6 +11,7 @@ import { PageHeader } from "@/components/common/PageHeader";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { TIME_PERIODS, COMPARISON_PERIODS, CATEGORY_COLORS } from "@/config/constants";
+import { useReviewsData } from "@/hooks/useReviewsData";
 
 const ReviewAnalyticsPage: React.FC = () => {
   const dispatch = useAppDispatch();

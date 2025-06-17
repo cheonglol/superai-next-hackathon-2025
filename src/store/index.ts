@@ -5,6 +5,12 @@ import socialMediaReducer from "./slices/socialMediaSlice";
 import trendingReducer from "./slices/trendingSlice";
 import uiReducer from "./slices/uiSlice";
 
+// Export state types from slices
+export type { ReviewsState } from "./slices/reviewsSlice";
+export type { SocialMediaState } from "./slices/socialMediaSlice";
+export type { TrendingState } from "./slices/trendingSlice";
+export type { UiState } from "./slices/uiSlice";
+
 export const store = configureStore({
   reducer: {
     reviews: reviewsReducer,
@@ -24,5 +30,5 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
 // Typed hooks
-export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
