@@ -36,3 +36,4 @@ deploy.zip
 *.njsproj
 *.sln
 *.sw?
+tsconfig.app.tsbuildinfo
