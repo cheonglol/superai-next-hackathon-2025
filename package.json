@@ -12,14 +12,9 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "npm run preview",
-    "deploy-package": "npm run build && powershell Compress-Archive -Path dist,package.json -DestinationPath deploy.zip -Force",
-    "deploy": "node scripts/deploy.js",
-    "deploy:help": "type scripts\\AWS_SETUP.md"
+    "start": "npm run preview"
   },
   "dependencies": {
-    "@aws-sdk/client-elastic-beanstalk": "^3.830.0",
-    "@aws-sdk/client-s3": "^3.830.0",
     "@types/dotenv": "^8.2.3",
     "dotenv": "^16.5.0",
     "react": "^18.2.0",

@@ -6,7 +6,7 @@ export default {
       // Basic commit types for hackathon
       2,
       "always",
-      ["feat", "fix", "chore", "docs", "refact"],
+      ["feat", "fix", "chore", "docs", "refactor", "style"],
     ],
     "type-case": [0, "always"], // Disable case enforcement for type
     "type-empty": [0, "never"], // Make type optional
