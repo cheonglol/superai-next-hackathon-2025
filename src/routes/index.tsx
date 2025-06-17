@@ -1,10 +1,6 @@
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 import ProtectedRoute from "./logic/ProtectedRouteLogic";
-import ErrorBoundaryPage from "@/pages/ErrorBoundaryPage";
-import DashboardPage from "@/pages/DashboardPage";
-import ReviewAnalyticsPage from "@/pages/ReviewAnalyticsPage";
-import SocialMediaFootprintPage from "@/pages/SocialMediaFootprintPage";
-import TrendingContentPage from "@/pages/TrendingContentPage";
+import { ErrorBoundaryPage, DashboardPage, ReviewAnalyticsPage, SocialMediaFootprintPage, TrendingContentPage } from "@/pages";
 import MainLayout from "@/layout/MainLayout";
 import { ReactElement } from "react";
 
@@ -28,7 +24,11 @@ export const routes: ExtendedRouteObject[] = [
     logicType: undefined,
     routeObject: {
       path: `${ROOT_PATH}/`,
-      element: <MainLayout><DashboardPage /></MainLayout>,
+      element: (
+        <MainLayout>
+          <DashboardPage />
+        </MainLayout>
+      ),
       errorElement: <ErrorBoundaryPage />,
     },
   },
@@ -37,7 +37,11 @@ export const routes: ExtendedRouteObject[] = [
     logicType: undefined,
     routeObject: {
       path: `${ROOT_PATH}/review`,
-      element: <MainLayout><ReviewAnalyticsPage /></MainLayout>,
+      element: (
+        <MainLayout>
+          <ReviewAnalyticsPage />
+        </MainLayout>
+      ),
       errorElement: <ErrorBoundaryPage />,
     },
   },
@@ -46,7 +50,11 @@ export const routes: ExtendedRouteObject[] = [
     logicType: undefined,
     routeObject: {
       path: `${ROOT_PATH}/social-media-footprint`,
-      element: <MainLayout><SocialMediaFootprintPage /></MainLayout>,
+      element: (
+        <MainLayout>
+          <SocialMediaFootprintPage />
+        </MainLayout>
+      ),
       errorElement: <ErrorBoundaryPage />,
     },
   },
@@ -55,7 +63,11 @@ export const routes: ExtendedRouteObject[] = [
     logicType: undefined,
     routeObject: {
       path: `${ROOT_PATH}/trending-content`,
-      element: <MainLayout><TrendingContentPage /></MainLayout>,
+      element: (
+        <MainLayout>
+          <TrendingContentPage />
+        </MainLayout>
+      ),
       errorElement: <ErrorBoundaryPage />,
     },
   },

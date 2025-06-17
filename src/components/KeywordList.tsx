@@ -3,9 +3,10 @@ import type { KeywordData } from "@/types/reviews";
 
 interface KeywordListProps {
   keywords: KeywordData[];
+  categoryColor?: string;
 }
 
-export function KeywordList({ keywords }: KeywordListProps): JSX.Element {
+export function KeywordList({ keywords, categoryColor }: KeywordListProps): JSX.Element {
   const maxCount = Math.max(...keywords.map((k) => k.count));
 
   return (
@@ -20,9 +21,12 @@ export function KeywordList({ keywords }: KeywordListProps): JSX.Element {
               <span className="text-gray-900 font-semibold">{keyword.word}</span>
             </div>
             <span className="text-gray-600 text-sm font-medium">{keyword.count} mentions</span>
-          </div>
+          </div>{" "}
           <div className="w-full bg-gray-200 rounded-full h-2 relative overflow-hidden">
-            <div className={`h-2 rounded-full ${SENTIMENT_COLORS[keyword.sentiment].bar} bg-opacity-50`} style={{ width: `${(keyword.count / maxCount) * 100}%` }}></div>
+            <div
+              className={`h-2 rounded-full ${categoryColor || SENTIMENT_COLORS[keyword.sentiment].bar} bg-opacity-50`}
+              style={{ width: `${(keyword.count / maxCount) * 100}%` }}
+            ></div>
           </div>
         </div>
       ))}
