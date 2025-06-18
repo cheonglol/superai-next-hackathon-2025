@@ -1,13 +1,19 @@
 import React from "react";
-import { BarChart3, MessageSquare, Share2, TrendingUp, Star, Users, Eye } from "lucide-react";
+import { BarChart3, MessageSquare, Share2, TrendingUp, Star, Users, Eye, DollarSign, PieChart, TrendingDown } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { useReviewsData } from "@/hooks/useReviewsData";
+import { useSocialMediaData } from "@/hooks/useSocialMediaData";
+import { useFinancialsData } from "@/hooks/useFinancialsData";
 import { PageHeader } from "@/components/common/PageHeader";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 
 const DashboardPage: React.FC = () => {
-  const { data, loading, error, refetch } = useDashboardData();
+  const { data: dashboardData, loading: dashboardLoading, error: dashboardError, refetch: refetchDashboard } = useDashboardData();
+  const { data: reviewsData, loading: reviewsLoading } = useReviewsData();
+  const { data: socialData, loading: socialLoading } = useSocialMediaData();
+  const { data: financialData, loading: financialLoading } = useFinancialsData();
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";
@@ -15,11 +21,20 @@ const DashboardPage: React.FC = () => {
     return num.toString();
   };
 
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => <Star key={i} className={`w-4 h-4 ${i < Math.floor(rating) ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`} />);
   };
 
-  if (loading) {
+  if (dashboardLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -30,108 +45,204 @@ const DashboardPage: React.FC = () => {
     );
   }
 
-  if (error) {
+  if (dashboardError) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <ErrorMessage message={error} onRetry={refetch} />
+        <ErrorMessage message={dashboardError} onRetry={refetchDashboard} />
       </div>
     );
   }
 
-  if (!data) {
+  if (!dashboardData) {
     return null;
   }
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
-        <PageHeader title="Dashboard Overview" description="Quick insights across all your analytics" icon={<BarChart3 className="w-8 h-8 text-oxford_blue-600" />} />
+        <PageHeader title="Dashboard Overview" description="Comprehensive business insights across all analytics" icon={<BarChart3 className="w-8 h-8 text-oxford_blue-600" />} />
 
-        {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center text-gray-600">
-                <Star className="w-5 h-5 mr-2" />
-                <span className="text-sm font-medium">Overall Rating</span>
-              </div>
-            </div>
-            <div className="text-3xl font-bold text-gray-900 mb-2">{data.metrics.overallRating}</div>
-            <div className="flex items-center mb-2">{renderStars(data.metrics.overallRating)}</div>
-            <Link to="/review" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
-              View Details →
-            </Link>
+        {/* Social Media Insights Summary */}
+        <div className="mb-8">
+          <div className="flex items-center mb-4">
+            <div className="flex-1 border-t border-gray-200"></div>
+            <span className="px-4 text-lg font-semibold text-gray-700 bg-gray-50">Social Media Insights</span>
+            <div className="flex-1 border-t border-gray-200"></div>
           </div>
-
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center text-gray-600">
-                <MessageSquare className="w-5 h-5 mr-2" />
-                <span className="text-sm font-medium">Total Reviews</span>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Overall Rating */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center text-gray-600">
+                  <Star className="w-5 h-5 mr-2" />
+                  <span className="text-sm font-medium">Overall Rating</span>
+                </div>
               </div>
-            </div>
-            <div className="text-3xl font-bold text-gray-900 mb-4">{formatNumber(data.metrics.totalReviews)}</div>
-            <Link to="/review" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
-              Analyze Reviews →
-            </Link>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center text-gray-600">
-                <Users className="w-5 h-5 mr-2" />
-                <span className="text-sm font-medium">Social Followers</span>
+              <div className="text-3xl font-bold text-gray-900 mb-2">
+                {reviewsData?.overallMetrics.value || dashboardData.metrics.overallRating}
               </div>
-            </div>
-            <div className="text-3xl font-bold text-gray-900 mb-4">{formatNumber(data.metrics.socialFollowers)}</div>
-            <Link to="/social-media-footprint" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
-              View Footprint →
-            </Link>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center text-gray-600">
-                <Eye className="w-5 h-5 mr-2" />
-                <span className="text-sm font-medium">Monthly Reach</span>
+              <div className="flex items-center mb-2">
+                {renderStars(reviewsData?.overallMetrics.value || dashboardData.metrics.overallRating)}
               </div>
+              <Link to="/review" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+                View Details →
+              </Link>
             </div>
-            <div className="text-3xl font-bold text-gray-900 mb-4">{formatNumber(data.metrics.monthlyReach)}</div>
-            <Link to="/trending-content" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
-              See Trending →
-            </Link>
+
+            {/* Total Reviews */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center text-gray-600">
+                  <MessageSquare className="w-5 h-5 mr-2" />
+                  <span className="text-sm font-medium">Total Reviews</span>
+                </div>
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">
+                {formatNumber(reviewsData?.totalReviews.value || dashboardData.metrics.totalReviews)}
+              </div>
+              <div className="flex items-center text-sm text-green-600 mb-2">
+                <TrendingUp className="w-4 h-4 mr-1" />
+                +{reviewsData?.totalReviews.change || 12}% from last period
+              </div>
+              <Link to="/review" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+                Analyze Reviews →
+              </Link>
+            </div>
+
+            {/* Social Followers */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center text-gray-600">
+                  <Users className="w-5 h-5 mr-2" />
+                  <span className="text-sm font-medium">Social Followers</span>
+                </div>
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">
+                {formatNumber(socialData?.metrics.totalFollowers || dashboardData.metrics.socialFollowers)}
+              </div>
+              <div className="flex items-center text-sm text-green-600 mb-2">
+                <TrendingUp className="w-4 h-4 mr-1" />
+                +{socialData?.metrics.growthRate || 8.7}% growth rate
+              </div>
+              <Link to="/social-media-footprint" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+                View Footprint →
+              </Link>
+            </div>
+
+            {/* Monthly Reach */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center text-gray-600">
+                  <Eye className="w-5 h-5 mr-2" />
+                  <span className="text-sm font-medium">Monthly Reach</span>
+                </div>
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">
+                {formatNumber(socialData?.metrics.totalReach || dashboardData.metrics.monthlyReach)}
+              </div>
+              <div className="flex items-center text-sm text-green-600 mb-2">
+                <TrendingUp className="w-4 h-4 mr-1" />
+                Avg {socialData?.metrics.avgEngagement || 4.25}% engagement
+              </div>
+              <Link to="/trending-content" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+                See Trending →
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* Quick Access Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {data.quickStats.slice(1).map((stat, index) => (
-            <Link key={index} to={stat.linkTo} className="group">
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
-                <div className="flex items-center mb-4">
-                  <div className={`p-3 ${index === 0 ? "bg-orange-100" : index === 1 ? "bg-blue-100" : "bg-purple-100"} rounded-lg mr-4`}>
-                    {index === 0 && <MessageSquare className="w-6 h-6 text-orange-600" />}
-                    {index === 1 && <Share2 className="w-6 h-6 text-blue-600" />}
-                    {index === 2 && <TrendingUp className="w-6 h-6 text-purple-600" />}
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-oxford_blue-600">{stat.title}</h3>
-                    <p className="text-gray-600 text-sm">{stat.description}</p>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Current:</span>
-                    <span className="font-medium">{stat.value}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Growth:</span>
-                    <span className="font-medium text-green-600">{stat.growth}</span>
-                  </div>
+        {/* Financials Summary */}
+        <div className="mb-8">
+          <div className="flex items-center mb-4">
+            <div className="flex-1 border-t border-gray-200"></div>
+            <span className="px-4 text-lg font-semibold text-gray-700 bg-gray-50">Financials</span>
+            <div className="flex-1 border-t border-gray-200"></div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Total Revenue */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center text-gray-600">
+                  <DollarSign className="w-5 h-5 mr-2" />
+                  <span className="text-sm font-medium">Total Revenue</span>
                 </div>
               </div>
-            </Link>
-          ))}
+              <div className="text-3xl font-bold text-gray-900 mb-2">
+                {financialData ? formatCurrency(financialData.summary.currentMonth.totalRevenue) : "Loading..."}
+              </div>
+              <div className="flex items-center text-sm text-green-600 mb-2">
+                <TrendingUp className="w-4 h-4 mr-1" />
+                +{financialData?.summary.currentMonth.revenueGrowth || 0}% from last month
+              </div>
+              <Link to="/financials/page1" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+                View Details →
+              </Link>
+            </div>
+
+            {/* Net Profit */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center text-gray-600">
+                  <TrendingUp className="w-5 h-5 mr-2" />
+                  <span className="text-sm font-medium">Net Profit</span>
+                </div>
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">
+                {financialData ? formatCurrency(financialData.summary.currentMonth.netProfit) : "Loading..."}
+              </div>
+              <div className="flex items-center text-sm text-green-600 mb-2">
+                <TrendingUp className="w-4 h-4 mr-1" />
+                {financialData?.summary.currentMonth.profitMargin || 0}% profit margin
+              </div>
+              <Link to="/financials/page1" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+                Analyze Profit →
+              </Link>
+            </div>
+
+            {/* Total Expenses */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center text-gray-600">
+                  <PieChart className="w-5 h-5 mr-2" />
+                  <span className="text-sm font-medium">Total Expenses</span>
+                </div>
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">
+                {financialData ? formatCurrency(financialData.summary.currentMonth.totalExpenses) : "Loading..."}
+              </div>
+              <div className="flex items-center text-sm text-red-600 mb-2">
+                <TrendingUp className="w-4 h-4 mr-1" />
+                +{financialData?.summary.currentMonth.expenseGrowth || 0}% from last month
+              </div>
+              <Link to="/financials/page2" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+                View Breakdown →
+              </Link>
+            </div>
+
+            {/* Cash Flow */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center text-gray-600">
+                  <BarChart3 className="w-5 h-5 mr-2" />
+                  <span className="text-sm font-medium">Cash Flow</span>
+                </div>
+              </div>
+              <div className="text-3xl font-bold text-gray-900 mb-2">
+                {financialData && financialData.cashFlow.length > 0 
+                  ? formatCurrency(financialData.cashFlow[0].netFlow) 
+                  : "Loading..."}
+              </div>
+              <div className="flex items-center text-sm text-green-600 mb-2">
+                <TrendingUp className="w-4 h-4 mr-1" />
+                Current month flow
+              </div>
+              <Link to="/financials/page2" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+                Analyze Flow →
+              </Link>
+            </div>
+          </div>
         </div>
 
         {/* Recent Activity */}
@@ -141,7 +252,7 @@ const DashboardPage: React.FC = () => {
             <h2 className="text-xl font-semibold text-gray-900">Recent Activity</h2>
           </div>
           <div className="space-y-4">
-            {data.recentActivity.map((activity) => (
+            {dashboardData.recentActivity.map((activity) => (
               <div key={activity.id} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
                 <div className={`p-2 rounded-lg ${activity.type === "review" ? "bg-orange-100" : activity.type === "social" ? "bg-blue-100" : "bg-purple-100"}`}>
                   {activity.type === "review" && <MessageSquare className="w-4 h-4 text-orange-600" />}

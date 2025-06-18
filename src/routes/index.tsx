@@ -1,6 +1,14 @@
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 import ProtectedRoute from "./logic/ProtectedRouteLogic";
-import { ErrorBoundaryPage, DashboardPage, ReviewAnalyticsPage, SocialMediaFootprintPage, TrendingContentPage } from "@/pages";
+import { 
+  ErrorBoundaryPage, 
+  DashboardPage, 
+  ReviewAnalyticsPage, 
+  SocialMediaFootprintPage, 
+  TrendingContentPage,
+  FinancialsPage1,
+  FinancialsPage2
+} from "@/pages";
 import MainLayout from "@/layout/MainLayout";
 import { ReactElement } from "react";
 
@@ -35,6 +43,7 @@ export const routes: ExtendedRouteObject[] = [
   {
     title: "Review Analytics",
     logicType: undefined,
+    category: "Social Media Insights",
     routeObject: {
       path: `${ROOT_PATH}/review`,
       element: (
@@ -48,6 +57,7 @@ export const routes: ExtendedRouteObject[] = [
   {
     title: "Social Media Footprint",
     logicType: undefined,
+    category: "Social Media Insights",
     routeObject: {
       path: `${ROOT_PATH}/social-media-footprint`,
       element: (
@@ -61,11 +71,40 @@ export const routes: ExtendedRouteObject[] = [
   {
     title: "Trending Content",
     logicType: undefined,
+    category: "Social Media Insights",
     routeObject: {
       path: `${ROOT_PATH}/trending-content`,
       element: (
         <MainLayout>
           <TrendingContentPage />
+        </MainLayout>
+      ),
+      errorElement: <ErrorBoundaryPage />,
+    },
+  },
+  {
+    title: "Financials Page 1",
+    logicType: undefined,
+    category: "Financials",
+    routeObject: {
+      path: `${ROOT_PATH}/financials/page1`,
+      element: (
+        <MainLayout>
+          <FinancialsPage1 />
+        </MainLayout>
+      ),
+      errorElement: <ErrorBoundaryPage />,
+    },
+  },
+  {
+    title: "Financials Page 2",
+    logicType: undefined,
+    category: "Financials",
+    routeObject: {
+      path: `${ROOT_PATH}/financials/page2`,
+      element: (
+        <MainLayout>
+          <FinancialsPage2 />
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,
