@@ -42,58 +42,24 @@ export function KeywordList({ keywords, categoryColor, categoryName }: KeywordLi
     }
   };
 
-  const getCategoryIcon = (category: string) => {
-    switch (category.toLowerCase()) {
-      case 'food':
-        return <ChefHat className="w-4 h-4" />;
-      case 'service':
-        return <Users className="w-4 h-4" />;
-      case 'ambience':
-        return <Heart className="w-4 h-4" />;
-      case 'value for money':
-        return <DollarSign className="w-4 h-4" />;
-      default:
-        return <TrendingUp className="w-4 h-4" />;
-    }
-  };
-
   const trends = getCategoryTrends(categoryName);
 
   return (
-    <div className="space-y-4">
-      {/* Category Trends Section */}
-      <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-        <div className="flex items-center mb-3">
-          <div className="p-2 bg-gray-100 rounded-lg mr-2">
-            {getCategoryIcon(categoryName)}
-          </div>
-          <h4 className="text-sm font-semibold text-gray-900">{categoryName} Insights</h4>
-        </div>
-        
-        <div className="space-y-3">
-          {/* Positive Trend */}
-          <div className="flex items-start p-3 bg-emerald-50 rounded-lg border border-emerald-200">
-            <TrendingUp className="w-4 h-4 text-emerald-700 mr-2 mt-0.5 flex-shrink-0" />
-            <div>
-              <div className="text-xs font-medium text-emerald-800 mb-1">Top Positive Trend</div>
-              <p className="text-xs text-emerald-700">{trends.positive}</p>
-            </div>
-          </div>
-          
-          {/* Area for Improvement */}
-          <div className="flex items-start p-3 bg-orange-50 rounded-lg border border-orange-200">
-            <TrendingDown className="w-4 h-4 text-orange-700 mr-2 mt-0.5 flex-shrink-0" />
-            <div>
-              <div className="text-xs font-medium text-orange-800 mb-1">Key Area for Improvement</div>
-              <p className="text-xs text-orange-700">{trends.improvement}</p>
-            </div>
-          </div>
-        </div>
+    <div className="space-y-3">
+      {/* Positive Trend */}
+      <div className="flex items-start p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+        <TrendingUp className="w-4 h-4 text-emerald-700 mr-2 mt-0.5 flex-shrink-0" />
+        <p className="text-sm text-emerald-700">{trends.positive}</p>
+      </div>
+      
+      {/* Area for Improvement */}
+      <div className="flex items-start p-3 bg-orange-50 rounded-lg border border-orange-200">
+        <TrendingDown className="w-4 h-4 text-orange-700 mr-2 mt-0.5 flex-shrink-0" />
+        <p className="text-sm text-orange-700">{trends.improvement}</p>
       </div>
 
       {/* Keywords List */}
       <div className="space-y-1">
-        <h4 className="text-sm font-semibold text-gray-900 mb-2">Top Keywords</h4>
         {keywords.map((keyword, index) => (
           <div key={index} className="py-3 border-b border-gray-100 last:border-b-0">
             <div className="flex items-center justify-between mb-2">
