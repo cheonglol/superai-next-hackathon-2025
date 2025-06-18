@@ -36,7 +36,6 @@ export interface ViralContent {
 }
 
 export interface TrendingPost {
-  isPaid: boolean;
   id: string;
   platform: string;
   content: string;

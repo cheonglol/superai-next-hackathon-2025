@@ -22,12 +22,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   const navigationItems: NavigationItem[] = [
     { path: "/", icon: BarChart3, label: "Dashboard" },
-    
+
     // Social Media Insights Group
     { path: "/review", icon: MessageSquare, label: "Review Analytics", category: "Social Media Insights" },
     { path: "/social-media-footprint", icon: Share2, label: "Social Media Footprint", category: "Social Media Insights" },
     { path: "/trending-content", icon: TrendingUp, label: "Trending Content", category: "Social Media Insights" },
-    
+
     // Financials Group
     { path: "/financials/page1", icon: DollarSign, label: "Page 1", category: "Financials" },
     { path: "/financials/page2", icon: PieChart, label: "Page 2", category: "Financials" },
@@ -49,16 +49,19 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   };
 
   // Group items by category
-  const groupedItems = navigationItems.reduce((acc, item) => {
-    if (!item.category) {
-      acc.standalone = acc.standalone || [];
-      acc.standalone.push(item);
-    } else {
-      acc[item.category] = acc[item.category] || [];
-      acc[item.category].push(item);
-    }
-    return acc;
-  }, {} as Record<string, NavigationItem[]>);
+  const groupedItems = navigationItems.reduce(
+    (acc, item) => {
+      if (!item.category) {
+        acc.standalone = acc.standalone || [];
+        acc.standalone.push(item);
+      } else {
+        acc[item.category] = acc[item.category] || [];
+        acc[item.category].push(item);
+      }
+      return acc;
+    },
+    {} as Record<string, NavigationItem[]>
+  );
 
   return (
     <div className="min-h-screen bg-gray-900 flex">
@@ -91,16 +94,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             {groupedItems.standalone?.map((item) => {
               const Icon = item.icon;
               const isActive = isActivePath(item.path);
-              
+
               return (
                 <Link
                   key={item.path}
                   to={item.path}
                   onClick={handleLinkClick}
                   className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
-                    isActive
-                      ? "bg-caribbean_current-600 text-white shadow-lg"
-                      : "text-charcoal-100 hover:bg-charcoal-600 hover:text-white"
+                    isActive ? "bg-caribbean_current-600 text-white shadow-lg" : "text-charcoal-100 hover:bg-charcoal-600 hover:text-white"
                   }`}
                 >
                   <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-white" : "text-charcoal-200"}`} />
@@ -122,16 +123,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 {groupedItems["Social Media Insights"].map((item) => {
                   const Icon = item.icon;
                   const isActive = isActivePath(item.path);
-                  
+
                   return (
                     <Link
                       key={item.path}
                       to={item.path}
                       onClick={handleLinkClick}
                       className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
-                        isActive
-                          ? "bg-caribbean_current-600 text-white shadow-lg"
-                          : "text-charcoal-100 hover:bg-charcoal-600 hover:text-white"
+                        isActive ? "bg-caribbean_current-600 text-white shadow-lg" : "text-charcoal-100 hover:bg-charcoal-600 hover:text-white"
                       }`}
                     >
                       <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-white" : "text-charcoal-200"}`} />
@@ -155,16 +154,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 {groupedItems["Financials"].map((item) => {
                   const Icon = item.icon;
                   const isActive = isActivePath(item.path);
-                  
+
                   return (
                     <Link
                       key={item.path}
                       to={item.path}
                       onClick={handleLinkClick}
                       className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
-                        isActive
-                          ? "bg-prussian_blue-600 text-white shadow-lg"
-                          : "text-charcoal-100 hover:bg-charcoal-600 hover:text-white"
+                        isActive ? "bg-prussian_blue-600 text-white shadow-lg" : "text-charcoal-100 hover:bg-charcoal-600 hover:text-white"
                       }`}
                     >
                       <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-white" : "text-charcoal-200"}`} />

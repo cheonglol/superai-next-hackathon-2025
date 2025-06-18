@@ -29,7 +29,6 @@ export const globalTrendingPosts: TrendingPost[] = [
       difficulty: "Easy",
       roi: "High",
     },
-    isPaid: false,
   },
   {
     id: "2",
@@ -56,7 +55,6 @@ export const globalTrendingPosts: TrendingPost[] = [
       difficulty: "Medium",
       roi: "Medium",
     },
-    isPaid: false,
   },
 ];
 
@@ -86,7 +84,6 @@ export const localTrendingPosts: TrendingPost[] = [
       difficulty: "Easy",
       roi: "High",
     },
-    isPaid: false,
   },
 ];
 
@@ -121,7 +118,6 @@ export const paidPartnershipPosts: TrendingPost[] = [
       difficulty: "Medium",
       roi: "Medium",
     },
-    isPaid: false,
   },
 ];
 

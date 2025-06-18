@@ -17,10 +17,7 @@ export const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, onRetry, cl
       </div>
       <p className="text-red-600 mb-4">{message}</p>
       {onRetry && (
-        <button
-          onClick={onRetry}
-          className="flex items-center justify-center mx-auto px-4 py-2 bg-charcoal-600 text-white rounded-lg hover:bg-charcoal-700 transition-colors"
-        >
+        <button onClick={onRetry} className="flex items-center justify-center mx-auto px-4 py-2 bg-charcoal-600 text-white rounded-lg hover:bg-charcoal-700 transition-colors">
           <RefreshCw className="w-4 h-4 mr-2" />
           Retry
         </button>

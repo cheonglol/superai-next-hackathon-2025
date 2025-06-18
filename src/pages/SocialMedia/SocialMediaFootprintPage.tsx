@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import { Share2, Users, Eye, Heart, MessageCircle, TrendingUp, ChevronDown } from "lucide-react";
 
@@ -58,8 +57,6 @@ const SocialMediaFootprintPage: React.FC = () => {
         shares: "45",
         views: "15.6K",
         date: "14/01/2025",
-        imageUrl: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg",
-        postUrl: "https://instagram.com/p/pasta-behind-scenes",
       },
       {
         id: 2,
@@ -71,8 +68,6 @@ const SocialMediaFootprintPage: React.FC = () => {
         shares: "567",
         views: "45.0K",
         date: "13/01/2025",
-        imageUrl: "https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg",
-        postUrl: "https://tiktok.com/@yourrestaurant/video/pasta-hack",
       },
       {
         id: 3,
@@ -84,8 +79,6 @@ const SocialMediaFootprintPage: React.FC = () => {
         shares: "123",
         views: "12.0K",
         date: "12/01/2025",
-        imageUrl: "https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg",
-        postUrl: "https://facebook.com/yourrestaurant/posts/winter-menu",
       },
     ],
 
@@ -134,8 +127,6 @@ const SocialMediaFootprintPage: React.FC = () => {
         shares: "789",
         views: "45.2K",
         date: "16/01/2025",
-        imageUrl: "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg",
-        postUrl: "https://tiktok.com/@foodie_sara/video/truffle-pasta-review",
       },
       {
         id: 2,
@@ -148,8 +139,6 @@ const SocialMediaFootprintPage: React.FC = () => {
         shares: "234",
         views: "23.1K",
         date: "14/01/2025",
-        imageUrl: "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg",
-        postUrl: "https://instagram.com/p/gourmet-adventures-review",
       },
       {
         id: 3,
@@ -162,8 +151,6 @@ const SocialMediaFootprintPage: React.FC = () => {
         shares: "145",
         views: "12.3K",
         date: "13/01/2025",
-        imageUrl: "https://images.pexels.com/photos/1566837/pexels-photo-1566837.jpeg",
-        postUrl: "https://facebook.com/family.foodie/posts/family-dinner",
       },
       {
         id: 4,
@@ -176,8 +163,6 @@ const SocialMediaFootprintPage: React.FC = () => {
         shares: "89",
         views: "8.9K",
         date: "12/01/2025",
-        imageUrl: "https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg",
-        postUrl: "https://instagram.com/stories/weekend_lover/brunch-review",
       },
     ],
 
@@ -187,7 +172,7 @@ const SocialMediaFootprintPage: React.FC = () => {
       { rank: 2, hashtag: "#restaurant", category: "Business", engagementScore: 92, posts: "1.8K" },
       { rank: 3, hashtag: "#delicious", category: "Taste", engagementScore: 89, posts: "1.5K" },
       { rank: 4, hashtag: "#freshingredients", category: "Quality", engagementScore: 87, posts: "1.2K" },
-      { rank: 5, hashtag: "#localeats", category: "Community", engagementScore: 85, posts: "980" },
+      { rank: 5, hashtag: "#localfood", category: "Community", engagementScore: 85, posts: "980" },
       { rank: 6, hashtag: "#foodporn", category: "Visual", engagementScore: 83, posts: "856" },
       { rank: 7, hashtag: "#yummy", category: "Taste", engagementScore: 81, posts: "743" },
       { rank: 8, hashtag: "#chefspecial", category: "Exclusive", engagementScore: 79, posts: "621" },
@@ -199,7 +184,7 @@ const SocialMediaFootprintPage: React.FC = () => {
   const getPlatformColor = (platform: string) => {
     const colors = {
       Instagram: "bg-pink-100 text-pink-800",
-      TikTok: "bg-charcoal-100 text-charcoal-800", // Changed from black to brand charcoal
+      TikTok: "bg-gray-100 text-gray-800",
       Facebook: "bg-blue-100 text-blue-800",
       Stories: "bg-purple-100 text-purple-800",
       Twitter: "bg-sky-100 text-sky-800",
@@ -209,33 +194,15 @@ const SocialMediaFootprintPage: React.FC = () => {
 
   const getHashtagColor = (category: string) => {
     const colors = {
-      General: "bg-caribbean_current-100 text-caribbean_current-800",
-      Business: "bg-caribbean_current-100 text-caribbean_current-800",
+      General: "bg-blue-100 text-blue-800",
+      Business: "bg-green-100 text-green-800",
       Taste: "bg-orange-100 text-orange-800",
       Quality: "bg-purple-100 text-purple-800",
-      Community: "bg-purple-100 text-purple-800",
+      Community: "bg-indigo-100 text-indigo-800",
       Visual: "bg-pink-100 text-pink-800",
       Exclusive: "bg-yellow-100 text-yellow-800",
     };
     return colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800";
-  };
-
-  const getHashtagCardColor = (rank: number) => {
-    // Alternating soft colors inspired by the attached image
-    const colors = [
-      "bg-gray-100", // Light gray for even ranks
-      "bg-gray-50", // Very light gray for odd ranks
-    ];
-    return colors[rank % 2];
-  };
-
-  const getRankColor = (_rank: number) => {
-    // Soft teal color for rank numbers, inspired by the image
-    return "bg-caribbean_current-100 text-caribbean_current-800"; // Improved contrast
-  };
-
-  const handlePostClick = (postUrl: string) => {
-    window.open(postUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -256,13 +223,13 @@ const SocialMediaFootprintPage: React.FC = () => {
             <select
               value={selectedTimeframe}
               onChange={(e) => setSelectedTimeframe(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-caribbean_current-500 focus:border-caribbean_current-500 transition-colors bg-white text-gray-900"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-caribbean_current-500 focus:border-caribbean_current-500 transition-colors bg-white"
             >
               <option value="Last 7 Days">Last 7 Days</option>
               <option value="Last 30 Days">Last 30 Days</option>
               <option value="Last 90 Days">Last 90 Days</option>
             </select>
-            <ChevronDown className="w-4 h-4 text-gray-600 ml-2" />
+            <ChevronDown className="w-4 h-4 text-gray-400 ml-2" />
           </div>
         </div>
 
@@ -412,7 +379,7 @@ const SocialMediaFootprintPage: React.FC = () => {
             <div className="border border-gray-200 rounded-lg p-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
-                  <div className="w-4 h-4 rounded-full bg-charcoal-600 mr-3"></div>
+                  <div className="w-4 h-4 rounded-full bg-black mr-3"></div>
                   <h3 className="text-lg font-semibold text-gray-900">TikTok</h3>
                 </div>
                 <div className="flex items-center text-sm text-emerald-800 bg-emerald-100 px-2 py-1 rounded-full">
@@ -487,12 +454,8 @@ const SocialMediaFootprintPage: React.FC = () => {
           <div className="space-y-4">
             {socialMediaData.topBusinessPosts.map((post) => (
               <div key={post.id} className="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <div
-                  className="w-16 h-16 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity flex-shrink-0"
-                  onClick={() => handlePostClick(post.postUrl)}
-                  title="Click to view original post"
-                >
-                  <img src={post.imageUrl} alt="Post preview" className="w-full h-full object-cover" />
+                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-medium text-gray-600">YR</span>
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center mb-2">
@@ -604,7 +567,7 @@ const SocialMediaFootprintPage: React.FC = () => {
             <div className="border border-gray-200 rounded-lg p-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
-                  <div className="w-4 h-4 rounded-full bg-charcoal-600 mr-3"></div>
+                  <div className="w-4 h-4 rounded-full bg-black mr-3"></div>
                   <h3 className="text-lg font-semibold text-gray-900">TikTok</h3>
                 </div>
                 <div className="flex items-center text-sm text-emerald-800 bg-emerald-100 px-2 py-1 rounded-full">
@@ -679,12 +642,8 @@ const SocialMediaFootprintPage: React.FC = () => {
           <div className="space-y-4">
             {socialMediaData.topCustomerPosts.map((post) => (
               <div key={post.id} className="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <div
-                  className="w-16 h-16 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity flex-shrink-0"
-                  onClick={() => handlePostClick(post.postUrl)}
-                  title="Click to view original post"
-                >
-                  <img src={post.imageUrl} alt="Customer post preview" className="w-full h-full object-cover" />
+                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-medium text-gray-600">{post.author.slice(1, 3).toUpperCase()}</span>
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center mb-2">
@@ -724,35 +683,32 @@ const SocialMediaFootprintPage: React.FC = () => {
         {/* Recommended Hashtags for F&B Business */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
           <div className="flex items-center mb-6">
-            <div className="p-3 bg-caribbean_current-100 rounded-lg mr-3">
-              <TrendingUp className="w-5 h-5 text-caribbean_current-700" />
+            <div className="p-3 bg-yellow-100 rounded-lg mr-3">
+              <TrendingUp className="w-5 h-5 text-yellow-700" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-gray-900"># Recommended Hashtags for F&B Business</h2>
+              <h2 className="text-xl font-semibold text-gray-900">Recommended Hashtags for F&B Business</h2>
               <p className="text-sm text-gray-600">Top performing hashtags to boost your restaurant's social media reach</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {socialMediaData.recommendedHashtags.map((hashtag) => (
-              <div
-                key={hashtag.rank}
-                className={`flex items-center justify-between p-6 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-200 ${getHashtagCardColor(hashtag.rank)}`}
-              >
+              <div key={hashtag.rank} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
                 <div className="flex items-center">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center mr-4 ${getRankColor(hashtag.rank)}`}>
-                    <span className="text-lg font-bold">{hashtag.rank}</span>
+                  <div className="w-8 h-8 bg-caribbean_current-100 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-sm font-bold text-caribbean_current-700">{hashtag.rank}</span>
                   </div>
                   <div>
-                    <div className="flex items-center mb-2">
-                      <span className="font-bold text-gray-900 text-lg mr-3">{hashtag.hashtag}</span>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getHashtagColor(hashtag.category)}`}>{hashtag.category}</span>
+                    <div className="flex items-center mb-1">
+                      <span className="font-semibold text-gray-900 mr-2">{hashtag.hashtag}</span>
+                      <span className={`px-2 py-1 rounded-md text-xs font-medium ${getHashtagColor(hashtag.category)}`}>{hashtag.category}</span>
                     </div>
                     <p className="text-sm text-gray-600">{hashtag.posts} posts</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-gray-900 mb-1">{hashtag.engagementScore}</div>
+                  <div className="text-lg font-bold text-gray-900">{hashtag.engagementScore}</div>
                   <p className="text-xs text-gray-600">Engagement Score</p>
                 </div>
               </div>
@@ -760,14 +716,14 @@ const SocialMediaFootprintPage: React.FC = () => {
           </div>
 
           {/* Pro Tip */}
-          <div className="mt-8 p-6 bg-caribbean_current-50 border border-caribbean_current-200 rounded-xl">
+          <div className="mt-6 p-4 bg-caribbean_current-50 border border-caribbean_current-200 rounded-lg">
             <div className="flex items-start">
-              <div className="p-3 bg-caribbean_current-100 rounded-lg mr-4">
-                <TrendingUp className="w-5 h-5 text-caribbean_current-700" />
+              <div className="p-2 bg-caribbean_current-100 rounded-lg mr-3">
+                <TrendingUp className="w-4 h-4 text-caribbean_current-700" />
               </div>
               <div>
-                <h4 className="font-bold text-caribbean_current-900 mb-2 text-lg">Pro Tip</h4>
-                <p className="text-caribbean_current-800">
+                <h4 className="font-semibold text-caribbean_current-900 mb-1">Pro Tip</h4>
+                <p className="text-sm text-caribbean_current-800">
                   Use 5-10 hashtags per post for optimal reach. Mix general food hashtags with location-specific ones like #YourCityEats for better local discovery.
                 </p>
               </div>

@@ -44,11 +44,7 @@ export function CategoryRatings({ categories }: CategoryRatingsProps): JSX.Eleme
                 {renderStars(category.rating)}
                 <span className="ml-2 text-lg font-semibold text-gray-900">{category.rating}</span>
               </div>
-              <div className={`flex items-center text-sm px-3 py-1 rounded-full ${
-                category.trend > 0 
-                  ? "text-emerald-800 bg-emerald-100" 
-                  : "text-red-800 bg-red-100"
-              }`}>
+              <div className={`flex items-center text-sm px-3 py-1 rounded-full ${category.trend > 0 ? "text-emerald-800 bg-emerald-100" : "text-red-800 bg-red-100"}`}>
                 {category.trend > 0 ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
                 {formatTrend(category.trend)}
               </div>

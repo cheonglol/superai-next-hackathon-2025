@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { PageHeader } from "@/components/common/PageHeader";
@@ -33,7 +34,6 @@ const FinancialsPage1: React.FC = () => {
     { value: "yearly", label: "Yearly" },
   ];
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -190,7 +190,7 @@ const FinancialsPage1: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">Period Type</label>
               <select
                 value={inputData.selectedPeriodType}
-                onChange={(e) => dispatch(setPeriodType(e.target.value as "monthly" | "quarterly" | "yearly"))}
+                onChange={(e) => dispatch(setPeriodType(e.target.value as "daily" | "weekly" | "monthly" | "quarterly" | "yearly"))}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
               >
                 {periodTypes.map((type) => (

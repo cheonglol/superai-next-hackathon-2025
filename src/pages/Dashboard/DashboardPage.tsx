@@ -123,7 +123,10 @@ const DashboardPage: React.FC = () => {
               <div className="flex items-center text-sm text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full mb-3 w-fit">
                 <TrendingUp className="w-4 h-4 mr-1" />+{socialData?.metrics.growthRate || 8.7}%
               </div>
-              <Link to="/social-media-footprint" className="inline-flex items-center text-caribbean_current-700 hover:text-caribbean_current-800 text-sm font-medium transition-colors">
+              <Link
+                to="/social-media-footprint"
+                className="inline-flex items-center text-caribbean_current-700 hover:text-caribbean_current-800 text-sm font-medium transition-colors"
+              >
                 View Footprint →
               </Link>
             </div>
@@ -139,9 +142,7 @@ const DashboardPage: React.FC = () => {
                 </div>
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">{formatNumber(socialData?.metrics.totalReach || dashboardData.metrics.monthlyReach)}</div>
-              <div className="flex items-center text-sm text-gray-600 mb-3">
-                Avg {socialData?.metrics.avgEngagement || 4.25}% engagement
-              </div>
+              <div className="flex items-center text-sm text-gray-600 mb-3">Avg {socialData?.metrics.avgEngagement || 4.25}% engagement</div>
               <Link to="/trending-content" className="inline-flex items-center text-caribbean_current-700 hover:text-caribbean_current-800 text-sm font-medium transition-colors">
                 See Trending →
               </Link>
@@ -190,9 +191,7 @@ const DashboardPage: React.FC = () => {
                 </div>
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">{financialData ? formatCurrency(financialData.summary.currentMonth.netProfit) : "Loading..."}</div>
-              <div className="flex items-center text-sm text-gray-600 mb-3">
-                {financialData?.summary.currentMonth.profitMargin || 0}% profit margin
-              </div>
+              <div className="flex items-center text-sm text-gray-600 mb-3">{financialData?.summary.currentMonth.profitMargin || 0}% profit margin</div>
               <Link to="/financials/page1" className="inline-flex items-center text-prussian_blue-700 hover:text-prussian_blue-800 text-sm font-medium transition-colors">
                 Analyze Profit →
               </Link>
@@ -230,9 +229,7 @@ const DashboardPage: React.FC = () => {
               <div className="text-3xl font-bold text-gray-900 mb-2">
                 {financialData && financialData.cashFlow.length > 0 ? formatCurrency(financialData.cashFlow[0].netFlow) : "Loading..."}
               </div>
-              <div className="flex items-center text-sm text-gray-600 mb-3">
-                Current month flow
-              </div>
+              <div className="flex items-center text-sm text-gray-600 mb-3">Current month flow</div>
               <Link to="/financials/page2" className="inline-flex items-center text-prussian_blue-700 hover:text-prussian_blue-800 text-sm font-medium transition-colors">
                 Analyze Flow →
               </Link>
@@ -251,13 +248,7 @@ const DashboardPage: React.FC = () => {
           <div className="space-y-4">
             {dashboardData.recentActivity.map((activity) => (
               <div key={activity.id} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                <div className={`p-3 rounded-lg ${
-                  activity.type === "review" 
-                    ? "bg-orange-100" 
-                    : activity.type === "social" 
-                      ? "bg-caribbean_current-100" 
-                      : "bg-purple-100"
-                }`}>
+                <div className={`p-3 rounded-lg ${activity.type === "review" ? "bg-orange-100" : activity.type === "social" ? "bg-caribbean_current-100" : "bg-purple-100"}`}>
                   {activity.type === "review" && <MessageSquare className="w-4 h-4 text-orange-700" />}
                   {activity.type === "social" && <Share2 className="w-4 h-4 text-caribbean_current-700" />}
                   {activity.type === "trending" && <TrendingUp className="w-4 h-4 text-purple-700" />}
@@ -269,11 +260,7 @@ const DashboardPage: React.FC = () => {
                   </div>
                   <p className="text-sm text-gray-700">{activity.content}</p>
                 </div>
-                <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                  activity.positive 
-                    ? "bg-emerald-100 text-emerald-800" 
-                    : "bg-red-100 text-red-800"
-                }`}>
+                <div className={`px-3 py-1 rounded-full text-xs font-medium ${activity.positive ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}`}>
                   {activity.positive ? "Positive" : "Needs Attention"}
                 </div>
               </div>
