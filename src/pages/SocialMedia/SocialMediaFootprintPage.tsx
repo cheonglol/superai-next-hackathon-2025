@@ -56,7 +56,9 @@ const SocialMediaFootprintPage: React.FC = () => {
         comments: "89",
         shares: "45",
         views: "15.6K",
-        date: "14/01/2025"
+        date: "14/01/2025",
+        imageUrl: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg",
+        postUrl: "https://instagram.com/p/pasta-behind-scenes"
       },
       {
         id: 2,
@@ -67,7 +69,9 @@ const SocialMediaFootprintPage: React.FC = () => {
         comments: "234",
         shares: "567",
         views: "45.0K",
-        date: "13/01/2025"
+        date: "13/01/2025",
+        imageUrl: "https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg",
+        postUrl: "https://tiktok.com/@yourrestaurant/video/pasta-hack"
       },
       {
         id: 3,
@@ -78,7 +82,9 @@ const SocialMediaFootprintPage: React.FC = () => {
         comments: "67",
         shares: "123",
         views: "12.0K",
-        date: "12/01/2025"
+        date: "12/01/2025",
+        imageUrl: "https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg",
+        postUrl: "https://facebook.com/yourrestaurant/posts/winter-menu"
       }
     ],
 
@@ -203,6 +209,10 @@ const SocialMediaFootprintPage: React.FC = () => {
       "Exclusive": "bg-yellow-100 text-yellow-800"
     };
     return colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800";
+  };
+
+  const handlePostClick = (postUrl: string) => {
+    window.open(postUrl, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -450,8 +460,16 @@ const SocialMediaFootprintPage: React.FC = () => {
           <div className="space-y-4">
             {socialMediaData.topBusinessPosts.map((post) => (
               <div key={post.id} className="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-medium text-gray-600">YR</span>
+                <div 
+                  className="w-16 h-16 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity flex-shrink-0"
+                  onClick={() => handlePostClick(post.postUrl)}
+                  title="Click to view original post"
+                >
+                  <img
+                    src={post.imageUrl}
+                    alt="Post preview"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center mb-2">
