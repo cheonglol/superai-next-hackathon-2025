@@ -1,0 +1,304 @@
+import type { TrendingPost, ContentStrategy, MarketInsight } from '../../types/trending';
+
+export const globalTrendingPosts: TrendingPost[] = [
+  {
+    id: "1",
+    platform: "TikTok",
+    content: "Chef reveals secret ingredient in viral pasta recipe that's taking the world by storm!",
+    imageUrl: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg",
+    videoUrl: "https://example.com/video1",
+    author: "@chef_marco",
+    authorAvatar: "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
+    authorFollowers: 2400000,
+    likes: 8900,
+    comments: 567,
+    shares: 1200,
+    views: 125000,
+    engagement: 7.2,
+    viralScore: 95,
+    postUrl: "https://tiktok.com/@chef_marco/video/123",
+    createdAt: "2025-01-14T10:30:00Z",
+    location: "New York, NY",
+    hashtags: ["#pasta", "#recipe", "#viral", "#cooking"],
+    contentType: "organic",
+    category: "Recipe",
+    businessInsights: {
+      keyTakeaways: [
+        "Behind-the-scenes content performs exceptionally well",
+        "Recipe reveals generate high engagement",
+        "Chef personality drives authenticity"
+      ],
+      applicableStrategies: [
+        "Create recipe reveal videos",
+        "Show kitchen behind-the-scenes",
+        "Feature chef personality",
+        "Use trending audio"
+      ],
+      estimatedCost: "$50-200",
+      difficulty: "Easy",
+      roi: "High"
+    }
+  },
+  {
+    id: "2",
+    platform: "Instagram",
+    content: "The most aesthetic brunch setup you'll see today ✨ Every detail matters",
+    imageUrl: "https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg",
+    author: "@aesthetic_eats",
+    authorAvatar: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg",
+    authorFollowers: 890000,
+    likes: 3400,
+    comments: 234,
+    shares: 890,
+    views: 45000,
+    engagement: 4.8,
+    viralScore: 87,
+    postUrl: "https://instagram.com/p/aesthetic_brunch",
+    createdAt: "2025-01-13T09:15:00Z",
+    hashtags: ["#brunch", "#aesthetic", "#foodstyling"],
+    contentType: "organic",
+    category: "Food Styling",
+    businessInsights: {
+      keyTakeaways: [
+        "Visual aesthetics drive Instagram engagement",
+        "Brunch content performs well on weekends",
+        "Styling details matter for food photography"
+      ],
+      applicableStrategies: [
+        "Invest in food styling",
+        "Create Instagram-worthy plating",
+        "Use natural lighting",
+        "Focus on color coordination"
+      ],
+      difficulty: "Medium",
+      roi: "Medium"
+    }
+  }
+];
+
+export const localTrendingPosts: TrendingPost[] = [
+  {
+    id: "3",
+    platform: "Facebook",
+    content: "Local family restaurant wins hearts with their grandmother's secret recipe",
+    imageUrl: "https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg",
+    author: "Downtown Eats",
+    authorAvatar: "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg",
+    authorFollowers: 12500,
+    likes: 1200,
+    comments: 89,
+    shares: 345,
+    views: 23000,
+    engagement: 6.1,
+    viralScore: 78,
+    postUrl: "https://facebook.com/downtown.eats/posts/123",
+    createdAt: "2025-01-12T14:20:00Z",
+    hashtags: ["#local", "#family", "#tradition"],
+    contentType: "organic",
+    category: "Local Story",
+    businessInsights: {
+      keyTakeaways: [
+        "Local community stories resonate strongly",
+        "Family traditions create emotional connection",
+        "Authentic storytelling drives engagement"
+      ],
+      applicableStrategies: [
+        "Share restaurant history",
+        "Feature family recipes",
+        "Highlight local connections",
+        "Tell authentic stories"
+      ],
+      difficulty: "Easy",
+      roi: "High"
+    }
+  }
+];
+
+export const paidPartnershipPosts: TrendingPost[] = [
+  {
+    id: "4",
+    platform: "Instagram",
+    content: "Partnering with @local_influencer for an amazing dining experience! #sponsored",
+    imageUrl: "https://images.pexels.com/photos/1640775/pexels-photo-1640775.jpeg",
+    author: "@local_influencer",
+    authorAvatar: "https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg",
+    authorFollowers: 45000,
+    likes: 2100,
+    comments: 156,
+    shares: 234,
+    views: 18000,
+    engagement: 5.4,
+    viralScore: 72,
+    postUrl: "https://instagram.com/p/sponsored_post",
+    createdAt: "2025-01-11T18:45:00Z",
+    hashtags: ["#sponsored", "#partnership", "#dining"],
+    contentType: "paid",
+    category: "Influencer Partnership",
+    businessInsights: {
+      keyTakeaways: [
+        "Micro-influencers often have better engagement rates",
+        "Local influencers connect with target audience",
+        "Authentic partnerships perform better than obvious ads"
+      ],
+      applicableStrategies: [
+        "Partner with local micro-influencers",
+        "Focus on authentic experiences",
+        "Allow creative freedom",
+        "Track ROI carefully"
+      ],
+      estimatedCost: "$500-2000",
+      difficulty: "Medium",
+      roi: "Medium"
+    }
+  }
+];
+
+export const contentStrategies: ContentStrategy[] = [
+  {
+    id: "1",
+    title: "Behind-the-Scenes Recipe Reveals",
+    description: "Show the cooking process and reveal secret ingredients to create engaging, educational content that builds trust and authenticity.",
+    category: "Content Creation",
+    difficulty: "Easy",
+    expectedRoi: "High",
+    platforms: ["TikTok", "Instagram", "YouTube"],
+    keyMetrics: ["Views", "Engagement Rate", "Saves", "Shares"],
+    successExamples: [
+      {
+        restaurant: "Pasta Palace",
+        result: "300% increase in TikTok followers",
+        metric: "2.5M views on recipe reveal video"
+      },
+      {
+        restaurant: "Local Bistro",
+        result: "150% boost in weekend reservations",
+        metric: "45% engagement rate on Instagram"
+      }
+    ],
+    actionSteps: [
+      "Identify your signature dishes with unique preparation methods",
+      "Set up good lighting in your kitchen area",
+      "Create a content calendar for regular recipe reveals",
+      "Engage with comments and questions from viewers",
+      "Cross-promote content across all platforms"
+    ],
+    requiredResources: ["Smartphone/camera", "Good lighting", "Chef availability", "Content editing tools"]
+  },
+  {
+    id: "2",
+    title: "User-Generated Content Campaigns",
+    description: "Encourage customers to share their dining experiences and create branded hashtag campaigns to amplify reach organically.",
+    category: "Community Building",
+    difficulty: "Medium",
+    expectedRoi: "High",
+    platforms: ["Instagram", "TikTok", "Facebook"],
+    keyMetrics: ["Hashtag Usage", "User Posts", "Reach", "Brand Mentions"],
+    successExamples: [
+      {
+        restaurant: "Trendy Cafe",
+        result: "500+ user posts in first month",
+        metric: "#TrendyCafeExperience reached 1M impressions"
+      }
+    ],
+    actionSteps: [
+      "Create a memorable, brandable hashtag",
+      "Design Instagram-worthy spots in your restaurant",
+      "Offer incentives for customers who post",
+      "Repost and engage with user content",
+      "Track and measure campaign performance"
+    ],
+    requiredResources: ["Hashtag strategy", "Incentive budget", "Social media management", "Photo-worthy restaurant setup"]
+  }
+];
+
+export const marketInsights: MarketInsight[] = [
+  {
+    id: "1",
+    title: "Video Content Dominance in F&B Marketing",
+    description: "Video content is driving 80% more engagement than static posts in the food and beverage industry, with short-form videos leading the trend.",
+    impact: "High",
+    urgency: "High",
+    category: "Trend",
+    dataPoints: [
+      {
+        metric: "Video Engagement Rate",
+        value: "6.8%",
+        change: "+145% vs static posts"
+      },
+      {
+        metric: "TikTok F&B Content Growth",
+        value: "320%",
+        change: "Year-over-year increase"
+      },
+      {
+        metric: "Instagram Reels Reach",
+        value: "2.3x",
+        change: "Higher than feed posts"
+      }
+    ],
+    recommendations: [
+      "Prioritize video content creation in your marketing strategy",
+      "Invest in basic video equipment and editing skills",
+      "Create behind-the-scenes cooking videos",
+      "Experiment with trending audio and effects on TikTok",
+      "Repurpose long-form content into short clips"
+    ],
+    relatedPosts: ["1", "2"]
+  },
+  {
+    id: "2",
+    title: "Local SEO and Social Media Integration",
+    description: "Restaurants that integrate local SEO with social media see 40% more foot traffic and 25% higher online engagement.",
+    impact: "Medium",
+    urgency: "Medium",
+    category: "Opportunity",
+    dataPoints: [
+      {
+        metric: "Local Search Visibility",
+        value: "+40%",
+        change: "With social integration"
+      },
+      {
+        metric: "Foot Traffic Increase",
+        value: "25%",
+        change: "From social-to-local funnel"
+      }
+    ],
+    recommendations: [
+      "Optimize Google My Business with social links",
+      "Use location tags consistently across platforms",
+      "Encourage check-ins and location-based posts",
+      "Create location-specific hashtags",
+      "Partner with local influencers and businesses"
+    ],
+    relatedPosts: ["3"]
+  },
+  {
+    id: "3",
+    title: "Sustainability Messaging Resonates with Gen Z",
+    description: "Food businesses highlighting sustainability practices see 60% higher engagement from Gen Z consumers, who make up 40% of restaurant social media followers.",
+    impact: "Medium",
+    urgency: "Low",
+    category: "Innovation",
+    dataPoints: [
+      {
+        metric: "Gen Z Engagement",
+        value: "+60%",
+        change: "With sustainability content"
+      },
+      {
+        metric: "Gen Z Follower Share",
+        value: "40%",
+        change: "Of restaurant social audiences"
+      }
+    ],
+    recommendations: [
+      "Highlight sustainable sourcing practices",
+      "Show waste reduction efforts",
+      "Partner with local farms and suppliers",
+      "Create content about environmental initiatives",
+      "Use eco-friendly packaging and promote it"
+    ],
+    relatedPosts: []
+  }
+];
