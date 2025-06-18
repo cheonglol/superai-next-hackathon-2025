@@ -36,5 +36,4 @@ deploy.zip
 *.njsproj
 *.sln
 *.sw?
-
-superai-next-hackathon-2025-bolt-prototype**
+tsconfig.app.tsbuildinfo

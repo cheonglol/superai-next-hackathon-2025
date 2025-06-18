@@ -12,8 +12,8 @@
 
     /* Language and Environment */
     "target": "es2017" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-    "lib": ["es2018"] /* Specify a set of bundled library declaration files that describe the target runtime environment. */,
-    // "jsx": "preserve",                                /* Specify what JSX code is generated. */
+    "lib": ["es2018", "DOM", "DOM.Iterable"] /* Specify a set of bundled library declaration files that describe the target runtime environment. */,
+    "jsx": "react-jsx" /* Specify what JSX code is generated. */,
     "experimentalDecorators": true /* Enable experimental support for legacy experimental decorators. */,
     "emitDecoratorMetadata": true /* Emit design-type metadata for decorated declarations in source files. */,
     // "jsxFactory": "",                                 /* Specify the JSX factory function used when targeting React JSX emit, e.g. 'React.createElement' or 'h'. */
@@ -25,25 +25,36 @@
     // "moduleDetection": "auto",                        /* Control what method is used to detect module-format JS files. */
 
     /* Modules */
-    "module": "node16" /* Specify what module code is generated. */,
+    "module": "ESNext" /* Specify what module code is generated. */,
     "rootDir": "src" /* Specify the root folder within your source files. */,
-    // "moduleResolution": "node10",                     /* Specify how TypeScript looks up a file from a given module specifier. */
+    "moduleResolution": "bundler" /* Specify how TypeScript looks up a file from a given module specifier. */,
     "baseUrl": "." /* Specify the base directory to resolve non-relative module names. */,
     "paths": {
       "@/core/*": ["src/core/*"],
       "@/config/*": ["src/config/*"],
       "@/utils/*": ["src/utils/*"],
-      "@/shared/*": ["src/common/*"],
+      "@/shared/*": ["src/shared/*"],
       "@/http/*": ["src/http/*"],
       "@/routes/*": ["src/routes/*"],
-      "@/controllers/*": ["src/controllers/*"]
+      "@/controllers/*": ["src/controllers/*"],
+      "@/types/*": ["src/types/*"],
+      "@/components/*": ["src/components/*"],
+      "@/hooks/*": ["src/hooks/*"],
+      "@/services/*": ["src/services/*"],
+      "@/layout/*": ["src/layout/*"],
+      "@/pages": ["src/pages/index"],
+      "@/pages/*": ["src/pages/*"],
+      "@/loaders/*": ["src/loaders/*"],
+      "@/store": ["src/store/index"],
+      "@/store/*": ["src/store/*"],
+      "@/routes": ["src/routes/index"]
     },
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */
     "types": ["node"] /* Specify type package names to be included without being referenced in a source file. */,
     // "allowUmdGlobalAccess": true,                     /* Allow accessing UMD globals from modules. */
     // "moduleSuffixes": [],                             /* List of file name suffixes to search when resolving a module. */
-    // "allowImportingTsExtensions": true,               /* Allow imports to include TypeScript file extensions. Requires '--moduleResolution bundler' and either '--noEmit' or '--emitDeclarationOnly' to be set. */
+    "allowImportingTsExtensions": true /* Allow imports to include TypeScript file extensions. Requires '--moduleResolution bundler' and either '--noEmit' or '--emitDeclarationOnly' to be set. */,
     // "rewriteRelativeImportExtensions": true,          /* Rewrite '.ts', '.tsx', '.mts', and '.cts' file extensions in relative import paths to their JavaScript equivalent in output files. */
     "resolveJsonModule": true /* Enable importing .json files. */,
     // "resolvePackageJsonExports": true,                /* Use the package.json 'exports' field when resolving package imports. */
@@ -64,9 +75,9 @@
     // "emitDeclarationOnly": true,                      /* Only output d.ts files and not JavaScript files. */
     // "sourceMap": true /* Add this for better debugging */,
     "inlineSourceMap": true /* Include sourcemap files inside the emitted JavaScript. */,
-    "noEmit": false /* Allow output */,
+    "noEmit": true /* Disable emitting files from a compilation. */,
     // "outFile": "./",                                  /* Specify a file that bundles all outputs into one JavaScript file. If 'declaration' is true, also designates a file that bundles all .d.ts output. */
-    "outDir": "./dist" /* Use a relative path for the output directory. */,
+    // "outDir": "./dist" /* Use a relative path for the output directory. */,
     "removeComments": true /* Disable emitting comments. */,
     // "importHelpers": true,                            /* Allow importing helper functions from tslib once per project, instead of including them per-file. */
     // "downlevelIteration": true,                       /* Emit more compliant, but verbose and less performant JavaScript for iteration. */
@@ -82,7 +93,7 @@
     // "declarationDir": "./",                           /* Specify the output directory for generated declaration files. */
 
     /* Interop Constraints */
-    // "isolatedModules": true,                          /* Ensure that each file can be safely transpiled without relying on other imports. */
+    "isolatedModules": true /* Ensure that each file can be safely transpiled without relying on other imports. */,
     // "verbatimModuleSyntax": true,                     /* Do not transform or elide any imports or exports not marked as type-only, ensuring they are written in the output file's format based on the 'module' setting. */
     // "isolatedDeclarations": true,                     /* Require sufficient annotation on exports so other tools can trivially generate declaration files. */
     // "allowSyntheticDefaultImports": true,             /* Allow 'import x from y' when a module doesn't have a default export. */
@@ -116,6 +127,6 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": ["node_modules", "dist"]
 }
