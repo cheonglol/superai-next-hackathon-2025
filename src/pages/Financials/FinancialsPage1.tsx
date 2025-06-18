@@ -56,6 +56,15 @@ const FinancialsPage1: React.FC = () => {
     }));
   };
 
+  const handleDateChange = (periodId: string, value: string) => {
+    dispatch(updatePeriodData({
+      branchId: selectedBranchId,
+      periodId,
+      field: 'date',
+      value: value,
+    }));
+  };
+
   const handleSave = () => {
     if (selectedBranchId === 'consolidated') {
       dispatch(saveConsolidatedData(currentData));
@@ -298,9 +307,18 @@ const FinancialsPage1: React.FC = () => {
                         <th className="text-left py-3 px-4 font-medium text-gray-900">Item</th>
                         {currentData.slice(0, inputData.numberOfPeriods).map(period => (
                           <th key={period.periodId} className="text-center py-3 px-4 font-medium text-gray-900 min-w-[150px]">
-                            <div className="space-y-1">
+                            <div className="space-y-2">
                               <div>{period.periodLabel}</div>
-                              <div className="text-xs text-gray-500">{period.date}</div>
+                              <div className="text-xs text-gray-500">
+                                <label className="block mb-1">Period Ending Date:</label>
+                                <input
+                                  type="text"
+                                  value={period.date || ''}
+                                  onChange={(e) => handleDateChange(period.periodId, e.target.value)}
+                                  placeholder="DD-MM-YYYY"
+                                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-oxford_blue-500 focus:border-transparent text-center"
+                                />
+                              </div>
                             </div>
                           </th>
                         ))}
@@ -392,9 +410,18 @@ const FinancialsPage1: React.FC = () => {
                         <th className="text-left py-3 px-4 font-medium text-gray-900">Asset Type</th>
                         {currentData.slice(0, inputData.numberOfPeriods).map(period => (
                           <th key={period.periodId} className="text-center py-3 px-4 font-medium text-gray-900 min-w-[150px]">
-                            <div className="space-y-1">
+                            <div className="space-y-2">
                               <div>{period.periodLabel}</div>
-                              <div className="text-xs text-gray-500">{period.date}</div>
+                              <div className="text-xs text-gray-500">
+                                <label className="block mb-1">Period Ending Date:</label>
+                                <input
+                                  type="text"
+                                  value={period.date || ''}
+                                  onChange={(e) => handleDateChange(period.periodId, e.target.value)}
+                                  placeholder="DD-MM-YYYY"
+                                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-oxford_blue-500 focus:border-transparent text-center"
+                                />
+                              </div>
                             </div>
                           </th>
                         ))}
@@ -478,9 +505,18 @@ const FinancialsPage1: React.FC = () => {
                         <th className="text-left py-3 px-4 font-medium text-gray-900">Liability Type</th>
                         {currentData.slice(0, inputData.numberOfPeriods).map(period => (
                           <th key={period.periodId} className="text-center py-3 px-4 font-medium text-gray-900 min-w-[150px]">
-                            <div className="space-y-1">
+                            <div className="space-y-2">
                               <div>{period.periodLabel}</div>
-                              <div className="text-xs text-gray-500">{period.date}</div>
+                              <div className="text-xs text-gray-500">
+                                <label className="block mb-1">Period Ending Date:</label>
+                                <input
+                                  type="text"
+                                  value={period.date || ''}
+                                  onChange={(e) => handleDateChange(period.periodId, e.target.value)}
+                                  placeholder="DD-MM-YYYY"
+                                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-oxford_blue-500 focus:border-transparent text-center"
+                                />
+                              </div>
                             </div>
                           </th>
                         ))}
@@ -540,9 +576,18 @@ const FinancialsPage1: React.FC = () => {
                         <th className="text-left py-3 px-4 font-medium text-gray-900">Debt Type</th>
                         {currentData.slice(0, inputData.numberOfPeriods).map(period => (
                           <th key={period.periodId} className="text-center py-3 px-4 font-medium text-gray-900 min-w-[150px]">
-                            <div className="space-y-1">
+                            <div className="space-y-2">
                               <div>{period.periodLabel}</div>
-                              <div className="text-xs text-gray-500">{period.date}</div>
+                              <div className="text-xs text-gray-500">
+                                <label className="block mb-1">Period Ending Date:</label>
+                                <input
+                                  type="text"
+                                  value={period.date || ''}
+                                  onChange={(e) => handleDateChange(period.periodId, e.target.value)}
+                                  placeholder="DD-MM-YYYY"
+                                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-oxford_blue-500 focus:border-transparent text-center"
+                                />
+                              </div>
                             </div>
                           </th>
                         ))}

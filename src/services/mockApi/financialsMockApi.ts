@@ -14,7 +14,7 @@ export class FinancialsMockApi {
     const generatePeriodData = (periodIndex: number, branchMultiplier: number = 1): PeriodData => ({
       periodId: `period-${periodIndex}`,
       periodLabel: `Period ${periodIndex + 1}`,
-      date: new Date(2025, 0, (periodIndex + 1) * 7).toISOString().split('T')[0],
+      date: '', // Empty string for user input
       
       // P&L Statement
       revenue: Math.round(50000 * branchMultiplier * (1 + Math.random() * 0.2)),

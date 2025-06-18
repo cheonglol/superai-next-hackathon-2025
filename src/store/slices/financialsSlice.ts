@@ -103,7 +103,7 @@ const financialsSlice = createSlice({
     setSelectedBranch: (state, action: PayloadAction<string>) => {
       state.selectedBranchId = action.payload;
     },
-    updatePeriodData: (state, action: PayloadAction<{ branchId: string | 'consolidated'; periodId: string; field: string; value: number }>) => {
+    updatePeriodData: (state, action: PayloadAction<{ branchId: string | 'consolidated'; periodId: string; field: string; value: number | string }>) => {
       if (!state.data?.inputData) return;
       
       const { branchId, periodId, field, value } = action.payload;
