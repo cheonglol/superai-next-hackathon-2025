@@ -25,14 +25,16 @@ export function CategoryRatings({ categories }: CategoryRatingsProps): JSX.Eleme
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
       <div className="flex items-center mb-6">
-        <Sparkles className="w-5 h-5 text-caribbean_current-600 mr-2" />
+        <div className="p-2 bg-caribbean_current-50 rounded-lg mr-3">
+          <Sparkles className="w-5 h-5 text-caribbean_current-600" />
+        </div>
         <h2 className="text-xl font-semibold text-gray-900">Category Ratings</h2>
       </div>
       <div className="space-y-4">
         {categories.map((category, index) => (
-          <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
             <div className="flex items-center">
               <div className={`p-2 rounded-lg ${category.color} text-white mr-3`}>{getIcon(category.icon)}</div>
               <span className="text-gray-900 font-medium">{category.name}</span>
@@ -42,7 +44,11 @@ export function CategoryRatings({ categories }: CategoryRatingsProps): JSX.Eleme
                 {renderStars(category.rating)}
                 <span className="ml-2 text-lg font-semibold text-gray-900">{category.rating}</span>
               </div>
-              <div className={`flex items-center text-sm ${category.trend > 0 ? "text-caribbean_current-600" : "text-red-600"}`}>
+              <div className={`flex items-center text-sm px-2 py-1 rounded-full ${
+                category.trend > 0 
+                  ? "text-emerald-700 bg-emerald-50" 
+                  : "text-red-700 bg-red-50"
+              }`}>
                 {category.trend > 0 ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
                 {formatTrend(category.trend)}
               </div>

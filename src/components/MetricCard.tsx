@@ -17,11 +17,13 @@ export function MetricCard({ title, value, change, isPositive, icon, unit = "" }
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200 hover:border-gray-300">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center text-gray-600">
-          {icon}
-          <span className="ml-2 text-sm font-medium">{title}</span>
+          <div className="p-2 bg-gray-50 rounded-lg mr-3">
+            {icon}
+          </div>
+          <span className="text-sm font-medium">{title}</span>
         </div>
       </div>
       <div className="flex items-end justify-between">
@@ -32,9 +34,13 @@ export function MetricCard({ title, value, change, isPositive, icon, unit = "" }
           </div>
           {title === "Overall Rating" && <div className="flex items-center mb-2">{renderStars(value as number)}</div>}
         </div>
-        <div className={`flex items-center text-sm font-medium ${isPositive ? "text-caribbean_current-600" : "text-red-600"}`}>
+        <div className={`flex items-center text-sm font-medium px-2 py-1 rounded-full ${
+          isPositive 
+            ? "text-emerald-700 bg-emerald-50" 
+            : "text-red-700 bg-red-50"
+        }`}>
           {isPositive ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
-          {formatPercentage(change)} from last period
+          {formatPercentage(change)}
         </div>
       </div>
     </div>

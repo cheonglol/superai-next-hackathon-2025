@@ -64,20 +64,20 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     <div className="min-h-screen bg-gray-50 flex">
       {/* Mobile menu button */}
       <div className="lg:hidden fixed top-4 left-4 z-50">
-        <button onClick={handleMenuToggle} className="p-2 bg-white rounded-lg shadow-md border border-gray-200">
+        <button onClick={handleMenuToggle} className="p-2 bg-white rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 transition-colors">
           {sidebarOpen ? <X className="w-6 h-6 text-gray-600" /> : <Menu className="w-6 h-6 text-gray-600" />}
         </button>
       </div>
 
       {/* Left Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 z-40 w-64 bg-caribbean_current-500 border-r border-caribbean_current-400 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-caribbean_current-600 transform transition-transform duration-300 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:static lg:flex-shrink-0`}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center px-6 py-8 border-b border-caribbean_current-400">
+          <div className="flex items-center px-6 py-8 border-b border-caribbean_current-500">
             <BarChart3 className="w-8 h-8 text-white mr-3" />
             <div>
               <h1 className="text-xl font-bold text-white">Analytics Hub</h1>
@@ -97,13 +97,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   key={item.path}
                   to={item.path}
                   onClick={handleLinkClick}
-                  className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                  className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                     isActive
-                      ? "bg-caribbean_current-400 text-white"
-                      : "text-caribbean_current-100 hover:bg-caribbean_current-400 hover:text-white"
+                      ? "bg-white text-caribbean_current-700 shadow-sm"
+                      : "text-caribbean_current-100 hover:bg-caribbean_current-500 hover:text-white"
                   }`}
                 >
-                  <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-white" : "text-caribbean_current-200"}`} />
+                  <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-caribbean_current-600" : "text-caribbean_current-200"}`} />
                   {item.label}
                 </Link>
               );
@@ -114,9 +114,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <>
                 <div className="pt-6 pb-2">
                   <div className="flex items-center">
-                    <div className="flex-1 border-t border-caribbean_current-400"></div>
-                    <span className="px-3 text-xs font-medium text-caribbean_current-200 bg-caribbean_current-500">Social Media Insights</span>
-                    <div className="flex-1 border-t border-caribbean_current-400"></div>
+                    <div className="flex-1 border-t border-caribbean_current-500"></div>
+                    <span className="px-3 text-xs font-medium text-caribbean_current-200 bg-caribbean_current-600 uppercase tracking-wider">Social Media</span>
+                    <div className="flex-1 border-t border-caribbean_current-500"></div>
                   </div>
                 </div>
                 {groupedItems["Social Media Insights"].map((item) => {
@@ -128,13 +128,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       key={item.path}
                       to={item.path}
                       onClick={handleLinkClick}
-                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                         isActive
-                          ? "bg-caribbean_current-400 text-white"
-                          : "text-caribbean_current-100 hover:bg-caribbean_current-400 hover:text-white"
+                          ? "bg-white text-caribbean_current-700 shadow-sm"
+                          : "text-caribbean_current-100 hover:bg-caribbean_current-500 hover:text-white"
                       }`}
                     >
-                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-white" : "text-caribbean_current-200"}`} />
+                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-caribbean_current-600" : "text-caribbean_current-200"}`} />
                       {item.label}
                     </Link>
                   );
@@ -147,9 +147,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <>
                 <div className="pt-6 pb-2">
                   <div className="flex items-center">
-                    <div className="flex-1 border-t border-caribbean_current-400"></div>
-                    <span className="px-3 text-xs font-medium text-caribbean_current-200 bg-caribbean_current-500">Financials</span>
-                    <div className="flex-1 border-t border-caribbean_current-400"></div>
+                    <div className="flex-1 border-t border-caribbean_current-500"></div>
+                    <span className="px-3 text-xs font-medium text-caribbean_current-200 bg-caribbean_current-600 uppercase tracking-wider">Financials</span>
+                    <div className="flex-1 border-t border-caribbean_current-500"></div>
                   </div>
                 </div>
                 {groupedItems["Financials"].map((item) => {
@@ -161,13 +161,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       key={item.path}
                       to={item.path}
                       onClick={handleLinkClick}
-                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                         isActive
-                          ? "bg-caribbean_current-400 text-white"
-                          : "text-caribbean_current-100 hover:bg-caribbean_current-400 hover:text-white"
+                          ? "bg-white text-caribbean_current-700 shadow-sm"
+                          : "text-caribbean_current-100 hover:bg-caribbean_current-500 hover:text-white"
                       }`}
                     >
-                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-white" : "text-caribbean_current-200"}`} />
+                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-caribbean_current-600" : "text-caribbean_current-200"}`} />
                       {item.label}
                     </Link>
                   );
@@ -177,7 +177,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           </nav>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-caribbean_current-400">
+          <div className="px-6 py-4 border-t border-caribbean_current-500">
             <p className="text-xs text-caribbean_current-200">© 2025 Analytics Hub</p>
           </div>
         </div>
