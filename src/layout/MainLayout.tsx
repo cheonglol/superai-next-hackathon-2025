@@ -71,17 +71,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
       {/* Left Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 z-40 w-64 bg-caribbean_current-600 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-charcoal-600 transform transition-transform duration-300 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:static lg:flex-shrink-0`}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center px-6 py-8 border-b border-caribbean_current-500">
+          <div className="flex items-center px-6 py-8 border-b border-charcoal-500">
             <BarChart3 className="w-8 h-8 text-white mr-3" />
             <div>
               <h1 className="text-xl font-bold text-white">Analytics Hub</h1>
-              <p className="text-sm text-caribbean_current-200">Social Media Insights</p>
+              <p className="text-sm text-charcoal-200">Social Media Insights</p>
             </div>
           </div>
 
@@ -99,11 +99,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   onClick={handleLinkClick}
                   className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                     isActive
-                      ? "bg-white text-caribbean_current-700 shadow-sm"
-                      : "text-caribbean_current-100 hover:bg-caribbean_current-500 hover:text-white"
+                      ? "bg-white text-charcoal-700 shadow-sm"
+                      : "text-charcoal-100 hover:bg-charcoal-500 hover:text-white"
                   }`}
                 >
-                  <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-caribbean_current-600" : "text-caribbean_current-200"}`} />
+                  <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-charcoal-600" : "text-charcoal-200"}`} />
                   {item.label}
                 </Link>
               );
@@ -114,9 +114,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <>
                 <div className="pt-6 pb-2">
                   <div className="flex items-center">
-                    <div className="flex-1 border-t border-caribbean_current-500"></div>
-                    <span className="px-3 text-xs font-medium text-caribbean_current-200 bg-caribbean_current-600 uppercase tracking-wider">Social Media</span>
-                    <div className="flex-1 border-t border-caribbean_current-500"></div>
+                    <div className="flex-1 border-t border-charcoal-500"></div>
+                    <span className="px-3 text-xs font-medium text-caribbean_current-200 bg-charcoal-600 uppercase tracking-wider">Social Media</span>
+                    <div className="flex-1 border-t border-charcoal-500"></div>
                   </div>
                 </div>
                 {groupedItems["Social Media Insights"].map((item) => {
@@ -130,11 +130,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       onClick={handleLinkClick}
                       className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                         isActive
-                          ? "bg-white text-caribbean_current-700 shadow-sm"
-                          : "text-caribbean_current-100 hover:bg-caribbean_current-500 hover:text-white"
+                          ? "bg-white text-charcoal-700 shadow-sm"
+                          : "text-charcoal-100 hover:bg-charcoal-500 hover:text-white"
                       }`}
                     >
-                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-caribbean_current-600" : "text-caribbean_current-200"}`} />
+                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-charcoal-600" : "text-charcoal-200"}`} />
                       {item.label}
                     </Link>
                   );
@@ -147,9 +147,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <>
                 <div className="pt-6 pb-2">
                   <div className="flex items-center">
-                    <div className="flex-1 border-t border-caribbean_current-500"></div>
-                    <span className="px-3 text-xs font-medium text-caribbean_current-200 bg-caribbean_current-600 uppercase tracking-wider">Financials</span>
-                    <div className="flex-1 border-t border-caribbean_current-500"></div>
+                    <div className="flex-1 border-t border-charcoal-500"></div>
+                    <span className="px-3 text-xs font-medium text-prussian_blue-200 bg-charcoal-600 uppercase tracking-wider">Financials</span>
+                    <div className="flex-1 border-t border-charcoal-500"></div>
                   </div>
                 </div>
                 {groupedItems["Financials"].map((item) => {
@@ -163,11 +163,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       onClick={handleLinkClick}
                       className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                         isActive
-                          ? "bg-white text-caribbean_current-700 shadow-sm"
-                          : "text-caribbean_current-100 hover:bg-caribbean_current-500 hover:text-white"
+                          ? "bg-white text-charcoal-700 shadow-sm"
+                          : "text-charcoal-100 hover:bg-charcoal-500 hover:text-white"
                       }`}
                     >
-                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-caribbean_current-600" : "text-caribbean_current-200"}`} />
+                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-charcoal-600" : "text-charcoal-200"}`} />
                       {item.label}
                     </Link>
                   );
@@ -177,8 +177,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           </nav>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-caribbean_current-500">
-            <p className="text-xs text-caribbean_current-200">© 2025 Analytics Hub</p>
+          <div className="px-6 py-4 border-t border-charcoal-500">
+            <p className="text-xs text-charcoal-200">© 2025 Analytics Hub</p>
           </div>
         </div>
       </div>

@@ -153,8 +153,8 @@ const DashboardPage: React.FC = () => {
         <div className="mb-8">
           <div className="flex items-center mb-6">
             <div className="flex-1 border-t border-gray-200"></div>
-            <div className="px-6 py-2 bg-slate-50 rounded-full">
-              <span className="text-lg font-semibold text-slate-700">Financials</span>
+            <div className="px-6 py-2 bg-prussian_blue-50 rounded-full">
+              <span className="text-lg font-semibold text-prussian_blue-700">Financials</span>
             </div>
             <div className="flex-1 border-t border-gray-200"></div>
           </div>
@@ -174,7 +174,7 @@ const DashboardPage: React.FC = () => {
               <div className="flex items-center text-sm text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full mb-3 w-fit">
                 <TrendingUp className="w-4 h-4 mr-1" />+{financialData?.summary.currentMonth.revenueGrowth || 0}%
               </div>
-              <Link to="/financials/page1" className="inline-flex items-center text-slate-600 hover:text-slate-700 text-sm font-medium transition-colors">
+              <Link to="/financials/page1" className="inline-flex items-center text-prussian_blue-600 hover:text-prussian_blue-700 text-sm font-medium transition-colors">
                 View Details →
               </Link>
             </div>
@@ -193,7 +193,7 @@ const DashboardPage: React.FC = () => {
               <div className="flex items-center text-sm text-gray-600 mb-3">
                 {financialData?.summary.currentMonth.profitMargin || 0}% profit margin
               </div>
-              <Link to="/financials/page1" className="inline-flex items-center text-slate-600 hover:text-slate-700 text-sm font-medium transition-colors">
+              <Link to="/financials/page1" className="inline-flex items-center text-prussian_blue-600 hover:text-prussian_blue-700 text-sm font-medium transition-colors">
                 Analyze Profit →
               </Link>
             </div>
@@ -212,7 +212,7 @@ const DashboardPage: React.FC = () => {
               <div className="flex items-center text-sm text-red-700 bg-red-50 px-2 py-1 rounded-full mb-3 w-fit">
                 <TrendingUp className="w-4 h-4 mr-1" />+{financialData?.summary.currentMonth.expenseGrowth || 0}%
               </div>
-              <Link to="/financials/page2" className="inline-flex items-center text-slate-600 hover:text-slate-700 text-sm font-medium transition-colors">
+              <Link to="/financials/page2" className="inline-flex items-center text-prussian_blue-600 hover:text-prussian_blue-700 text-sm font-medium transition-colors">
                 View Breakdown →
               </Link>
             </div>
@@ -233,7 +233,7 @@ const DashboardPage: React.FC = () => {
               <div className="flex items-center text-sm text-gray-600 mb-3">
                 Current month flow
               </div>
-              <Link to="/financials/page2" className="inline-flex items-center text-slate-600 hover:text-slate-700 text-sm font-medium transition-colors">
+              <Link to="/financials/page2" className="inline-flex items-center text-prussian_blue-600 hover:text-prussian_blue-700 text-sm font-medium transition-colors">
                 Analyze Flow →
               </Link>
             </div>
