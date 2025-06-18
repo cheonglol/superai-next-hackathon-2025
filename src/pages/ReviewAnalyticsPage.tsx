@@ -1,62 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { Download, Star, MessageCircle, ChefHat, Clock, Users, Heart, DollarSign } from "lucide-react";
 import { useReviewsData } from "@/hooks/useReviewsData";
-import { useAppDispatch } from "@/store";
-import { exportReviewsReport } from "@/store/slices/reviewsSlice";
 import { MetricCard } from "@/components/MetricCard";
 import { CategoryRatings } from "@/components/CategoryRatings";
 import { PlatformDistribution } from "@/components/PlatformDistribution";
 import { KeywordList } from "@/components/KeywordList";
 import { AIAnalysis } from "@/components/AIAnalysis";
-import { PageHeader } from "@/components/common/PageHeader";
-import { LoadingSpinner } from "@/components/common/LoadingSpinner";
-import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { TIME_PERIODS, COMPARISON_PERIODS, CATEGORY_COLORS } from "@/config/constants";
+import { reviewsService } from "@/services/reviewsService";
+import { downloadBlob } from "@/utils/formatters";
+import type { ReviewsFilters } from "@/types/reviews";
 
 const ReviewAnalyticsPage: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const { data, loading, error, filters, updateFilters, refetch } = useReviewsData();
+  const [filters, setFilters] = useState<ReviewsFilters>({
+    selectedPeriod: "12months",
+    comparisonPeriod: "previous12months",
+  });
 
-  const handleExportReport = () => {
-    dispatch(exportReviewsReport(filters));
+  const { data, loading, error } = useReviewsData();
+
+  const handleExportReport = async (): Promise<void> => {
+    try {
+      const blob = await reviewsService.exportReport(filters);
+      downloadBlob(blob, `reviews-report-${new Date().toISOString().split("T")[0]}.pdf`);
+    } catch (err) {
+      console.error("Failed to export report:", err);
+    }
   };
-
-  const headerActions = (
-    <>
-      <select
-        value={filters.selectedPeriod}
-        onChange={(e) => updateFilters({ selectedPeriod: e.target.value })}
-        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
-      >
-        {TIME_PERIODS.map((period) => (
-          <option key={period.value} value={period.value}>
-            {period.label}
-          </option>
-        ))}
-      </select>
-      <select
-        value={filters.comparisonPeriod}
-        onChange={(e) => updateFilters({ comparisonPeriod: e.target.value })}
-        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
-      >
-        {COMPARISON_PERIODS.map((period) => (
-          <option key={period.value} value={period.value}>
-            {period.label}
-          </option>
-        ))}
-      </select>
-      <button onClick={handleExportReport} className="flex items-center px-4 py-2 bg-oxford_blue-600 text-white rounded-lg hover:bg-oxford_blue-700 transition-colors">
-        <Download className="w-4 h-4 mr-2" />
-        Export Report
-      </button>
-    </>
-  );
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <LoadingSpinner size="lg" className="mx-auto mb-4" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-oxford_blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading analytics...</p>
         </div>
       </div>
@@ -66,7 +42,12 @@ const ReviewAnalyticsPage: React.FC = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <ErrorMessage message={error} onRetry={refetch} />
+        <div className="text-center">
+          <p className="text-red-600 mb-4">Error loading data: {error}</p>
+          <button onClick={() => window.location.reload()} className="px-4 py-2 bg-oxford_blue-600 text-white rounded-lg hover:bg-oxford_blue-700">
+            Retry
+          </button>
+        </div>
       </div>
     );
   }
@@ -78,7 +59,41 @@ const ReviewAnalyticsPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
-        <PageHeader title="Review Analytics" description="Comprehensive analysis of reviews across all platforms" actions={headerActions} />
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Review Analytics</h1>
+            <p className="text-gray-600 mt-2">Comprehensive analysis of reviews across all platforms</p>
+          </div>
+          <div className="flex items-center space-x-4">
+            <select
+              value={filters.selectedPeriod}
+              onChange={(e) => setFilters((prev) => ({ ...prev, selectedPeriod: e.target.value }))}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
+            >
+              {TIME_PERIODS.map((period) => (
+                <option key={period.value} value={period.value}>
+                  {period.label}
+                </option>
+              ))}
+            </select>
+            <select
+              value={filters.comparisonPeriod}
+              onChange={(e) => setFilters((prev) => ({ ...prev, comparisonPeriod: e.target.value }))}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
+            >
+              {COMPARISON_PERIODS.map((period) => (
+                <option key={period.value} value={period.value}>
+                  {period.label}
+                </option>
+              ))}
+            </select>
+            <button onClick={handleExportReport} className="flex items-center px-4 py-2 bg-oxford_blue-600 text-white rounded-lg hover:bg-oxford_blue-700 transition-colors">
+              <Download className="w-4 h-4 mr-2" />
+              Export Report
+            </button>
+          </div>
+        </div>
 
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

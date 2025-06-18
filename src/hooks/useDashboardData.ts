@@ -1,18 +1,32 @@
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { fetchDashboardData } from "@/store/slices/dashboardSlice";
+import { useEffect, useState } from "react";
+import { dashboardLoader } from "@/loaders/dashboardLoader";
+import type { DashboardData } from "@/types/dashboard";
 
 export function useDashboardData() {
-  const dispatch = useAppDispatch();
-  const { data, loading, error } = useAppSelector((state) => state.dashboard);
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const refetch = () => {
-    dispatch(fetchDashboardData());
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const dashboardData = await dashboardLoader();
+      setData(dashboardData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load dashboard data");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    dispatch(fetchDashboardData());
-  }, [dispatch]);
+    loadData();
+  }, []);
+
+  const refetch = () => {
+    loadData();
+  };
 
   return {
     data,

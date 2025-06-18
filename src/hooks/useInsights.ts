@@ -1,18 +1,32 @@
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { fetchInsights } from "@/store/slices/insightsSlice";
+import { useEffect, useState } from "react";
+import { insightsMockApi } from "@/services/mockApi/insightsMockApi";
+import type { InsightsData } from "@/types/insights";
 
 export function useInsights() {
-  const dispatch = useAppDispatch();
-  const { data, loading, error } = useAppSelector((state) => state.insights);
+  const [data, setData] = useState<InsightsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const refetch = () => {
-    dispatch(fetchInsights());
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const insightsData = await insightsMockApi.getInsights();
+      setData(insightsData);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load insights");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    dispatch(fetchInsights());
-  }, [dispatch]);
+    loadData();
+  }, []);
+
+  const refetch = () => {
+    loadData();
+  };
 
   return {
     data,
