@@ -32,7 +32,7 @@ export function MetricCard({ title, value, change, isPositive, icon, unit = "" }
           </div>
           {title === "Overall Rating" && <div className="flex items-center mb-2">{renderStars(value as number)}</div>}
         </div>
-        <div className={`flex items-center text-sm font-medium ${isPositive ? "text-green-600" : "text-red-600"}`}>
+        <div className={`flex items-center text-sm font-medium ${isPositive ? "text-caribbean_current-600" : "text-red-600"}`}>
           {isPositive ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
           {formatPercentage(change)} from last period
         </div>

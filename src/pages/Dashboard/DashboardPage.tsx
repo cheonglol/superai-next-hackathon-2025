@@ -60,13 +60,13 @@ const DashboardPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
-        <PageHeader title="Dashboard Overview" description="Comprehensive business insights across all analytics" icon={<BarChart3 className="w-8 h-8 text-oxford_blue-600" />} />
+        <PageHeader title="Dashboard Overview" description="Comprehensive business insights across all analytics" icon={<BarChart3 className="w-8 h-8 text-charcoal-600" />} />
 
         {/* Social Media Insights Summary */}
         <div className="mb-8">
           <div className="flex items-center mb-4">
             <div className="flex-1 border-t border-gray-200"></div>
-            <span className="px-4 text-lg font-semibold text-gray-700 bg-gray-50">Social Media Insights</span>
+            <span className="px-4 text-lg font-semibold text-caribbean_current-700 bg-gray-50">Social Media Insights</span>
             <div className="flex-1 border-t border-gray-200"></div>
           </div>
 
@@ -81,7 +81,7 @@ const DashboardPage: React.FC = () => {
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">{reviewsData?.overallMetrics.value || dashboardData.metrics.overallRating}</div>
               <div className="flex items-center mb-2">{renderStars(reviewsData?.overallMetrics.value || dashboardData.metrics.overallRating)}</div>
-              <Link to="/review" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+              <Link to="/review" className="text-caribbean_current-600 hover:text-caribbean_current-700 text-sm font-medium">
                 View Details →
               </Link>
             </div>
@@ -95,10 +95,10 @@ const DashboardPage: React.FC = () => {
                 </div>
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">{formatNumber(reviewsData?.totalReviews.value || dashboardData.metrics.totalReviews)}</div>
-              <div className="flex items-center text-sm text-green-600 mb-2">
+              <div className="flex items-center text-sm text-caribbean_current-600 mb-2">
                 <TrendingUp className="w-4 h-4 mr-1" />+{reviewsData?.totalReviews.change || 12}% from last period
               </div>
-              <Link to="/review" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+              <Link to="/review" className="text-caribbean_current-600 hover:text-caribbean_current-700 text-sm font-medium">
                 Analyze Reviews →
               </Link>
             </div>
@@ -112,10 +112,10 @@ const DashboardPage: React.FC = () => {
                 </div>
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">{formatNumber(socialData?.metrics.totalFollowers || dashboardData.metrics.socialFollowers)}</div>
-              <div className="flex items-center text-sm text-green-600 mb-2">
+              <div className="flex items-center text-sm text-caribbean_current-600 mb-2">
                 <TrendingUp className="w-4 h-4 mr-1" />+{socialData?.metrics.growthRate || 8.7}% growth rate
               </div>
-              <Link to="/social-media-footprint" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+              <Link to="/social-media-footprint" className="text-caribbean_current-600 hover:text-caribbean_current-700 text-sm font-medium">
                 View Footprint →
               </Link>
             </div>
@@ -129,11 +129,11 @@ const DashboardPage: React.FC = () => {
                 </div>
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">{formatNumber(socialData?.metrics.totalReach || dashboardData.metrics.monthlyReach)}</div>
-              <div className="flex items-center text-sm text-green-600 mb-2">
+              <div className="flex items-center text-sm text-caribbean_current-600 mb-2">
                 <TrendingUp className="w-4 h-4 mr-1" />
                 Avg {socialData?.metrics.avgEngagement || 4.25}% engagement
               </div>
-              <Link to="/trending-content" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+              <Link to="/trending-content" className="text-caribbean_current-600 hover:text-caribbean_current-700 text-sm font-medium">
                 See Trending →
               </Link>
             </div>
@@ -144,7 +144,7 @@ const DashboardPage: React.FC = () => {
         <div className="mb-8">
           <div className="flex items-center mb-4">
             <div className="flex-1 border-t border-gray-200"></div>
-            <span className="px-4 text-lg font-semibold text-gray-700 bg-gray-50">Financials</span>
+            <span className="px-4 text-lg font-semibold text-prussian_blue-700 bg-gray-50">Financials</span>
             <div className="flex-1 border-t border-gray-200"></div>
           </div>
 
@@ -158,10 +158,10 @@ const DashboardPage: React.FC = () => {
                 </div>
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">{financialData ? formatCurrency(financialData.summary.currentMonth.totalRevenue) : "Loading..."}</div>
-              <div className="flex items-center text-sm text-green-600 mb-2">
+              <div className="flex items-center text-sm text-prussian_blue-600 mb-2">
                 <TrendingUp className="w-4 h-4 mr-1" />+{financialData?.summary.currentMonth.revenueGrowth || 0}% from last month
               </div>
-              <Link to="/financials/page1" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+              <Link to="/financials/page1" className="text-prussian_blue-600 hover:text-prussian_blue-700 text-sm font-medium">
                 View Details →
               </Link>
             </div>
@@ -175,11 +175,11 @@ const DashboardPage: React.FC = () => {
                 </div>
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">{financialData ? formatCurrency(financialData.summary.currentMonth.netProfit) : "Loading..."}</div>
-              <div className="flex items-center text-sm text-green-600 mb-2">
+              <div className="flex items-center text-sm text-prussian_blue-600 mb-2">
                 <TrendingUp className="w-4 h-4 mr-1" />
                 {financialData?.summary.currentMonth.profitMargin || 0}% profit margin
               </div>
-              <Link to="/financials/page1" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+              <Link to="/financials/page1" className="text-prussian_blue-600 hover:text-prussian_blue-700 text-sm font-medium">
                 Analyze Profit →
               </Link>
             </div>
@@ -196,7 +196,7 @@ const DashboardPage: React.FC = () => {
               <div className="flex items-center text-sm text-red-600 mb-2">
                 <TrendingUp className="w-4 h-4 mr-1" />+{financialData?.summary.currentMonth.expenseGrowth || 0}% from last month
               </div>
-              <Link to="/financials/page2" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+              <Link to="/financials/page2" className="text-prussian_blue-600 hover:text-prussian_blue-700 text-sm font-medium">
                 View Breakdown →
               </Link>
             </div>
@@ -212,11 +212,11 @@ const DashboardPage: React.FC = () => {
               <div className="text-3xl font-bold text-gray-900 mb-2">
                 {financialData && financialData.cashFlow.length > 0 ? formatCurrency(financialData.cashFlow[0].netFlow) : "Loading..."}
               </div>
-              <div className="flex items-center text-sm text-green-600 mb-2">
+              <div className="flex items-center text-sm text-prussian_blue-600 mb-2">
                 <TrendingUp className="w-4 h-4 mr-1" />
                 Current month flow
               </div>
-              <Link to="/financials/page2" className="text-oxford_blue-600 hover:text-oxford_blue-700 text-sm font-medium">
+              <Link to="/financials/page2" className="text-prussian_blue-600 hover:text-prussian_blue-700 text-sm font-medium">
                 Analyze Flow →
               </Link>
             </div>

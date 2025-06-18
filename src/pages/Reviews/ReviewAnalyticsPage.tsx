@@ -26,7 +26,7 @@ const ReviewAnalyticsPage: React.FC = () => {
       <select
         value={filters.selectedPeriod}
         onChange={(e) => updateFilters({ selectedPeriod: e.target.value })}
-        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
+        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-caribbean_current-500 focus:border-transparent"
       >
         {TIME_PERIODS.map((period) => (
           <option key={period.value} value={period.value}>
@@ -37,7 +37,7 @@ const ReviewAnalyticsPage: React.FC = () => {
       <select
         value={filters.comparisonPeriod}
         onChange={(e) => updateFilters({ comparisonPeriod: e.target.value })}
-        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
+        className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-caribbean_current-500 focus:border-transparent"
       >
         {COMPARISON_PERIODS.map((period) => (
           <option key={period.value} value={period.value}>
@@ -45,7 +45,7 @@ const ReviewAnalyticsPage: React.FC = () => {
           </option>
         ))}
       </select>
-      <button onClick={handleExportReport} className="flex items-center px-4 py-2 bg-oxford_blue-600 text-white rounded-lg hover:bg-oxford_blue-700 transition-colors">
+      <button onClick={handleExportReport} className="flex items-center px-4 py-2 bg-caribbean_current-600 text-white rounded-lg hover:bg-caribbean_current-700 transition-colors">
         <Download className="w-4 h-4 mr-2" />
         Export Report
       </button>
@@ -146,8 +146,8 @@ const ReviewAnalyticsPage: React.FC = () => {
 
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="flex items-center mb-6">
-              <DollarSign className="w-5 h-5 text-green-600 mr-2" />
-              <h3 className="text-lg font-semibold text-green-700">Top Keywords - Value for Money</h3>
+              <DollarSign className="w-5 h-5 text-caribbean_current-600 mr-2" />
+              <h3 className="text-lg font-semibold text-caribbean_current-700">Top Keywords - Value for Money</h3>
             </div>
             <KeywordList keywords={data.keywords.value} categoryColor={CATEGORY_COLORS.value} />
           </div>
