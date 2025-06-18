@@ -36,7 +36,7 @@ const DashboardPage: React.FC = () => {
 
   if (dashboardLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <div className="text-center">
           <LoadingSpinner size="lg" className="mx-auto mb-4" />
           <p className="text-gray-600">Loading dashboard...</p>
@@ -47,7 +47,7 @@ const DashboardPage: React.FC = () => {
 
   if (dashboardError) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
         <ErrorMessage message={dashboardError} onRetry={refetchDashboard} />
       </div>
     );
@@ -58,82 +58,82 @@ const DashboardPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-7xl mx-auto">
         <PageHeader title="Dashboard Overview" description="Comprehensive business insights across all analytics" icon={<BarChart3 className="w-8 h-8 text-gray-700" />} />
 
         {/* Social Media Insights Summary */}
         <div className="mb-8">
           <div className="flex items-center mb-6">
-            <div className="flex-1 border-t border-gray-200"></div>
-            <div className="px-6 py-2 bg-caribbean_current-50 rounded-full">
-              <span className="text-lg font-semibold text-caribbean_current-700">Social Media Insights</span>
+            <div className="flex-1 border-t border-gray-300"></div>
+            <div className="px-6 py-2 bg-caribbean_current-100 rounded-full">
+              <span className="text-lg font-semibold text-caribbean_current-800">Social Media Insights</span>
             </div>
-            <div className="flex-1 border-t border-gray-200"></div>
+            <div className="flex-1 border-t border-gray-300"></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Overall Rating */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all duration-200">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center text-gray-600">
-                  <div className="p-2 bg-yellow-50 rounded-lg mr-3">
-                    <Star className="w-5 h-5 text-yellow-600" />
+                  <div className="p-3 bg-yellow-100 rounded-lg mr-3">
+                    <Star className="w-5 h-5 text-yellow-700" />
                   </div>
                   <span className="text-sm font-medium">Overall Rating</span>
                 </div>
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">{reviewsData?.overallMetrics.value || dashboardData.metrics.overallRating}</div>
               <div className="flex items-center mb-3">{renderStars(reviewsData?.overallMetrics.value || dashboardData.metrics.overallRating)}</div>
-              <Link to="/review" className="inline-flex items-center text-caribbean_current-600 hover:text-caribbean_current-700 text-sm font-medium transition-colors">
+              <Link to="/review" className="inline-flex items-center text-caribbean_current-700 hover:text-caribbean_current-800 text-sm font-medium transition-colors">
                 View Details →
               </Link>
             </div>
 
             {/* Total Reviews */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all duration-200">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center text-gray-600">
-                  <div className="p-2 bg-blue-50 rounded-lg mr-3">
-                    <MessageSquare className="w-5 h-5 text-blue-600" />
+                  <div className="p-3 bg-blue-100 rounded-lg mr-3">
+                    <MessageSquare className="w-5 h-5 text-blue-700" />
                   </div>
                   <span className="text-sm font-medium">Total Reviews</span>
                 </div>
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">{formatNumber(reviewsData?.totalReviews.value || dashboardData.metrics.totalReviews)}</div>
-              <div className="flex items-center text-sm text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full mb-3 w-fit">
+              <div className="flex items-center text-sm text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full mb-3 w-fit">
                 <TrendingUp className="w-4 h-4 mr-1" />+{reviewsData?.totalReviews.change || 12}%
               </div>
-              <Link to="/review" className="inline-flex items-center text-caribbean_current-600 hover:text-caribbean_current-700 text-sm font-medium transition-colors">
+              <Link to="/review" className="inline-flex items-center text-caribbean_current-700 hover:text-caribbean_current-800 text-sm font-medium transition-colors">
                 Analyze Reviews →
               </Link>
             </div>
 
             {/* Social Followers */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all duration-200">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center text-gray-600">
-                  <div className="p-2 bg-purple-50 rounded-lg mr-3">
-                    <Users className="w-5 h-5 text-purple-600" />
+                  <div className="p-3 bg-purple-100 rounded-lg mr-3">
+                    <Users className="w-5 h-5 text-purple-700" />
                   </div>
                   <span className="text-sm font-medium">Social Followers</span>
                 </div>
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">{formatNumber(socialData?.metrics.totalFollowers || dashboardData.metrics.socialFollowers)}</div>
-              <div className="flex items-center text-sm text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full mb-3 w-fit">
+              <div className="flex items-center text-sm text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full mb-3 w-fit">
                 <TrendingUp className="w-4 h-4 mr-1" />+{socialData?.metrics.growthRate || 8.7}%
               </div>
-              <Link to="/social-media-footprint" className="inline-flex items-center text-caribbean_current-600 hover:text-caribbean_current-700 text-sm font-medium transition-colors">
+              <Link to="/social-media-footprint" className="inline-flex items-center text-caribbean_current-700 hover:text-caribbean_current-800 text-sm font-medium transition-colors">
                 View Footprint →
               </Link>
             </div>
 
             {/* Monthly Reach */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all duration-200">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center text-gray-600">
-                  <div className="p-2 bg-indigo-50 rounded-lg mr-3">
-                    <Eye className="w-5 h-5 text-indigo-600" />
+                  <div className="p-3 bg-indigo-100 rounded-lg mr-3">
+                    <Eye className="w-5 h-5 text-indigo-700" />
                   </div>
                   <span className="text-sm font-medium">Monthly Reach</span>
                 </div>
@@ -142,7 +142,7 @@ const DashboardPage: React.FC = () => {
               <div className="flex items-center text-sm text-gray-600 mb-3">
                 Avg {socialData?.metrics.avgEngagement || 4.25}% engagement
               </div>
-              <Link to="/trending-content" className="inline-flex items-center text-caribbean_current-600 hover:text-caribbean_current-700 text-sm font-medium transition-colors">
+              <Link to="/trending-content" className="inline-flex items-center text-caribbean_current-700 hover:text-caribbean_current-800 text-sm font-medium transition-colors">
                 See Trending →
               </Link>
             </div>
@@ -152,39 +152,39 @@ const DashboardPage: React.FC = () => {
         {/* Financials Summary */}
         <div className="mb-8">
           <div className="flex items-center mb-6">
-            <div className="flex-1 border-t border-gray-200"></div>
-            <div className="px-6 py-2 bg-prussian_blue-50 rounded-full">
-              <span className="text-lg font-semibold text-prussian_blue-700">Financials</span>
+            <div className="flex-1 border-t border-gray-300"></div>
+            <div className="px-6 py-2 bg-prussian_blue-100 rounded-full">
+              <span className="text-lg font-semibold text-prussian_blue-800">Financials</span>
             </div>
-            <div className="flex-1 border-t border-gray-200"></div>
+            <div className="flex-1 border-t border-gray-300"></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Total Revenue */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all duration-200">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center text-gray-600">
-                  <div className="p-2 bg-green-50 rounded-lg mr-3">
-                    <DollarSign className="w-5 h-5 text-green-600" />
+                  <div className="p-3 bg-green-100 rounded-lg mr-3">
+                    <DollarSign className="w-5 h-5 text-green-700" />
                   </div>
                   <span className="text-sm font-medium">Total Revenue</span>
                 </div>
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">{financialData ? formatCurrency(financialData.summary.currentMonth.totalRevenue) : "Loading..."}</div>
-              <div className="flex items-center text-sm text-emerald-700 bg-emerald-50 px-2 py-1 rounded-full mb-3 w-fit">
+              <div className="flex items-center text-sm text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full mb-3 w-fit">
                 <TrendingUp className="w-4 h-4 mr-1" />+{financialData?.summary.currentMonth.revenueGrowth || 0}%
               </div>
-              <Link to="/financials/page1" className="inline-flex items-center text-prussian_blue-600 hover:text-prussian_blue-700 text-sm font-medium transition-colors">
+              <Link to="/financials/page1" className="inline-flex items-center text-prussian_blue-700 hover:text-prussian_blue-800 text-sm font-medium transition-colors">
                 View Details →
               </Link>
             </div>
 
             {/* Net Profit */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all duration-200">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center text-gray-600">
-                  <div className="p-2 bg-emerald-50 rounded-lg mr-3">
-                    <TrendingUp className="w-5 h-5 text-emerald-600" />
+                  <div className="p-3 bg-emerald-100 rounded-lg mr-3">
+                    <TrendingUp className="w-5 h-5 text-emerald-700" />
                   </div>
                   <span className="text-sm font-medium">Net Profit</span>
                 </div>
@@ -193,36 +193,36 @@ const DashboardPage: React.FC = () => {
               <div className="flex items-center text-sm text-gray-600 mb-3">
                 {financialData?.summary.currentMonth.profitMargin || 0}% profit margin
               </div>
-              <Link to="/financials/page1" className="inline-flex items-center text-prussian_blue-600 hover:text-prussian_blue-700 text-sm font-medium transition-colors">
+              <Link to="/financials/page1" className="inline-flex items-center text-prussian_blue-700 hover:text-prussian_blue-800 text-sm font-medium transition-colors">
                 Analyze Profit →
               </Link>
             </div>
 
             {/* Total Expenses */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all duration-200">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center text-gray-600">
-                  <div className="p-2 bg-orange-50 rounded-lg mr-3">
-                    <PieChart className="w-5 h-5 text-orange-600" />
+                  <div className="p-3 bg-orange-100 rounded-lg mr-3">
+                    <PieChart className="w-5 h-5 text-orange-700" />
                   </div>
                   <span className="text-sm font-medium">Total Expenses</span>
                 </div>
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">{financialData ? formatCurrency(financialData.summary.currentMonth.totalExpenses) : "Loading..."}</div>
-              <div className="flex items-center text-sm text-red-700 bg-red-50 px-2 py-1 rounded-full mb-3 w-fit">
+              <div className="flex items-center text-sm text-red-800 bg-red-100 px-3 py-1 rounded-full mb-3 w-fit">
                 <TrendingUp className="w-4 h-4 mr-1" />+{financialData?.summary.currentMonth.expenseGrowth || 0}%
               </div>
-              <Link to="/financials/page2" className="inline-flex items-center text-prussian_blue-600 hover:text-prussian_blue-700 text-sm font-medium transition-colors">
+              <Link to="/financials/page2" className="inline-flex items-center text-prussian_blue-700 hover:text-prussian_blue-800 text-sm font-medium transition-colors">
                 View Breakdown →
               </Link>
             </div>
 
             {/* Cash Flow */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200">
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all duration-200">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center text-gray-600">
-                  <div className="p-2 bg-blue-50 rounded-lg mr-3">
-                    <BarChart3 className="w-5 h-5 text-blue-600" />
+                  <div className="p-3 bg-blue-100 rounded-lg mr-3">
+                    <BarChart3 className="w-5 h-5 text-blue-700" />
                   </div>
                   <span className="text-sm font-medium">Cash Flow</span>
                 </div>
@@ -233,7 +233,7 @@ const DashboardPage: React.FC = () => {
               <div className="flex items-center text-sm text-gray-600 mb-3">
                 Current month flow
               </div>
-              <Link to="/financials/page2" className="inline-flex items-center text-prussian_blue-600 hover:text-prussian_blue-700 text-sm font-medium transition-colors">
+              <Link to="/financials/page2" className="inline-flex items-center text-prussian_blue-700 hover:text-prussian_blue-800 text-sm font-medium transition-colors">
                 Analyze Flow →
               </Link>
             </div>
@@ -241,26 +241,26 @@ const DashboardPage: React.FC = () => {
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
           <div className="flex items-center mb-6">
-            <div className="p-2 bg-gray-50 rounded-lg mr-3">
-              <BarChart3 className="w-5 h-5 text-gray-600" />
+            <div className="p-3 bg-gray-100 rounded-lg mr-3">
+              <BarChart3 className="w-5 h-5 text-gray-700" />
             </div>
             <h2 className="text-xl font-semibold text-gray-900">Recent Activity</h2>
           </div>
           <div className="space-y-4">
             {dashboardData.recentActivity.map((activity) => (
               <div key={activity.id} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                <div className={`p-2 rounded-lg ${
+                <div className={`p-3 rounded-lg ${
                   activity.type === "review" 
                     ? "bg-orange-100" 
                     : activity.type === "social" 
                       ? "bg-caribbean_current-100" 
                       : "bg-purple-100"
                 }`}>
-                  {activity.type === "review" && <MessageSquare className="w-4 h-4 text-orange-600" />}
-                  {activity.type === "social" && <Share2 className="w-4 h-4 text-caribbean_current-600" />}
-                  {activity.type === "trending" && <TrendingUp className="w-4 h-4 text-purple-600" />}
+                  {activity.type === "review" && <MessageSquare className="w-4 h-4 text-orange-700" />}
+                  {activity.type === "social" && <Share2 className="w-4 h-4 text-caribbean_current-700" />}
+                  {activity.type === "trending" && <TrendingUp className="w-4 h-4 text-purple-700" />}
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">

@@ -9,10 +9,10 @@ interface PlatformDistributionProps {
 
 export function PlatformDistribution({ platforms }: PlatformDistributionProps): JSX.Element {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow">
+    <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-shadow">
       <div className="flex items-center mb-6">
-        <div className="p-2 bg-blue-50 rounded-lg mr-3">
-          <Users className="w-5 h-5 text-blue-600" />
+        <div className="p-3 bg-blue-100 rounded-lg mr-3">
+          <Users className="w-5 h-5 text-blue-700" />
         </div>
         <h2 className="text-xl font-semibold text-gray-900">Platform Distribution</h2>
       </div>

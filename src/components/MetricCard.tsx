@@ -17,10 +17,10 @@ export function MetricCard({ title, value, change, isPositive, icon, unit = "" }
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200 hover:border-gray-300">
+    <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all duration-200 hover:border-gray-300">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center text-gray-600">
-          <div className="p-2 bg-gray-50 rounded-lg mr-3">
+          <div className="p-3 bg-gray-100 rounded-lg mr-3">
             {icon}
           </div>
           <span className="text-sm font-medium">{title}</span>
@@ -34,10 +34,10 @@ export function MetricCard({ title, value, change, isPositive, icon, unit = "" }
           </div>
           {title === "Overall Rating" && <div className="flex items-center mb-2">{renderStars(value as number)}</div>}
         </div>
-        <div className={`flex items-center text-sm font-medium px-2 py-1 rounded-full ${
+        <div className={`flex items-center text-sm font-medium px-3 py-1 rounded-full ${
           isPositive 
-            ? "text-emerald-700 bg-emerald-50" 
-            : "text-red-700 bg-red-50"
+            ? "text-emerald-800 bg-emerald-100" 
+            : "text-red-800 bg-red-100"
         }`}>
           {isPositive ? <TrendingUp className="w-4 h-4 mr-1" /> : <TrendingDown className="w-4 h-4 mr-1" />}
           {formatPercentage(change)}
