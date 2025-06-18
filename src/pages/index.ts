@@ -8,7 +8,7 @@ export { default as ReviewAnalyticsPage } from "./Reviews/ReviewAnalyticsPage";
 export { default as SocialMediaFootprintPage } from "./SocialMedia/SocialMediaFootprintPage";
 
 // Trending
-export { default as TrendingContentPage } from "./Trending/TrendingContentPage";
+export { TrendingContent as TrendingContentPage } from "./Trending/TrendingContentPage";
 
 // Financials
 export { default as FinancialsPage1 } from "./Financials/FinancialsPage1";
