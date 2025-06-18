@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TrendingUp, Hash, Eye, Heart, MessageCircle, Share2, Clock, ChevronDown } from "lucide-react";
+import { TrendingUp, Hash, Eye, Heart, MessageCircle, Share2, Users, ChevronDown } from "lucide-react";
 
 const TrendingContentPage: React.FC = () => {
   const [selectedTimeframe, setSelectedTimeframe] = useState("Last 30 Days");
