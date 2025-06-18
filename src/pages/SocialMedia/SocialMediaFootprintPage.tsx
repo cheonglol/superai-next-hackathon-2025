@@ -186,7 +186,7 @@ const SocialMediaFootprintPage: React.FC = () => {
       { rank: 2, hashtag: "#restaurant", category: "Business", engagementScore: 92, posts: "1.8K" },
       { rank: 3, hashtag: "#delicious", category: "Taste", engagementScore: 89, posts: "1.5K" },
       { rank: 4, hashtag: "#freshingredients", category: "Quality", engagementScore: 87, posts: "1.2K" },
-      { rank: 5, hashtag: "#localfood", category: "Community", engagementScore: 85, posts: "980" },
+      { rank: 5, hashtag: "#localeats", category: "Community", engagementScore: 85, posts: "980" },
       { rank: 6, hashtag: "#foodporn", category: "Visual", engagementScore: 83, posts: "856" },
       { rank: 7, hashtag: "#yummy", category: "Taste", engagementScore: 81, posts: "743" },
       { rank: 8, hashtag: "#chefspecial", category: "Exclusive", engagementScore: 79, posts: "621" },
@@ -208,15 +208,29 @@ const SocialMediaFootprintPage: React.FC = () => {
 
   const getHashtagColor = (category: string) => {
     const colors = {
-      "General": "bg-blue-100 text-blue-800",
-      "Business": "bg-green-100 text-green-800",
+      "General": "bg-caribbean_current-100 text-caribbean_current-800",
+      "Business": "bg-caribbean_current-100 text-caribbean_current-800", 
       "Taste": "bg-orange-100 text-orange-800",
       "Quality": "bg-purple-100 text-purple-800",
-      "Community": "bg-indigo-100 text-indigo-800",
+      "Community": "bg-purple-100 text-purple-800",
       "Visual": "bg-pink-100 text-pink-800",
       "Exclusive": "bg-yellow-100 text-yellow-800"
     };
     return colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800";
+  };
+
+  const getHashtagCardColor = (rank: number) => {
+    // Alternating soft colors inspired by the attached image
+    const colors = [
+      "bg-gray-100", // Light gray for even ranks
+      "bg-gray-50"   // Very light gray for odd ranks
+    ];
+    return colors[rank % 2];
+  };
+
+  const getRankColor = (rank: number) => {
+    // Soft teal color for rank numbers, inspired by the image
+    return "bg-caribbean_current-100 text-caribbean_current-700";
   };
 
   const handlePostClick = (postUrl: string) => {
@@ -721,26 +735,26 @@ const SocialMediaFootprintPage: React.FC = () => {
         {/* Recommended Hashtags for F&B Business */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
           <div className="flex items-center mb-6">
-            <div className="p-3 bg-yellow-100 rounded-lg mr-3">
-              <TrendingUp className="w-5 h-5 text-yellow-700" />
+            <div className="p-3 bg-caribbean_current-100 rounded-lg mr-3">
+              <TrendingUp className="w-5 h-5 text-caribbean_current-700" />
             </div>
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">Recommended Hashtags for F&B Business</h2>
+              <h2 className="text-xl font-semibold text-gray-900"># Recommended Hashtags for F&B Business</h2>
               <p className="text-sm text-gray-600">Top performing hashtags to boost your restaurant's social media reach</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {socialMediaData.recommendedHashtags.map((hashtag) => (
-              <div key={hashtag.rank} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+              <div key={hashtag.rank} className={`flex items-center justify-between p-6 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-200 ${getHashtagCardColor(hashtag.rank)}`}>
                 <div className="flex items-center">
-                  <div className="w-8 h-8 bg-caribbean_current-100 rounded-full flex items-center justify-center mr-3">
-                    <span className="text-sm font-bold text-caribbean_current-700">{hashtag.rank}</span>
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center mr-4 ${getRankColor(hashtag.rank)}`}>
+                    <span className="text-lg font-bold">{hashtag.rank}</span>
                   </div>
                   <div>
-                    <div className="flex items-center mb-1">
-                      <span className="font-semibold text-gray-900 mr-2">{hashtag.hashtag}</span>
-                      <span className={`px-2 py-1 rounded-md text-xs font-medium ${getHashtagColor(hashtag.category)}`}>
+                    <div className="flex items-center mb-2">
+                      <span className="font-bold text-gray-900 text-lg mr-3">{hashtag.hashtag}</span>
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getHashtagColor(hashtag.category)}`}>
                         {hashtag.category}
                       </span>
                     </div>
@@ -748,7 +762,7 @@ const SocialMediaFootprintPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-lg font-bold text-gray-900">{hashtag.engagementScore}</div>
+                  <div className="text-2xl font-bold text-gray-900 mb-1">{hashtag.engagementScore}</div>
                   <p className="text-xs text-gray-600">Engagement Score</p>
                 </div>
               </div>
@@ -756,14 +770,14 @@ const SocialMediaFootprintPage: React.FC = () => {
           </div>
 
           {/* Pro Tip */}
-          <div className="mt-6 p-4 bg-caribbean_current-50 border border-caribbean_current-200 rounded-lg">
+          <div className="mt-8 p-6 bg-caribbean_current-50 border border-caribbean_current-200 rounded-xl">
             <div className="flex items-start">
-              <div className="p-2 bg-caribbean_current-100 rounded-lg mr-3">
-                <TrendingUp className="w-4 h-4 text-caribbean_current-700" />
+              <div className="p-3 bg-caribbean_current-100 rounded-lg mr-4">
+                <TrendingUp className="w-5 h-5 text-caribbean_current-700" />
               </div>
               <div>
-                <h4 className="font-semibold text-caribbean_current-900 mb-1">Pro Tip</h4>
-                <p className="text-sm text-caribbean_current-800">
+                <h4 className="font-bold text-caribbean_current-900 mb-2 text-lg">Pro Tip</h4>
+                <p className="text-caribbean_current-800">
                   Use 5-10 hashtags per post for optimal reach. Mix general food hashtags with location-specific ones like #YourCityEats for better local discovery.
                 </p>
               </div>
