@@ -24,7 +24,7 @@ import { TrendingPost, ContentStrategy, MarketInsight } from '../types';
 import { globalTrendingPosts, localTrendingPosts, paidPartnershipPosts, contentStrategies, marketInsights } from '../data/trendingData';
 
 export const TrendingContent: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'global' | 'local' | 'paid'>('global');
+   const [activeTab, setActiveTab] = useState<'global' | 'local' | 'paid'>('global');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   const getCurrentPosts = () => {
