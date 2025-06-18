@@ -1,3 +1,59 @@
+export interface Branch {
+  id: string;
+  name: string;
+  location: string;
+  isActive: boolean;
+}
+
+export interface PeriodData {
+  periodId: string;
+  periodLabel: string;
+  date: string;
+  
+  // Profit & Loss Statement
+  revenue: number;
+  grossMargin: number;
+  netProfitAfterTax: number;
+  depreciationAmortisation: number;
+  interestPaid: number;
+  tax: number;
+  dividends: number;
+  
+  // Balance Sheet - Assets
+  totalAssets: number;
+  cash: number;
+  accountsReceivable: number;
+  inventory: number;
+  totalCurrentAssets: number;
+  fixedAssets: number;
+  
+  // Balance Sheet - Liabilities
+  currentLiabilities: number;
+  nonCurrentLiabilities: number;
+  accountsPayable: number;
+  
+  // Debt Funding
+  bankLoansCurrent: number;
+  bankLoansNonCurrent: number;
+}
+
+export interface BranchFinancialData {
+  branchId: string;
+  periods: PeriodData[];
+}
+
+export interface ConsolidatedData {
+  periods: PeriodData[];
+}
+
+export interface FinancialInputData {
+  branches: Branch[];
+  branchData: BranchFinancialData[];
+  consolidatedData: ConsolidatedData;
+  selectedPeriodType: 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'yearly';
+  numberOfPeriods: number; // 2-6
+}
+
 export interface FinancialMetrics {
   totalRevenue: number;
   totalExpenses: number;
@@ -18,6 +74,7 @@ export interface FinancialData {
   recentTransactions: FinancialTransaction[];
   cashFlow: CashFlowData[];
   budgetVsActual: BudgetComparison[];
+  inputData?: FinancialInputData;
 }
 
 export interface FinancialTransaction {

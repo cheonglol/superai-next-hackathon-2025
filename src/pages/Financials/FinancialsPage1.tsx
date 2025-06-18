@@ -1,75 +1,588 @@
-import React from "react";
-import { DollarSign, TrendingUp, BarChart3, PieChart } from "lucide-react";
+import React, { useState } from "react";
+import { DollarSign, Plus, Building2, Calendar, Save, Eye, EyeOff, Settings } from "lucide-react";
+import { useFinancialsData } from "@/hooks/useFinancialsData";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { setSelectedBranch, updatePeriodData, setPeriodType, setNumberOfPeriods, saveBranchData, saveConsolidatedData, addBranch } from "@/store/slices/financialsSlice";
 import { PageHeader } from "@/components/common/PageHeader";
+import { LoadingSpinner } from "@/components/common/LoadingSpinner";
+import { ErrorMessage } from "@/components/common/ErrorMessage";
+import type { PeriodData, Branch } from "@/types/financials";
 
 const FinancialsPage1: React.FC = () => {
+  const dispatch = useAppDispatch();
+  const { data, loading, error, refetch } = useFinancialsData();
+  const { selectedBranchId, saving } = useAppSelector((state) => state.financials);
+  
+  const [showAddBranch, setShowAddBranch] = useState(false);
+  const [newBranchName, setNewBranchName] = useState("");
+  const [newBranchLocation, setNewBranchLocation] = useState("");
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    profitLoss: true,
+    assets: false,
+    liabilities: false,
+    debt: false,
+  });
+
+  const inputData = data?.inputData;
+  const activeBranches = inputData?.branches.filter(b => b.isActive) || [];
+  const currentData = selectedBranchId === 'consolidated' 
+    ? inputData?.consolidatedData.periods || []
+    : inputData?.branchData.find(b => b.branchId === selectedBranchId)?.periods || [];
+
+  const periodTypes = [
+    { value: 'daily', label: 'Daily' },
+    { value: 'weekly', label: 'Weekly' },
+    { value: 'monthly', label: 'Monthly' },
+    { value: 'quarterly', label: 'Quarterly' },
+    { value: 'yearly', label: 'Yearly' },
+  ];
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  const handleFieldChange = (periodId: string, field: string, value: string) => {
+    const numericValue = parseFloat(value) || 0;
+    dispatch(updatePeriodData({
+      branchId: selectedBranchId,
+      periodId,
+      field,
+      value: numericValue,
+    }));
+  };
+
+  const handleSave = () => {
+    if (selectedBranchId === 'consolidated') {
+      dispatch(saveConsolidatedData(currentData));
+    } else {
+      dispatch(saveBranchData({ branchId: selectedBranchId, periodData: currentData }));
+    }
+  };
+
+  const handleAddBranch = () => {
+    if (newBranchName.trim() && newBranchLocation.trim()) {
+      dispatch(addBranch({
+        name: newBranchName.trim(),
+        location: newBranchLocation.trim(),
+        isActive: true,
+      }));
+      setNewBranchName("");
+      setNewBranchLocation("");
+      setShowAddBranch(false);
+    }
+  };
+
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
+  const renderInputField = (
+    period: PeriodData,
+    field: keyof PeriodData,
+    label: string,
+    isRequired: boolean = false
+  ) => (
+    <div className="space-y-1">
+      <label className="block text-xs font-medium text-gray-700">
+        {label} {isRequired && <span className="text-red-500">*</span>}
+      </label>
+      <input
+        type="number"
+        value={(period[field] as number) || ''}
+        onChange={(e) => handleFieldChange(period.periodId, field, e.target.value)}
+        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
+        placeholder="0"
+      />
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <LoadingSpinner size="lg" className="mx-auto mb-4" />
+          <p className="text-gray-600">Loading financial data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <ErrorMessage message={error} onRetry={refetch} />
+      </div>
+    );
+  }
+
+  if (!inputData) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         <PageHeader
-          title="Financial Analytics - Page 1"
-          description="Comprehensive financial insights and performance metrics"
+          title="Financial Data Input"
+          description="Input and manage financial data across all branches"
           icon={<DollarSign className="w-8 h-8 text-oxford_blue-600" />}
+          actions={
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="flex items-center px-4 py-2 bg-oxford_blue-600 text-white rounded-lg hover:bg-oxford_blue-700 transition-colors disabled:opacity-50"
+            >
+              {saving ? <LoadingSpinner size="sm" className="mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+              Save Data
+            </button>
+          }
         />
 
-        {/* Placeholder Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Revenue Overview Card */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center mb-6">
-              <TrendingUp className="w-5 h-5 text-green-600 mr-2" />
-              <h2 className="text-xl font-semibold text-gray-900">Revenue Overview</h2>
+        {/* Configuration Panel */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <Settings className="w-5 h-5 text-oxford_blue-600 mr-2" />
+            <h2 className="text-lg font-semibold text-gray-900">Configuration</h2>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Period Type */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Period Type</label>
+              <select
+                value={inputData.selectedPeriodType}
+                onChange={(e) => dispatch(setPeriodType(e.target.value as any))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
+              >
+                {periodTypes.map(type => (
+                  <option key={type.value} value={type.value}>{type.label}</option>
+                ))}
+              </select>
             </div>
-            <div className="text-center py-12">
-              <div className="p-4 bg-gray-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <BarChart3 className="w-8 h-8 text-gray-400" />
-              </div>
-              <p className="text-gray-600 mb-2">Revenue analytics will be displayed here</p>
-              <p className="text-sm text-gray-500">Coming soon...</p>
+
+            {/* Number of Periods */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Number of Periods (2-6)</label>
+              <select
+                value={inputData.numberOfPeriods}
+                onChange={(e) => dispatch(setNumberOfPeriods(parseInt(e.target.value)))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
+              >
+                {[2, 3, 4, 5, 6].map(num => (
+                  <option key={num} value={num}>{num} Periods</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Add Branch */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Manage Branches</label>
+              <button
+                onClick={() => setShowAddBranch(!showAddBranch)}
+                className="flex items-center px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Branch
+              </button>
             </div>
           </div>
 
-          {/* Expense Breakdown Card */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center mb-6">
-              <PieChart className="w-5 h-5 text-blue-600 mr-2" />
-              <h2 className="text-xl font-semibold text-gray-900">Expense Breakdown</h2>
-            </div>
-            <div className="text-center py-12">
-              <div className="p-4 bg-gray-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <PieChart className="w-8 h-8 text-gray-400" />
+          {/* Add Branch Form */}
+          {showAddBranch && (
+            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">Add New Branch</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Branch Name</label>
+                  <input
+                    type="text"
+                    value={newBranchName}
+                    onChange={(e) => setNewBranchName(e.target.value)}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
+                    placeholder="e.g., Downtown Branch"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Location</label>
+                  <input
+                    type="text"
+                    value={newBranchLocation}
+                    onChange={(e) => setNewBranchLocation(e.target.value)}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
+                    placeholder="e.g., 123 Main St"
+                  />
+                </div>
               </div>
-              <p className="text-gray-600 mb-2">Expense analysis will be displayed here</p>
-              <p className="text-sm text-gray-500">Coming soon...</p>
+              <div className="flex justify-end space-x-2 mt-4">
+                <button
+                  onClick={() => setShowAddBranch(false)}
+                  className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAddBranch}
+                  className="px-3 py-2 text-sm bg-oxford_blue-600 text-white rounded-md hover:bg-oxford_blue-700"
+                >
+                  Add Branch
+                </button>
+              </div>
             </div>
+          )}
+        </div>
+
+        {/* Branch Selection */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <Building2 className="w-5 h-5 text-oxford_blue-600 mr-2" />
+            <h2 className="text-lg font-semibold text-gray-900">Select Branch/View</h2>
+          </div>
+          
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => dispatch(setSelectedBranch('consolidated'))}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                selectedBranchId === 'consolidated'
+                  ? 'bg-oxford_blue-600 text-white'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              📊 Consolidated View
+            </button>
+            
+            {activeBranches.map(branch => (
+              <button
+                key={branch.id}
+                onClick={() => dispatch(setSelectedBranch(branch.id))}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  selectedBranchId === branch.id
+                    ? 'bg-oxford_blue-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                🏢 {branch.name}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Key Metrics Placeholder */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center mb-6">
-            <DollarSign className="w-5 h-5 text-oxford_blue-600 mr-2" />
-            <h2 className="text-xl font-semibold text-gray-900">Key Financial Metrics</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { label: "Total Revenue", value: "Coming Soon", icon: TrendingUp, color: "text-green-600" },
-              { label: "Total Expenses", value: "Coming Soon", icon: BarChart3, color: "text-red-600" },
-              { label: "Net Profit", value: "Coming Soon", icon: DollarSign, color: "text-blue-600" },
-              { label: "Profit Margin", value: "Coming Soon", icon: PieChart, color: "text-purple-600" },
-            ].map((metric, index) => {
-              const Icon = metric.icon;
-              return (
-                <div key={index} className="text-center p-4 bg-gray-50 rounded-lg">
-                  <div className={`p-3 rounded-full w-12 h-12 mx-auto mb-3 bg-gray-200 flex items-center justify-center`}>
-                    <Icon className={`w-6 h-6 text-gray-400`} />
-                  </div>
-                  <p className="text-sm font-medium text-gray-600 mb-1">{metric.label}</p>
-                  <p className="text-lg font-bold text-gray-400">{metric.value}</p>
+        {/* Data Input Tables */}
+        <div className="space-y-6">
+          {/* Profit & Loss Statement */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+            <div 
+              className="flex items-center justify-between p-6 cursor-pointer border-b border-gray-200"
+              onClick={() => toggleSection('profitLoss')}
+            >
+              <div className="flex items-center">
+                <DollarSign className="w-5 h-5 text-green-600 mr-2" />
+                <h2 className="text-lg font-semibold text-gray-900">Profit & Loss Statement</h2>
+              </div>
+              {expandedSections.profitLoss ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
+            </div>
+            
+            {expandedSections.profitLoss && (
+              <div className="p-6">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gray-200">
+                        <th className="text-left py-3 px-4 font-medium text-gray-900">Item</th>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <th key={period.periodId} className="text-center py-3 px-4 font-medium text-gray-900 min-w-[150px]">
+                            <div className="space-y-1">
+                              <div>{period.periodLabel}</div>
+                              <div className="text-xs text-gray-500">{period.date}</div>
+                            </div>
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Revenue *</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'revenue', '', true)}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Gross Margin *</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'grossMargin', '', true)}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Net Profit (After Tax) *</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'netProfitAfterTax', '', true)}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Depreciation & Amortisation</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'depreciationAmortisation', '')}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Interest Paid</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'interestPaid', '')}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Tax</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'tax', '')}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Dividends</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'dividends', '')}
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-              );
-            })}
+              </div>
+            )}
+          </div>
+
+          {/* Balance Sheet - Assets */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+            <div 
+              className="flex items-center justify-between p-6 cursor-pointer border-b border-gray-200"
+              onClick={() => toggleSection('assets')}
+            >
+              <div className="flex items-center">
+                <Building2 className="w-5 h-5 text-blue-600 mr-2" />
+                <h2 className="text-lg font-semibold text-gray-900">Balance Sheet - Assets</h2>
+              </div>
+              {expandedSections.assets ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
+            </div>
+            
+            {expandedSections.assets && (
+              <div className="p-6">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gray-200">
+                        <th className="text-left py-3 px-4 font-medium text-gray-900">Asset Type</th>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <th key={period.periodId} className="text-center py-3 px-4 font-medium text-gray-900 min-w-[150px]">
+                            <div className="space-y-1">
+                              <div>{period.periodLabel}</div>
+                              <div className="text-xs text-gray-500">{period.date}</div>
+                            </div>
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Total Assets *</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'totalAssets', '', true)}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Cash</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'cash', '')}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Accounts Receivable</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'accountsReceivable', '')}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Inventory</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'inventory', '')}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Total Current Assets</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'totalCurrentAssets', '')}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Fixed Assets</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'fixedAssets', '')}
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Balance Sheet - Liabilities */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+            <div 
+              className="flex items-center justify-between p-6 cursor-pointer border-b border-gray-200"
+              onClick={() => toggleSection('liabilities')}
+            >
+              <div className="flex items-center">
+                <Calendar className="w-5 h-5 text-red-600 mr-2" />
+                <h2 className="text-lg font-semibold text-gray-900">Balance Sheet - Liabilities</h2>
+              </div>
+              {expandedSections.liabilities ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
+            </div>
+            
+            {expandedSections.liabilities && (
+              <div className="p-6">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gray-200">
+                        <th className="text-left py-3 px-4 font-medium text-gray-900">Liability Type</th>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <th key={period.periodId} className="text-center py-3 px-4 font-medium text-gray-900 min-w-[150px]">
+                            <div className="space-y-1">
+                              <div>{period.periodLabel}</div>
+                              <div className="text-xs text-gray-500">{period.date}</div>
+                            </div>
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Current Liabilities</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'currentLiabilities', '')}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Non-Current Liabilities</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'nonCurrentLiabilities', '')}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Accounts Payable</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'accountsPayable', '')}
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Debt Funding */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
+            <div 
+              className="flex items-center justify-between p-6 cursor-pointer border-b border-gray-200"
+              onClick={() => toggleSection('debt')}
+            >
+              <div className="flex items-center">
+                <DollarSign className="w-5 h-5 text-purple-600 mr-2" />
+                <h2 className="text-lg font-semibold text-gray-900">Debt Funding</h2>
+              </div>
+              {expandedSections.debt ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
+            </div>
+            
+            {expandedSections.debt && (
+              <div className="p-6">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gray-200">
+                        <th className="text-left py-3 px-4 font-medium text-gray-900">Debt Type</th>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <th key={period.periodId} className="text-center py-3 px-4 font-medium text-gray-900 min-w-[150px]">
+                            <div className="space-y-1">
+                              <div>{period.periodLabel}</div>
+                              <div className="text-xs text-gray-500">{period.date}</div>
+                            </div>
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Bank Loans - Current</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'bankLoansCurrent', '')}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="py-3 px-4 font-medium text-gray-900">Bank Loans - Non Current</td>
+                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                          <td key={period.periodId} className="py-3 px-4">
+                            {renderInputField(period, 'bankLoansNonCurrent', '')}
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Summary Footer */}
+        <div className="mt-8 bg-oxford_blue-50 rounded-xl p-6">
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-oxford_blue-900 mb-2">
+              {selectedBranchId === 'consolidated' ? 'Consolidated View' : `${activeBranches.find(b => b.id === selectedBranchId)?.name} Branch`}
+            </h3>
+            <p className="text-sm text-oxford_blue-700">
+              Showing {inputData.numberOfPeriods} {inputData.selectedPeriodType} periods • 
+              {currentData.filter(p => p.revenue > 0).length} periods with data
+            </p>
           </div>
         </div>
       </div>
