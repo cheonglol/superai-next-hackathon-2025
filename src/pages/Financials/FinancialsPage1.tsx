@@ -209,7 +209,7 @@ const FinancialsPage1: React.FC = () => {
   const renderDataDisplay = (label: string, value: number, isRequired: boolean = false) => (
     <div className="space-y-1">
       <label className="block text-xs font-medium text-gray-700">
-        {label} {isRequired && <span className="text-red-500">*</span>}
+        {label} {isRequired && selectedBranchId !== 'consolidated' && <span className="text-red-500">*</span>}
       </label>
       <div className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-gray-50">
         {formatCurrency(value)}
@@ -482,7 +482,7 @@ const FinancialsPage1: React.FC = () => {
                     {renderPeriodHeaders()}
                     <tbody className="divide-y divide-gray-100">
                       <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Revenue *</td>
+                        <td className="py-3 px-4 font-medium text-gray-900">Revenue</td>
                         {currentData.slice(0, inputData.numberOfPeriods).map(period => (
                           <td key={period.periodId} className="py-3 px-4">
                             {renderDataDisplay('', period.revenue || 0, true)}
@@ -490,7 +490,7 @@ const FinancialsPage1: React.FC = () => {
                         ))}
                       </tr>
                       <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Gross Margin *</td>
+                        <td className="py-3 px-4 font-medium text-gray-900">Gross Margin</td>
                         {currentData.slice(0, inputData.numberOfPeriods).map(period => (
                           <td key={period.periodId} className="py-3 px-4">
                             {renderDataDisplay('', period.grossMargin || 0, true)}
@@ -498,7 +498,7 @@ const FinancialsPage1: React.FC = () => {
                         ))}
                       </tr>
                       <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Net Profit (After Tax) *</td>
+                        <td className="py-3 px-4 font-medium text-gray-900">Net Profit (After Tax)</td>
                         {currentData.slice(0, inputData.numberOfPeriods).map(period => (
                           <td key={period.periodId} className="py-3 px-4">
                             {renderDataDisplay('', period.netProfitAfterTax || 0, true)}
@@ -575,7 +575,7 @@ const FinancialsPage1: React.FC = () => {
                       {renderPeriodHeaders()}
                       <tbody className="divide-y divide-gray-100">
                         <tr>
-                          <td className="py-3 px-4 font-medium text-gray-900">Total Assets *</td>
+                          <td className="py-3 px-4 font-medium text-gray-900">Total Assets</td>
                           {currentData.slice(0, inputData.numberOfPeriods).map(period => (
                             <td key={period.periodId} className="py-3 px-4">
                               {renderDataDisplay('', period.totalAssets || 0, true)}
