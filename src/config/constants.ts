@@ -30,3 +30,10 @@ export const CATEGORY_COLORS = {
   ambience: "bg-purple-500",
   value: "bg-green-500",
 } as const;
+
+// SambaNova API Configuration
+export const SAMBANOVA_CONFIG = {
+  API_KEY: "8cf2eba3-ec3a-4a3f-ab9e-ff7b8de4aadf",
+  BASE_URL: "https://api.sambanova.ai/v1",
+  MODEL: "DeepSeek-V3-0324",
+} as const;

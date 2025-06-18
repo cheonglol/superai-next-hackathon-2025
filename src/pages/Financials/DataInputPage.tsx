@@ -1,11 +1,12 @@
-import React, { useState, useRef } from "react";
-import { DollarSign, Plus, Building2, Upload, FileText, Save, Eye, EyeOff, Settings, CheckCircle, AlertCircle } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { DollarSign, Plus, Building2, Upload, FileText, Eye, EyeOff, Settings, CheckCircle, AlertCircle, RefreshCw, Search, X } from "lucide-react";
 import { useFinancialsData } from "@/hooks/useFinancialsData";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { setSelectedBranch, setPeriodType, setNumberOfPeriods, saveBranchData, saveConsolidatedData, addBranch, uploadFinancialDocument } from "@/store/slices/financialsSlice";
 import { PageHeader } from "@/components/common/PageHeader";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
+import { apiService } from "@/services/apiService";
 
 const DataInputPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -14,6 +15,7 @@ const DataInputPage: React.FC = () => {
 
   const [showAddBranch, setShowAddBranch] = useState(false);
   const [newBranchName, setNewBranchName] = useState("");
+  const [showDataTables, setShowDataTables] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     profitLoss: true,
     balanceSheet: false,
@@ -25,12 +27,19 @@ const DataInputPage: React.FC = () => {
     profitLoss: "idle",
     balanceSheet: "idle",
   });
+  const [documents, setDocuments] = useState<any[]>([]);
+  const [documentsLoading, setDocumentsLoading] = useState(false);
 
   const profitLossFileRef = useRef<HTMLInputElement>(null);
   const balanceSheetFileRef = useRef<HTMLInputElement>(null);
 
   const inputData = data?.inputData;
   const activeBranches = inputData?.branches.filter((b) => b.isActive) || [];
+
+  // Filter documents by type for display
+  // Map API tag formats to our expected formats
+  const profitLossDocs = documents.filter((doc) => doc.tags?.includes("income-statement") || doc.tags?.includes("profit_loss"));
+  const balanceSheetDocs = documents.filter((doc) => doc.tags?.includes("balance-sheet") || doc.tags?.includes("balance_sheet"));
 
   // Calculate consolidated data as sum of all enabled branches
   const getConsolidatedData = () => {
@@ -138,19 +147,19 @@ const DataInputPage: React.FC = () => {
         })
       );
 
-      // Simulate file processing
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Upload to the actual API endpoint
+      const documentType = type === "profitLoss" ? "profit_loss" : "balance_sheet";
+      const response = await apiService.uploadFinancialDocument(file, documentType, selectedBranchId);
 
-      // In a real implementation, this would:
-      // 1. Upload the file to the server
-      // 2. Process the document (OCR/parsing)
-      // 3. Extract financial data automatically
-      // 4. Return structured data to populate the forms
-
+      console.log("Upload successful:", response);
       setUploadStatus((prev) => ({ ...prev, [type]: "success" }));
-    } catch (error) {
-      console.log(`Error uploading ${type} document:`, error);
 
+      // Show success message or update UI as needed
+      if (response.success) {
+        console.log(`${documentType} uploaded successfully:`, response.message);
+      }
+    } catch (error) {
+      console.error(`Error uploading ${type} document:`, error);
       setUploadStatus((prev) => ({ ...prev, [type]: "error" }));
     }
   };
@@ -176,6 +185,63 @@ const DataInputPage: React.FC = () => {
       setShowAddBranch(false);
     }
   };
+
+  const fetchDocuments = async () => {
+    try {
+      setDocumentsLoading(true);
+      console.log("🔍 Fetching documents from API...");
+
+      const response = await apiService.getFinancialDocuments();
+      console.log("📄 API Response:", response);
+
+      if (response && response.success && response.data && response.data.documents) {
+        console.log("✅ Documents found:", response.data.documents.length);
+        setDocuments(response.data.documents);
+      } else if (response && response.data && Array.isArray(response.data)) {
+        // Handle case where documents are directly in data array
+        console.log("✅ Documents found (direct array):", response.data.length);
+        setDocuments(response.data);
+      } else {
+        console.log("⚠️ No documents found in response or unexpected format");
+        console.log("Response structure:", JSON.stringify(response, null, 2));
+        setDocuments([]);
+      }
+    } catch (error) {
+      console.error("❌ Error fetching documents:", error);
+      if (error instanceof Error) {
+        console.error("Error message:", error.message);
+      }
+      setDocuments([]);
+    } finally {
+      setDocumentsLoading(false);
+    }
+  };
+
+  // Fetch documents when consolidated view is selected
+  useEffect(() => {
+    if (selectedBranchId === "consolidated") {
+      fetchDocuments();
+    }
+  }, [selectedBranchId]);
+
+  // Handle keyboard events for modal
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && showAddBranch) {
+        setShowAddBranch(false);
+      }
+    };
+
+    if (showAddBranch) {
+      document.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden"; // Prevent background scroll
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
+    };
+  }, [showAddBranch]);
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) => ({
@@ -264,102 +330,21 @@ const DataInputPage: React.FC = () => {
           title="Financial Data Input"
           description="Upload and manage financial documents across all branches"
           icon={<DollarSign className="w-8 h-8 text-oxford_blue-600" />}
-          actions={
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="flex items-center px-4 py-2 bg-oxford_blue-600 text-white rounded-lg hover:bg-oxford_blue-700 transition-colors disabled:opacity-50"
-            >
-              {saving ? <LoadingSpinner size="sm" className="mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-              Save Data
-            </button>
-          }
         />
-        {/* Configuration Panel */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="flex items-center mb-4">
-            <Settings className="w-5 h-5 text-oxford_blue-600 mr-2" />
-            <h2 className="text-lg font-semibold text-gray-900">Configuration</h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Period Type */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Period Type</label>
-              <select
-                value={inputData.selectedPeriodType}
-                onChange={(e) => dispatch(setPeriodType(e.target.value as "daily" | "weekly" | "monthly" | "quarterly" | "yearly"))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
-              >
-                {periodTypes.map((type) => (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Number of Periods */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Number of Periods (2-6)</label>
-              <select
-                value={inputData.numberOfPeriods}
-                onChange={(e) => dispatch(setNumberOfPeriods(parseInt(e.target.value)))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
-              >
-                {[2, 3, 4, 5, 6].map((num) => (
-                  <option key={num} value={num}>
-                    {num} Periods
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Add Branch */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Manage Branches</label>
-              <button
-                onClick={() => setShowAddBranch(!showAddBranch)}
-                className="flex items-center px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Add Branch
-              </button>
-            </div>
-          </div>
-
-          {/* Add Branch Form */}
-          {showAddBranch && (
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <h3 className="text-sm font-semibold text-gray-900 mb-3">Add New Branch</h3>
-              <div className="grid grid-cols-1 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Branch Name</label>
-                  <input
-                    type="text"
-                    value={newBranchName}
-                    onChange={(e) => setNewBranchName(e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
-                    placeholder="e.g., Downtown Branch"
-                  />
-                </div>
-              </div>
-              <div className="flex justify-end space-x-2 mt-4">
-                <button onClick={() => setShowAddBranch(false)} className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800">
-                  Cancel
-                </button>
-                <button onClick={handleAddBranch} className="px-3 py-2 text-sm bg-oxford_blue-600 text-white rounded-md hover:bg-oxford_blue-700">
-                  Add Branch
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
         {/* Branch Selection */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="flex items-center mb-4">
-            <Building2 className="w-5 h-5 text-oxford_blue-600 mr-2" />
-            <h2 className="text-lg font-semibold text-gray-900">Select Branch/View</h2>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center">
+              <Building2 className="w-5 h-5 text-oxford_blue-600 mr-2" />
+              <h2 className="text-lg font-semibold text-gray-900">Select Branch/View</h2>
+            </div>
+            <button
+              onClick={() => setShowAddBranch(!showAddBranch)}
+              className="flex items-center px-3 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Add Branch
+            </button>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -384,308 +369,556 @@ const DataInputPage: React.FC = () => {
               </button>
             ))}
           </div>
-        </div>{" "}
-        {/* Document Upload Section */}
-        {selectedBranchId !== "consolidated" && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-            <div className="flex items-center mb-4">
-              <FileText className="w-5 h-5 text-oxford_blue-600 mr-2" />
-              <h2 className="text-lg font-semibold text-gray-900">Upload Financial Documents</h2>
-              {uploading && (
-                <div className="ml-auto flex items-center text-sm text-oxford_blue-600">
-                  <LoadingSpinner size="sm" className="mr-2" />
-                  Processing documents...
+
+          {/* Documents content directly under tabs */}
+          {selectedBranchId === "consolidated" && (
+            <div className="mt-4">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-sm text-gray-600">
+                  View all uploaded financial documents across all branches. Documents are processed using Mastra.ai and analyzed with SambaNova + Mistral.
+                </p>
+                <button
+                  onClick={fetchDocuments}
+                  disabled={documentsLoading}
+                  className="flex items-center px-3 py-2 text-sm bg-oxford_blue-600 text-white rounded-lg hover:bg-oxford_blue-700 transition-colors disabled:opacity-50"
+                >
+                  {documentsLoading ? <LoadingSpinner size="sm" className="mr-2" /> : <RefreshCw className="w-4 h-4 mr-2" />}
+                  Refresh
+                </button>
+              </div>
+
+              {documentsLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <LoadingSpinner size="md" className="mr-2" />
+                  <span className="text-gray-600">Loading documents...</span>
+                </div>
+              ) : documents.length > 0 ? (
+                <div className="space-y-6">
+                  {/* Profit & Loss Documents */}
+                  {profitLossDocs.length > 0 && (
+                    <div>
+                      <div className="flex items-center mb-4">
+                        <DollarSign className="w-5 h-5 text-green-600 mr-2" />
+                        <h3 className="text-lg font-semibold text-gray-900">Profit & Loss Statements</h3>
+                        <span className="ml-2 text-sm text-gray-500">({profitLossDocs.length} documents)</span>
+                      </div>
+                      <div className="grid grid-cols-1 gap-4">
+                        {profitLossDocs.map((doc, index) => (
+                          <div key={doc.id || index} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center mb-2">
+                                  <FileText className="w-4 h-4 text-green-600 mr-2" />
+                                  <h4 className="font-medium text-gray-900">{doc.name}</h4>
+                                  <span className="ml-2 text-sm text-gray-500">({doc.size})</span>
+                                </div>
+
+                                {doc.tags && doc.tags.length > 0 && (
+                                  <div className="flex flex-wrap gap-1 mb-2">
+                                    {doc.tags.map((tag: string, tagIndex: number) => (
+                                      <span key={tagIndex} className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        {tag}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+
+                                {doc.contentPreview && <p className="text-sm text-gray-600 mb-2">{doc.contentPreview}</p>}
+
+                                <p className="text-xs text-gray-500">
+                                  Uploaded: {new Date(doc.createdAt).toLocaleDateString()} at {new Date(doc.createdAt).toLocaleTimeString()}
+                                </p>
+                              </div>
+
+                              <div className="flex items-center ml-4">
+                                <CheckCircle className="w-5 h-5 text-green-600" />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* P&L Summary */}
+                      <div className="mt-4 p-3 bg-green-50 rounded-lg">
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div>
+                            <span className="text-green-700 font-medium">Total P&L Documents:</span>
+                            <span className="text-green-900 ml-1">{profitLossDocs.length}</span>
+                          </div>
+                          <div>
+                            <span className="text-green-700 font-medium">Branches Covered:</span>
+                            <span className="text-green-900 ml-1">
+                              {new Set(profitLossDocs.flatMap((doc) => doc.tags?.filter((tag: string) => ["1", "2", "restaurant-a", "restaurant-b"].includes(tag)) || [])).size}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Balance Sheet Documents */}
+                  {balanceSheetDocs.length > 0 && (
+                    <div>
+                      <div className="flex items-center mb-4">
+                        <Building2 className="w-5 h-5 text-blue-600 mr-2" />
+                        <h3 className="text-lg font-semibold text-gray-900">Balance Sheets</h3>
+                        <span className="ml-2 text-sm text-gray-500">({balanceSheetDocs.length} documents)</span>
+                      </div>
+                      <div className="grid grid-cols-1 gap-4">
+                        {balanceSheetDocs.map((doc, index) => (
+                          <div key={doc.id || index} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center mb-2">
+                                  <FileText className="w-4 h-4 text-blue-600 mr-2" />
+                                  <h4 className="font-medium text-gray-900">{doc.name}</h4>
+                                  <span className="ml-2 text-sm text-gray-500">({doc.size})</span>
+                                </div>
+
+                                {doc.tags && doc.tags.length > 0 && (
+                                  <div className="flex flex-wrap gap-1 mb-2">
+                                    {doc.tags.map((tag: string, tagIndex: number) => (
+                                      <span key={tagIndex} className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        {tag}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+
+                                {doc.contentPreview && <p className="text-sm text-gray-600 mb-2">{doc.contentPreview}</p>}
+
+                                <p className="text-xs text-gray-500">
+                                  Uploaded: {new Date(doc.createdAt).toLocaleDateString()} at {new Date(doc.createdAt).toLocaleTimeString()}
+                                </p>
+                              </div>
+
+                              <div className="flex items-center ml-4">
+                                <CheckCircle className="w-5 h-5 text-green-600" />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Balance Sheet Summary */}
+                      <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div>
+                            <span className="text-blue-700 font-medium">Total Balance Sheets:</span>
+                            <span className="text-blue-900 ml-1">{balanceSheetDocs.length}</span>
+                          </div>
+                          <div>
+                            <span className="text-blue-700 font-medium">Branches Covered:</span>
+                            <span className="text-blue-900 ml-1">
+                              {new Set(balanceSheetDocs.flatMap((doc) => doc.tags?.filter((tag: string) => ["1", "2", "restaurant-a", "restaurant-b"].includes(tag)) || [])).size}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Overall Summary */}
+                  {(profitLossDocs.length > 0 || balanceSheetDocs.length > 0) && (
+                    <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                      <div className="flex items-center mb-2">
+                        <FileText className="w-5 h-5 text-gray-600 mr-2" />
+                        <h4 className="font-medium text-gray-900">Overall Summary</h4>
+                      </div>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                        <div>
+                          <span className="text-gray-700 font-medium">Total Documents:</span>
+                          <span className="text-gray-900 ml-1">{documents.length}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-700 font-medium">Document Types:</span>
+                          <span className="text-gray-900 ml-1">{(profitLossDocs.length > 0 ? 1 : 0) + (balanceSheetDocs.length > 0 ? 1 : 0)} of 2</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-700 font-medium">Branches with Data:</span>
+                          <span className="text-gray-900 ml-1">
+                            {new Set(documents.flatMap((doc) => doc.tags?.filter((tag: string) => ["1", "2", "restaurant-a", "restaurant-b"].includes(tag)) || [])).size} of 2
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No Documents Found</h3>
+                  <p className="text-gray-600 mb-4">Upload financial documents using the Main Branch or Mall Branch tabs to get started.</p>
+                  <div className="flex justify-center space-x-2">
+                    <button
+                      onClick={() => dispatch(setSelectedBranch("1"))}
+                      className="px-4 py-2 bg-oxford_blue-600 text-white rounded-lg hover:bg-oxford_blue-700 transition-colors"
+                    >
+                      Go to Main Branch
+                    </button>
+                    <button onClick={() => dispatch(setSelectedBranch("2"))} className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                      Go to Mall Branch
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
-            <p className="text-sm text-gray-600 mb-6">
-              Upload your Profit & Loss statement and Balance Sheet. The system will automatically extract and populate the financial data.
-            </p>
+          )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Profit & Loss Upload */}
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-oxford_blue-400 transition-colors">
-                <input
-                  ref={profitLossFileRef}
-                  type="file"
-                  accept=".pdf,.xlsx,.xls,.csv"
-                  onChange={(e) => e.target.files?.[0] && handleFileUpload("profitLoss", e.target.files[0])}
-                  className="hidden"
-                />
-                <div className="mb-4">{getUploadStatusIcon(uploadStatus.profitLoss)}</div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Profit & Loss Statement</h3>
-                <p className="text-sm text-gray-600 mb-4">Upload PDF, Excel, or CSV format</p>{" "}
-                <button
-                  onClick={() => profitLossFileRef.current?.click()}
-                  disabled={uploadStatus.profitLoss === "uploading" || uploading}
-                  className="px-4 py-2 bg-oxford_blue-600 text-white rounded-lg hover:bg-oxford_blue-700 transition-colors disabled:opacity-50"
-                >
-                  {getUploadStatusText(uploadStatus.profitLoss)}
-                </button>
-              </div>
-
-              {/* Balance Sheet Upload */}
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-oxford_blue-400 transition-colors">
-                <input
-                  ref={balanceSheetFileRef}
-                  type="file"
-                  accept=".pdf,.xlsx,.xls,.csv"
-                  onChange={(e) => e.target.files?.[0] && handleFileUpload("balanceSheet", e.target.files[0])}
-                  className="hidden"
-                />
-                <div className="mb-4">{getUploadStatusIcon(uploadStatus.balanceSheet)}</div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Balance Sheet</h3>
-                <p className="text-sm text-gray-600 mb-4">Upload PDF, Excel, or CSV format</p>{" "}
-                <button
-                  onClick={() => balanceSheetFileRef.current?.click()}
-                  disabled={uploadStatus.balanceSheet === "uploading" || uploading}
-                  className="px-4 py-2 bg-oxford_blue-600 text-white rounded-lg hover:bg-oxford_blue-700 transition-colors disabled:opacity-50"
-                >
-                  {getUploadStatusText(uploadStatus.balanceSheet)}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-        {/* Data Display Tables */}
-        <div className="space-y-6">
-          {/* Profit & Loss Statement */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div className="flex items-center justify-between p-6 cursor-pointer border-b border-gray-200" onClick={() => toggleSection("profitLoss")}>
-              <div className="flex items-center">
-                <DollarSign className="w-5 h-5 text-green-600 mr-2" />
-                <h2 className="text-lg font-semibold text-gray-900">
-                  Profit & Loss Statement
-                  {selectedBranchId === "consolidated" && activeBranches.length > 1 && (
-                    <span className="text-sm text-gray-600 ml-2">(Consolidated from {activeBranches.length} branches)</span>
+          {/* Individual Branch Content */}
+          {(selectedBranchId === "1" || selectedBranchId === "2") && (
+            <div className="mt-4">
+              {/* Document Upload Section */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                <div className="flex items-center mb-4">
+                  <FileText className="w-5 h-5 text-oxford_blue-600 mr-2" />
+                  <h2 className="text-lg font-semibold text-gray-900">Upload Financial Documents</h2>
+                  {uploading && (
+                    <div className="ml-auto flex items-center text-sm text-oxford_blue-600">
+                      <LoadingSpinner size="sm" className="mr-2" />
+                      Processing documents...
+                    </div>
                   )}
-                </h2>
+                </div>
+                <p className="text-sm text-gray-600 mb-6">
+                  Upload your Profit & Loss statement and Balance Sheet for {selectedBranchId === "1" ? "Main Branch" : "Mall Branch"}. The system will automatically extract and
+                  populate the financial data.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Profit & Loss Upload */}
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-oxford_blue-400 transition-colors">
+                    <input
+                      ref={profitLossFileRef}
+                      type="file"
+                      accept=".pdf,.xlsx,.xls,.csv"
+                      onChange={(e) => e.target.files?.[0] && handleFileUpload("profitLoss", e.target.files[0])}
+                      className="hidden"
+                    />
+                    <div className="mb-4">{getUploadStatusIcon(uploadStatus.profitLoss)}</div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Profit & Loss Statement</h3>
+                    <p className="text-sm text-gray-600 mb-4">Upload PDF, Excel, or CSV format</p>
+                    <button
+                      onClick={() => profitLossFileRef.current?.click()}
+                      disabled={uploadStatus.profitLoss === "uploading" || uploading}
+                      className="px-4 py-2 bg-oxford_blue-600 text-white rounded-lg hover:bg-oxford_blue-700 transition-colors disabled:opacity-50"
+                    >
+                      {getUploadStatusText(uploadStatus.profitLoss)}
+                    </button>
+                  </div>
+
+                  {/* Balance Sheet Upload */}
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-oxford_blue-400 transition-colors">
+                    <input
+                      ref={balanceSheetFileRef}
+                      type="file"
+                      accept=".pdf,.xlsx,.xls,.csv"
+                      onChange={(e) => e.target.files?.[0] && handleFileUpload("balanceSheet", e.target.files[0])}
+                      className="hidden"
+                    />
+                    <div className="mb-4">{getUploadStatusIcon(uploadStatus.balanceSheet)}</div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Balance Sheet</h3>
+                    <p className="text-sm text-gray-600 mb-4">Upload PDF, Excel, or CSV format</p>
+                    <button
+                      onClick={() => balanceSheetFileRef.current?.click()}
+                      disabled={uploadStatus.balanceSheet === "uploading" || uploading}
+                      className="px-4 py-2 bg-oxford_blue-600 text-white rounded-lg hover:bg-oxford_blue-700 transition-colors disabled:opacity-50"
+                    >
+                      {getUploadStatusText(uploadStatus.balanceSheet)}
+                    </button>
+                  </div>
+                </div>
               </div>
-              {expandedSections.profitLoss ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
             </div>
-
-            {expandedSections.profitLoss && (
-              <div className="p-6">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    {renderPeriodHeaders()}
-                    <tbody className="divide-y divide-gray-100">
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Revenue</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderDataDisplay("", period.revenue || 0)}
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Gross Margin</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderDataDisplay("", period.grossMargin || 0)}
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Net Profit (After Tax)</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderDataDisplay("", period.netProfitAfterTax || 0)}
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Depreciation & Amortisation</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderDataDisplay("", period.depreciationAmortisation || 0)}
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Interest Paid</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderDataDisplay("", period.interestPaid || 0)}
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Tax</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderDataDisplay("", period.tax || 0)}
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Dividends</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderDataDisplay("", period.dividends || 0)}
-                          </td>
-                        ))}
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Balance Sheet */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div className="flex items-center justify-between p-6 cursor-pointer border-b border-gray-200" onClick={() => toggleSection("balanceSheet")}>
-              <div className="flex items-center">
-                <Building2 className="w-5 h-5 text-blue-600 mr-2" />
-                <h2 className="text-lg font-semibold text-gray-900">
-                  Balance Sheet
-                  {selectedBranchId === "consolidated" && activeBranches.length > 1 && (
-                    <span className="text-sm text-gray-600 ml-2">(Consolidated from {activeBranches.length} branches)</span>
-                  )}
-                </h2>
-              </div>
-              {expandedSections.balanceSheet ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
-            </div>
-
-            {expandedSections.balanceSheet && (
-              <div className="p-6 space-y-8">
-                {/* Assets Section */}
-                <div>
-                  <h3 className="text-lg font-semibold text-blue-700 mb-4 flex items-center">
-                    <Building2 className="w-5 h-5 mr-2" />
-                    Assets
-                  </h3>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      {renderPeriodHeaders()}
-                      <tbody className="divide-y divide-gray-100">
-                        <tr>
-                          <td className="py-3 px-4 font-medium text-gray-900">Total Assets</td>
-                          {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                            <td key={period.periodId} className="py-3 px-4">
-                              {renderDataDisplay("", period.totalAssets || 0)}
-                            </td>
-                          ))}
-                        </tr>
-                        <tr>
-                          <td className="py-3 px-4 font-medium text-gray-900">Cash</td>
-                          {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                            <td key={period.periodId} className="py-3 px-4">
-                              {renderDataDisplay("", period.cash || 0)}
-                            </td>
-                          ))}
-                        </tr>
-                        <tr>
-                          <td className="py-3 px-4 font-medium text-gray-900">Accounts Receivable</td>
-                          {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                            <td key={period.periodId} className="py-3 px-4">
-                              {renderDataDisplay("", period.accountsReceivable || 0)}
-                            </td>
-                          ))}
-                        </tr>
-                        <tr>
-                          <td className="py-3 px-4 font-medium text-gray-900">Inventory</td>
-                          {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                            <td key={period.periodId} className="py-3 px-4">
-                              {renderDataDisplay("", period.inventory || 0)}
-                            </td>
-                          ))}
-                        </tr>
-                        <tr>
-                          <td className="py-3 px-4 font-medium text-gray-900">Total Current Assets</td>
-                          {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                            <td key={period.periodId} className="py-3 px-4">
-                              {renderDataDisplay("", period.totalCurrentAssets || 0)}
-                            </td>
-                          ))}
-                        </tr>
-                        <tr>
-                          <td className="py-3 px-4 font-medium text-gray-900">Fixed Assets</td>
-                          {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                            <td key={period.periodId} className="py-3 px-4">
-                              {renderDataDisplay("", period.fixedAssets || 0)}
-                            </td>
-                          ))}
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Liabilities Section */}
-                <div>
-                  <h3 className="text-lg font-semibold text-red-700 mb-4 flex items-center">
-                    <AlertCircle className="w-5 h-5 mr-2" />
-                    Liabilities
-                  </h3>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      {renderPeriodHeaders()}
-                      <tbody className="divide-y divide-gray-100">
-                        <tr>
-                          <td className="py-3 px-4 font-medium text-gray-900">Current Liabilities</td>
-                          {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                            <td key={period.periodId} className="py-3 px-4">
-                              {renderDataDisplay("", period.currentLiabilities || 0)}
-                            </td>
-                          ))}
-                        </tr>
-                        <tr>
-                          <td className="py-3 px-4 font-medium text-gray-900">Non-Current Liabilities</td>
-                          {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                            <td key={period.periodId} className="py-3 px-4">
-                              {renderDataDisplay("", period.nonCurrentLiabilities || 0)}
-                            </td>
-                          ))}
-                        </tr>
-                        <tr>
-                          <td className="py-3 px-4 font-medium text-gray-900">Accounts Payable</td>
-                          {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                            <td key={period.periodId} className="py-3 px-4">
-                              {renderDataDisplay("", period.accountsPayable || 0)}
-                            </td>
-                          ))}
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Debt Funding Section */}
-                <div>
-                  <h3 className="text-lg font-semibold text-purple-700 mb-4 flex items-center">
-                    <DollarSign className="w-5 h-5 mr-2" />
-                    Debt Funding
-                  </h3>
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      {renderPeriodHeaders()}
-                      <tbody className="divide-y divide-gray-100">
-                        <tr>
-                          <td className="py-3 px-4 font-medium text-gray-900">Bank Loans - Current</td>
-                          {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                            <td key={period.periodId} className="py-3 px-4">
-                              {renderDataDisplay("", period.bankLoansCurrent || 0)}
-                            </td>
-                          ))}
-                        </tr>
-                        <tr>
-                          <td className="py-3 px-4 font-medium text-gray-900">Bank Loans - Non Current</td>
-                          {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
-                            <td key={period.periodId} className="py-3 px-4">
-                              {renderDataDisplay("", period.bankLoansNonCurrent || 0)}
-                            </td>
-                          ))}
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          )}
         </div>
+        {/* Select Range Panel */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+          <div className="flex items-center mb-4">
+            <Settings className="w-5 h-5 text-oxford_blue-600 mr-2" />
+            <h2 className="text-lg font-semibold text-gray-900">Select Range</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Period Type */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Period Type</label>
+              <select
+                value="monthly"
+                onChange={(e) => dispatch(setPeriodType(e.target.value as "monthly"))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
+              >
+                <option value="monthly">Monthly</option>
+              </select>
+            </div>
+
+            {/* Number of Periods */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Number of Periods</label>
+              <select
+                value={4}
+                onChange={(e) => dispatch(setNumberOfPeriods(parseInt(e.target.value)))}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
+              >
+                <option value={4}>4 Periods</option>
+              </select>
+            </div>
+
+            {/* Search */}
+            <div>
+              <button
+                onClick={() => setShowDataTables(!showDataTables)}
+                className="flex items-center px-3 py-2 bg-oxford_blue-600 text-white rounded-md hover:bg-oxford_blue-700 transition-colors mt-7"
+              >
+                <Search className="w-4 h-4 mr-2" />
+                {showDataTables ? "Hide Results" : "Search"}
+              </button>
+            </div>
+          </div>
+
+          {/* Data Display Tables */}
+          {showDataTables && (
+            <div className="mt-6 space-y-6">
+              {/* Profit & Loss Statement */}
+              <div className="bg-gray-50 rounded-xl border border-gray-200">
+                <div className="flex items-center justify-between p-6 cursor-pointer border-b border-gray-200" onClick={() => toggleSection("profitLoss")}>
+                  <div className="flex items-center">
+                    <DollarSign className="w-5 h-5 text-green-600 mr-2" />
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Profit & Loss Statement
+                      {selectedBranchId === "consolidated" && activeBranches.length > 1 && (
+                        <span className="text-sm text-gray-600 ml-2">(Consolidated from {activeBranches.length} branches)</span>
+                      )}
+                    </h3>
+                  </div>
+                  {expandedSections.profitLoss ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
+                </div>
+
+                {expandedSections.profitLoss && (
+                  <div className="p-6">
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        {renderPeriodHeaders()}
+                        <tbody className="divide-y divide-gray-100">
+                          <tr>
+                            <td className="py-3 px-4 font-medium text-gray-900">Revenue</td>
+                            {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                              <td key={period.periodId} className="py-3 px-4">
+                                {renderDataDisplay("", period.revenue || 0)}
+                              </td>
+                            ))}
+                          </tr>
+                          <tr>
+                            <td className="py-3 px-4 font-medium text-gray-900">Gross Margin</td>
+                            {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                              <td key={period.periodId} className="py-3 px-4">
+                                {renderDataDisplay("", period.grossMargin || 0)}
+                              </td>
+                            ))}
+                          </tr>
+                          <tr>
+                            <td className="py-3 px-4 font-medium text-gray-900">Net Profit (After Tax)</td>
+                            {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                              <td key={period.periodId} className="py-3 px-4">
+                                {renderDataDisplay("", period.netProfitAfterTax || 0)}
+                              </td>
+                            ))}
+                          </tr>
+                          <tr>
+                            <td className="py-3 px-4 font-medium text-gray-900">Depreciation & Amortisation</td>
+                            {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                              <td key={period.periodId} className="py-3 px-4">
+                                {renderDataDisplay("", period.depreciationAmortisation || 0)}
+                              </td>
+                            ))}
+                          </tr>
+                          <tr>
+                            <td className="py-3 px-4 font-medium text-gray-900">Interest Paid</td>
+                            {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                              <td key={period.periodId} className="py-3 px-4">
+                                {renderDataDisplay("", period.interestPaid || 0)}
+                              </td>
+                            ))}
+                          </tr>
+                          <tr>
+                            <td className="py-3 px-4 font-medium text-gray-900">Tax</td>
+                            {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                              <td key={period.periodId} className="py-3 px-4">
+                                {renderDataDisplay("", period.tax || 0)}
+                              </td>
+                            ))}
+                          </tr>
+                          <tr>
+                            <td className="py-3 px-4 font-medium text-gray-900">Dividends</td>
+                            {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                              <td key={period.periodId} className="py-3 px-4">
+                                {renderDataDisplay("", period.dividends || 0)}
+                              </td>
+                            ))}
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Balance Sheet */}
+              <div className="bg-gray-50 rounded-xl border border-gray-200">
+                <div className="flex items-center justify-between p-6 cursor-pointer border-b border-gray-200" onClick={() => toggleSection("balanceSheet")}>
+                  <div className="flex items-center">
+                    <Building2 className="w-5 h-5 text-blue-600 mr-2" />
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Balance Sheet
+                      {selectedBranchId === "consolidated" && activeBranches.length > 1 && (
+                        <span className="text-sm text-gray-600 ml-2">(Consolidated from {activeBranches.length} branches)</span>
+                      )}
+                    </h3>
+                  </div>
+                  {expandedSections.balanceSheet ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
+                </div>
+
+                {expandedSections.balanceSheet && (
+                  <div className="p-6 space-y-8">
+                    {/* Assets Section */}
+                    <div>
+                      <h4 className="text-lg font-semibold text-blue-700 mb-4 flex items-center">
+                        <Building2 className="w-5 h-5 mr-2" />
+                        Assets
+                      </h4>
+                      <div className="overflow-x-auto">
+                        <table className="w-full">
+                          {renderPeriodHeaders()}
+                          <tbody className="divide-y divide-gray-100">
+                            <tr>
+                              <td className="py-3 px-4 font-medium text-gray-900">Total Assets</td>
+                              {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                                <td key={period.periodId} className="py-3 px-4">
+                                  {renderDataDisplay("", period.totalAssets || 0)}
+                                </td>
+                              ))}
+                            </tr>
+                            <tr>
+                              <td className="py-3 px-4 font-medium text-gray-900">Cash</td>
+                              {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                                <td key={period.periodId} className="py-3 px-4">
+                                  {renderDataDisplay("", period.cash || 0)}
+                                </td>
+                              ))}
+                            </tr>
+                            <tr>
+                              <td className="py-3 px-4 font-medium text-gray-900">Accounts Receivable</td>
+                              {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                                <td key={period.periodId} className="py-3 px-4">
+                                  {renderDataDisplay("", period.accountsReceivable || 0)}
+                                </td>
+                              ))}
+                            </tr>
+                            <tr>
+                              <td className="py-3 px-4 font-medium text-gray-900">Inventory</td>
+                              {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                                <td key={period.periodId} className="py-3 px-4">
+                                  {renderDataDisplay("", period.inventory || 0)}
+                                </td>
+                              ))}
+                            </tr>
+                            <tr>
+                              <td className="py-3 px-4 font-medium text-gray-900">Total Current Assets</td>
+                              {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                                <td key={period.periodId} className="py-3 px-4">
+                                  {renderDataDisplay("", period.totalCurrentAssets || 0)}
+                                </td>
+                              ))}
+                            </tr>
+                            <tr>
+                              <td className="py-3 px-4 font-medium text-gray-900">Fixed Assets</td>
+                              {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                                <td key={period.periodId} className="py-3 px-4">
+                                  {renderDataDisplay("", period.fixedAssets || 0)}
+                                </td>
+                              ))}
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* Liabilities Section */}
+                    <div>
+                      <h4 className="text-lg font-semibold text-red-700 mb-4 flex items-center">
+                        <AlertCircle className="w-5 h-5 mr-2" />
+                        Liabilities
+                      </h4>
+                      <div className="overflow-x-auto">
+                        <table className="w-full">
+                          {renderPeriodHeaders()}
+                          <tbody className="divide-y divide-gray-100">
+                            <tr>
+                              <td className="py-3 px-4 font-medium text-gray-900">Current Liabilities</td>
+                              {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                                <td key={period.periodId} className="py-3 px-4">
+                                  {renderDataDisplay("", period.currentLiabilities || 0)}
+                                </td>
+                              ))}
+                            </tr>
+                            <tr>
+                              <td className="py-3 px-4 font-medium text-gray-900">Non-Current Liabilities</td>
+                              {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                                <td key={period.periodId} className="py-3 px-4">
+                                  {renderDataDisplay("", period.nonCurrentLiabilities || 0)}
+                                </td>
+                              ))}
+                            </tr>
+                            <tr>
+                              <td className="py-3 px-4 font-medium text-gray-900">Accounts Payable</td>
+                              {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                                <td key={period.periodId} className="py-3 px-4">
+                                  {renderDataDisplay("", period.accountsPayable || 0)}
+                                </td>
+                              ))}
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* Debt Funding Section */}
+                    <div>
+                      <h4 className="text-lg font-semibold text-purple-700 mb-4 flex items-center">
+                        <DollarSign className="w-5 h-5 mr-2" />
+                        Debt Funding
+                      </h4>
+                      <div className="overflow-x-auto">
+                        <table className="w-full">
+                          {renderPeriodHeaders()}
+                          <tbody className="divide-y divide-gray-100">
+                            <tr>
+                              <td className="py-3 px-4 font-medium text-gray-900">Bank Loans - Current</td>
+                              {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                                <td key={period.periodId} className="py-3 px-4">
+                                  {renderDataDisplay("", period.bankLoansCurrent || 0)}
+                                </td>
+                              ))}
+                            </tr>
+                            <tr>
+                              <td className="py-3 px-4 font-medium text-gray-900">Bank Loans - Non Current</td>
+                              {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
+                                <td key={period.periodId} className="py-3 px-4">
+                                  {renderDataDisplay("", period.bankLoansNonCurrent || 0)}
+                                </td>
+                              ))}
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Summary Footer */}
         <div className="mt-8 bg-oxford_blue-50 rounded-xl p-6">
           <div className="text-center">
@@ -703,6 +936,41 @@ const DataInputPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Add Branch Modal */}
+      {showAddBranch && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowAddBranch(false)}>
+          <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md mx-4" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">Add New Branch</h3>
+              <button onClick={() => setShowAddBranch(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Branch Name</label>
+              <input
+                type="text"
+                value={newBranchName}
+                onChange={(e) => setNewBranchName(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
+                placeholder="e.g., Downtown Branch"
+                autoFocus
+              />
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <button onClick={() => setShowAddBranch(false)} className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors">
+                Cancel
+              </button>
+              <button onClick={handleAddBranch} className="px-4 py-2 text-sm bg-oxford_blue-600 text-white rounded-md hover:bg-oxford_blue-700 transition-colors">
+                Add Branch
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
