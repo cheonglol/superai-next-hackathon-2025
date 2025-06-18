@@ -198,7 +198,7 @@ const SocialMediaFootprintPage: React.FC = () => {
   const getPlatformColor = (platform: string) => {
     const colors = {
       "Instagram": "bg-pink-100 text-pink-800",
-      "TikTok": "bg-gray-100 text-gray-800",
+      "TikTok": "bg-charcoal-100 text-charcoal-800", // Changed from black to brand charcoal
       "Facebook": "bg-blue-100 text-blue-800",
       "Stories": "bg-purple-100 text-purple-800",
       "Twitter": "bg-sky-100 text-sky-800"
@@ -230,7 +230,7 @@ const SocialMediaFootprintPage: React.FC = () => {
 
   const getRankColor = (rank: number) => {
     // Soft teal color for rank numbers, inspired by the image
-    return "bg-caribbean_current-100 text-caribbean_current-700";
+    return "bg-caribbean_current-100 text-caribbean_current-800"; // Improved contrast
   };
 
   const handlePostClick = (postUrl: string) => {
@@ -255,13 +255,13 @@ const SocialMediaFootprintPage: React.FC = () => {
             <select
               value={selectedTimeframe}
               onChange={(e) => setSelectedTimeframe(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-caribbean_current-500 focus:border-caribbean_current-500 transition-colors bg-white"
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-caribbean_current-500 focus:border-caribbean_current-500 transition-colors bg-white text-gray-900"
             >
               <option value="Last 7 Days">Last 7 Days</option>
               <option value="Last 30 Days">Last 30 Days</option>
               <option value="Last 90 Days">Last 90 Days</option>
             </select>
-            <ChevronDown className="w-4 h-4 text-gray-400 ml-2" />
+            <ChevronDown className="w-4 h-4 text-gray-600 ml-2" />
           </div>
         </div>
 
@@ -407,7 +407,7 @@ const SocialMediaFootprintPage: React.FC = () => {
             <div className="border border-gray-200 rounded-lg p-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
-                  <div className="w-4 h-4 rounded-full bg-black mr-3"></div>
+                  <div className="w-4 h-4 rounded-full bg-charcoal-600 mr-3"></div>
                   <h3 className="text-lg font-semibold text-gray-900">TikTok</h3>
                 </div>
                 <div className="flex items-center text-sm text-emerald-800 bg-emerald-100 px-2 py-1 rounded-full">
@@ -605,7 +605,7 @@ const SocialMediaFootprintPage: React.FC = () => {
             <div className="border border-gray-200 rounded-lg p-4">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
-                  <div className="w-4 h-4 rounded-full bg-black mr-3"></div>
+                  <div className="w-4 h-4 rounded-full bg-charcoal-600 mr-3"></div>
                   <h3 className="text-lg font-semibold text-gray-900">TikTok</h3>
                 </div>
                 <div className="flex items-center text-sm text-emerald-800 bg-emerald-100 px-2 py-1 rounded-full">
