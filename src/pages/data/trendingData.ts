@@ -1,4 +1,4 @@
-import type { TrendingPost, ContentStrategy, MarketInsight } from '../../types/trending';
+import type { TrendingPost, ContentStrategy, MarketInsight } from "../../types/trending";
 
 export const globalTrendingPosts: TrendingPost[] = [
   {
@@ -23,21 +23,13 @@ export const globalTrendingPosts: TrendingPost[] = [
     contentType: "organic",
     category: "Recipe",
     businessInsights: {
-      keyTakeaways: [
-        "Behind-the-scenes content performs exceptionally well",
-        "Recipe reveals generate high engagement",
-        "Chef personality drives authenticity"
-      ],
-      applicableStrategies: [
-        "Create recipe reveal videos",
-        "Show kitchen behind-the-scenes",
-        "Feature chef personality",
-        "Use trending audio"
-      ],
+      keyTakeaways: ["Behind-the-scenes content performs exceptionally well", "Recipe reveals generate high engagement", "Chef personality drives authenticity"],
+      applicableStrategies: ["Create recipe reveal videos", "Show kitchen behind-the-scenes", "Feature chef personality", "Use trending audio"],
       estimatedCost: "$50-200",
       difficulty: "Easy",
-      roi: "High"
-    }
+      roi: "High",
+    },
+    isPaid: false,
   },
   {
     id: "2",
@@ -59,21 +51,13 @@ export const globalTrendingPosts: TrendingPost[] = [
     contentType: "organic",
     category: "Food Styling",
     businessInsights: {
-      keyTakeaways: [
-        "Visual aesthetics drive Instagram engagement",
-        "Brunch content performs well on weekends",
-        "Styling details matter for food photography"
-      ],
-      applicableStrategies: [
-        "Invest in food styling",
-        "Create Instagram-worthy plating",
-        "Use natural lighting",
-        "Focus on color coordination"
-      ],
+      keyTakeaways: ["Visual aesthetics drive Instagram engagement", "Brunch content performs well on weekends", "Styling details matter for food photography"],
+      applicableStrategies: ["Invest in food styling", "Create Instagram-worthy plating", "Use natural lighting", "Focus on color coordination"],
       difficulty: "Medium",
-      roi: "Medium"
-    }
-  }
+      roi: "Medium",
+    },
+    isPaid: false,
+  },
 ];
 
 export const localTrendingPosts: TrendingPost[] = [
@@ -97,21 +81,13 @@ export const localTrendingPosts: TrendingPost[] = [
     contentType: "organic",
     category: "Local Story",
     businessInsights: {
-      keyTakeaways: [
-        "Local community stories resonate strongly",
-        "Family traditions create emotional connection",
-        "Authentic storytelling drives engagement"
-      ],
-      applicableStrategies: [
-        "Share restaurant history",
-        "Feature family recipes",
-        "Highlight local connections",
-        "Tell authentic stories"
-      ],
+      keyTakeaways: ["Local community stories resonate strongly", "Family traditions create emotional connection", "Authentic storytelling drives engagement"],
+      applicableStrategies: ["Share restaurant history", "Feature family recipes", "Highlight local connections", "Tell authentic stories"],
       difficulty: "Easy",
-      roi: "High"
-    }
-  }
+      roi: "High",
+    },
+    isPaid: false,
+  },
 ];
 
 export const paidPartnershipPosts: TrendingPost[] = [
@@ -138,19 +114,15 @@ export const paidPartnershipPosts: TrendingPost[] = [
       keyTakeaways: [
         "Micro-influencers often have better engagement rates",
         "Local influencers connect with target audience",
-        "Authentic partnerships perform better than obvious ads"
+        "Authentic partnerships perform better than obvious ads",
       ],
-      applicableStrategies: [
-        "Partner with local micro-influencers",
-        "Focus on authentic experiences",
-        "Allow creative freedom",
-        "Track ROI carefully"
-      ],
+      applicableStrategies: ["Partner with local micro-influencers", "Focus on authentic experiences", "Allow creative freedom", "Track ROI carefully"],
       estimatedCost: "$500-2000",
       difficulty: "Medium",
-      roi: "Medium"
-    }
-  }
+      roi: "Medium",
+    },
+    isPaid: false,
+  },
 ];
 
 export const contentStrategies: ContentStrategy[] = [
@@ -167,22 +139,22 @@ export const contentStrategies: ContentStrategy[] = [
       {
         restaurant: "Pasta Palace",
         result: "300% increase in TikTok followers",
-        metric: "2.5M views on recipe reveal video"
+        metric: "2.5M views on recipe reveal video",
       },
       {
         restaurant: "Local Bistro",
         result: "150% boost in weekend reservations",
-        metric: "45% engagement rate on Instagram"
-      }
+        metric: "45% engagement rate on Instagram",
+      },
     ],
     actionSteps: [
       "Identify your signature dishes with unique preparation methods",
       "Set up good lighting in your kitchen area",
       "Create a content calendar for regular recipe reveals",
       "Engage with comments and questions from viewers",
-      "Cross-promote content across all platforms"
+      "Cross-promote content across all platforms",
     ],
-    requiredResources: ["Smartphone/camera", "Good lighting", "Chef availability", "Content editing tools"]
+    requiredResources: ["Smartphone/camera", "Good lighting", "Chef availability", "Content editing tools"],
   },
   {
     id: "2",
@@ -197,18 +169,18 @@ export const contentStrategies: ContentStrategy[] = [
       {
         restaurant: "Trendy Cafe",
         result: "500+ user posts in first month",
-        metric: "#TrendyCafeExperience reached 1M impressions"
-      }
+        metric: "#TrendyCafeExperience reached 1M impressions",
+      },
     ],
     actionSteps: [
       "Create a memorable, brandable hashtag",
       "Design Instagram-worthy spots in your restaurant",
       "Offer incentives for customers who post",
       "Repost and engage with user content",
-      "Track and measure campaign performance"
+      "Track and measure campaign performance",
     ],
-    requiredResources: ["Hashtag strategy", "Incentive budget", "Social media management", "Photo-worthy restaurant setup"]
-  }
+    requiredResources: ["Hashtag strategy", "Incentive budget", "Social media management", "Photo-worthy restaurant setup"],
+  },
 ];
 
 export const marketInsights: MarketInsight[] = [
@@ -223,27 +195,27 @@ export const marketInsights: MarketInsight[] = [
       {
         metric: "Video Engagement Rate",
         value: "6.8%",
-        change: "+145% vs static posts"
+        change: "+145% vs static posts",
       },
       {
         metric: "TikTok F&B Content Growth",
         value: "320%",
-        change: "Year-over-year increase"
+        change: "Year-over-year increase",
       },
       {
         metric: "Instagram Reels Reach",
         value: "2.3x",
-        change: "Higher than feed posts"
-      }
+        change: "Higher than feed posts",
+      },
     ],
     recommendations: [
       "Prioritize video content creation in your marketing strategy",
       "Invest in basic video equipment and editing skills",
       "Create behind-the-scenes cooking videos",
       "Experiment with trending audio and effects on TikTok",
-      "Repurpose long-form content into short clips"
+      "Repurpose long-form content into short clips",
     ],
-    relatedPosts: ["1", "2"]
+    relatedPosts: ["1", "2"],
   },
   {
     id: "2",
@@ -256,22 +228,22 @@ export const marketInsights: MarketInsight[] = [
       {
         metric: "Local Search Visibility",
         value: "+40%",
-        change: "With social integration"
+        change: "With social integration",
       },
       {
         metric: "Foot Traffic Increase",
         value: "25%",
-        change: "From social-to-local funnel"
-      }
+        change: "From social-to-local funnel",
+      },
     ],
     recommendations: [
       "Optimize Google My Business with social links",
       "Use location tags consistently across platforms",
       "Encourage check-ins and location-based posts",
       "Create location-specific hashtags",
-      "Partner with local influencers and businesses"
+      "Partner with local influencers and businesses",
     ],
-    relatedPosts: ["3"]
+    relatedPosts: ["3"],
   },
   {
     id: "3",
@@ -284,21 +256,21 @@ export const marketInsights: MarketInsight[] = [
       {
         metric: "Gen Z Engagement",
         value: "+60%",
-        change: "With sustainability content"
+        change: "With sustainability content",
       },
       {
         metric: "Gen Z Follower Share",
         value: "40%",
-        change: "Of restaurant social audiences"
-      }
+        change: "Of restaurant social audiences",
+      },
     ],
     recommendations: [
       "Highlight sustainable sourcing practices",
       "Show waste reduction efforts",
       "Partner with local farms and suppliers",
       "Create content about environmental initiatives",
-      "Use eco-friendly packaging and promote it"
+      "Use eco-friendly packaging and promote it",
     ],
-    relatedPosts: []
-  }
+    relatedPosts: [],
+  },
 ];

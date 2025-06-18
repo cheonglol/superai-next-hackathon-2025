@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useState } from "react";
 import { Share2, Users, Eye, Heart, MessageCircle, TrendingUp, ChevronDown } from "lucide-react";
 
@@ -10,7 +11,7 @@ const SocialMediaFootprintPage: React.FC = () => {
       totalFollowers: "42.4K",
       totalReach: "315.0K",
       avgEngagement: "4.25%",
-      totalPosts: 172
+      totalPosts: 172,
     },
 
     // Business Generated Content
@@ -20,29 +21,29 @@ const SocialMediaFootprintPage: React.FC = () => {
         engagement: "4.2%",
         posts: 45,
         reach: "89.0K",
-        growth: "+8.5%"
+        growth: "+8.5%",
       },
       facebook: {
         followers: "8,900",
         engagement: "3.1%",
         posts: 32,
         reach: "67.0K",
-        growth: "+6.5%"
+        growth: "+6.5%",
       },
       tiktok: {
         followers: "15,600",
         engagement: "6.8%",
         posts: 28,
         reach: "125.0K",
-        growth: "+15.8%"
+        growth: "+15.8%",
       },
       twitter: {
         followers: "5,400",
         engagement: "2.9%",
         posts: 67,
         reach: "34.0K",
-        growth: "+3.9%"
-      }
+        growth: "+3.9%",
+      },
     },
 
     // Top Performing Business Posts
@@ -58,7 +59,7 @@ const SocialMediaFootprintPage: React.FC = () => {
         views: "15.6K",
         date: "14/01/2025",
         imageUrl: "https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg",
-        postUrl: "https://instagram.com/p/pasta-behind-scenes"
+        postUrl: "https://instagram.com/p/pasta-behind-scenes",
       },
       {
         id: 2,
@@ -71,7 +72,7 @@ const SocialMediaFootprintPage: React.FC = () => {
         views: "45.0K",
         date: "13/01/2025",
         imageUrl: "https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg",
-        postUrl: "https://tiktok.com/@yourrestaurant/video/pasta-hack"
+        postUrl: "https://tiktok.com/@yourrestaurant/video/pasta-hack",
       },
       {
         id: 3,
@@ -84,8 +85,8 @@ const SocialMediaFootprintPage: React.FC = () => {
         views: "12.0K",
         date: "12/01/2025",
         imageUrl: "https://images.pexels.com/photos/1640774/pexels-photo-1640774.jpeg",
-        postUrl: "https://facebook.com/yourrestaurant/posts/winter-menu"
-      }
+        postUrl: "https://facebook.com/yourrestaurant/posts/winter-menu",
+      },
     ],
 
     // Customer Generated Content
@@ -95,29 +96,29 @@ const SocialMediaFootprintPage: React.FC = () => {
         checkIns: 67,
         influencerMentions: 12,
         userContent: 156,
-        growth: "+13.2%"
+        growth: "+13.2%",
       },
       facebook: {
         taggedPosts: 67,
         checkIns: 78,
         influencerMentions: 8,
         userContent: 134,
-        growth: "+8.5%"
+        growth: "+8.5%",
       },
       tiktok: {
         taggedPosts: 45,
         checkIns: 23,
         influencerMentions: 18,
         userContent: 89,
-        growth: "+23.1%"
+        growth: "+23.1%",
       },
       twitter: {
         taggedPosts: 33,
         checkIns: 21,
         influencerMentions: 5,
         userContent: 67,
-        growth: "+5.7%"
-      }
+        growth: "+5.7%",
+      },
     },
 
     // Top Performing Customer-Generated Posts
@@ -134,7 +135,7 @@ const SocialMediaFootprintPage: React.FC = () => {
         views: "45.2K",
         date: "16/01/2025",
         imageUrl: "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg",
-        postUrl: "https://tiktok.com/@foodie_sara/video/truffle-pasta-review"
+        postUrl: "https://tiktok.com/@foodie_sara/video/truffle-pasta-review",
       },
       {
         id: 2,
@@ -148,7 +149,7 @@ const SocialMediaFootprintPage: React.FC = () => {
         views: "23.1K",
         date: "14/01/2025",
         imageUrl: "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg",
-        postUrl: "https://instagram.com/p/gourmet-adventures-review"
+        postUrl: "https://instagram.com/p/gourmet-adventures-review",
       },
       {
         id: 3,
@@ -162,7 +163,7 @@ const SocialMediaFootprintPage: React.FC = () => {
         views: "12.3K",
         date: "13/01/2025",
         imageUrl: "https://images.pexels.com/photos/1566837/pexels-photo-1566837.jpeg",
-        postUrl: "https://facebook.com/family.foodie/posts/family-dinner"
+        postUrl: "https://facebook.com/family.foodie/posts/family-dinner",
       },
       {
         id: 4,
@@ -176,8 +177,8 @@ const SocialMediaFootprintPage: React.FC = () => {
         views: "8.9K",
         date: "12/01/2025",
         imageUrl: "https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg",
-        postUrl: "https://instagram.com/stories/weekend_lover/brunch-review"
-      }
+        postUrl: "https://instagram.com/stories/weekend_lover/brunch-review",
+      },
     ],
 
     // Recommended Hashtags
@@ -191,30 +192,30 @@ const SocialMediaFootprintPage: React.FC = () => {
       { rank: 7, hashtag: "#yummy", category: "Taste", engagementScore: 81, posts: "743" },
       { rank: 8, hashtag: "#chefspecial", category: "Exclusive", engagementScore: 79, posts: "621" },
       { rank: 9, hashtag: "#foodlover", category: "Community", engagementScore: 77, posts: "534" },
-      { rank: 10, hashtag: "#tasty", category: "Taste", engagementScore: 75, posts: "467" }
-    ]
+      { rank: 10, hashtag: "#tasty", category: "Taste", engagementScore: 75, posts: "467" },
+    ],
   };
 
   const getPlatformColor = (platform: string) => {
     const colors = {
-      "Instagram": "bg-pink-100 text-pink-800",
-      "TikTok": "bg-charcoal-100 text-charcoal-800", // Changed from black to brand charcoal
-      "Facebook": "bg-blue-100 text-blue-800",
-      "Stories": "bg-purple-100 text-purple-800",
-      "Twitter": "bg-sky-100 text-sky-800"
+      Instagram: "bg-pink-100 text-pink-800",
+      TikTok: "bg-charcoal-100 text-charcoal-800", // Changed from black to brand charcoal
+      Facebook: "bg-blue-100 text-blue-800",
+      Stories: "bg-purple-100 text-purple-800",
+      Twitter: "bg-sky-100 text-sky-800",
     };
     return colors[platform as keyof typeof colors] || "bg-gray-100 text-gray-800";
   };
 
   const getHashtagColor = (category: string) => {
     const colors = {
-      "General": "bg-caribbean_current-100 text-caribbean_current-800",
-      "Business": "bg-caribbean_current-100 text-caribbean_current-800", 
-      "Taste": "bg-orange-100 text-orange-800",
-      "Quality": "bg-purple-100 text-purple-800",
-      "Community": "bg-purple-100 text-purple-800",
-      "Visual": "bg-pink-100 text-pink-800",
-      "Exclusive": "bg-yellow-100 text-yellow-800"
+      General: "bg-caribbean_current-100 text-caribbean_current-800",
+      Business: "bg-caribbean_current-100 text-caribbean_current-800",
+      Taste: "bg-orange-100 text-orange-800",
+      Quality: "bg-purple-100 text-purple-800",
+      Community: "bg-purple-100 text-purple-800",
+      Visual: "bg-pink-100 text-pink-800",
+      Exclusive: "bg-yellow-100 text-yellow-800",
     };
     return colors[category as keyof typeof colors] || "bg-gray-100 text-gray-800";
   };
@@ -223,18 +224,18 @@ const SocialMediaFootprintPage: React.FC = () => {
     // Alternating soft colors inspired by the attached image
     const colors = [
       "bg-gray-100", // Light gray for even ranks
-      "bg-gray-50"   // Very light gray for odd ranks
+      "bg-gray-50", // Very light gray for odd ranks
     ];
     return colors[rank % 2];
   };
 
-  const getRankColor = (rank: number) => {
+  const getRankColor = (_rank: number) => {
     // Soft teal color for rank numbers, inspired by the image
     return "bg-caribbean_current-100 text-caribbean_current-800"; // Improved contrast
   };
 
   const handlePostClick = (postUrl: string) => {
-    window.open(postUrl, '_blank', 'noopener,noreferrer');
+    window.open(postUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -278,7 +279,8 @@ const SocialMediaFootprintPage: React.FC = () => {
             </div>
             <div className="text-3xl font-bold text-gray-900 mb-2">{socialMediaData.topMetrics.totalFollowers}</div>
             <div className="flex items-center text-sm text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full w-fit">
-              <TrendingUp className="w-4 h-4 mr-1" />+12.5% from last period
+              <TrendingUp className="w-4 h-4 mr-1" />
+              +12.5% from last period
             </div>
           </div>
 
@@ -293,7 +295,8 @@ const SocialMediaFootprintPage: React.FC = () => {
             </div>
             <div className="text-3xl font-bold text-gray-900 mb-2">{socialMediaData.topMetrics.totalReach}</div>
             <div className="flex items-center text-sm text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full w-fit">
-              <TrendingUp className="w-4 h-4 mr-1" />+8.3% from last period
+              <TrendingUp className="w-4 h-4 mr-1" />
+              +8.3% from last period
             </div>
           </div>
 
@@ -308,7 +311,8 @@ const SocialMediaFootprintPage: React.FC = () => {
             </div>
             <div className="text-3xl font-bold text-gray-900 mb-2">{socialMediaData.topMetrics.avgEngagement}</div>
             <div className="flex items-center text-sm text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full w-fit">
-              <TrendingUp className="w-4 h-4 mr-1" />+0.7% from last period
+              <TrendingUp className="w-4 h-4 mr-1" />
+              +0.7% from last period
             </div>
           </div>
 
@@ -323,7 +327,8 @@ const SocialMediaFootprintPage: React.FC = () => {
             </div>
             <div className="text-3xl font-bold text-gray-900 mb-2">{socialMediaData.topMetrics.totalPosts}</div>
             <div className="flex items-center text-sm text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full w-fit">
-              <TrendingUp className="w-4 h-4 mr-1" />+15 from last period
+              <TrendingUp className="w-4 h-4 mr-1" />
+              +15 from last period
             </div>
           </div>
         </div>
@@ -482,23 +487,17 @@ const SocialMediaFootprintPage: React.FC = () => {
           <div className="space-y-4">
             {socialMediaData.topBusinessPosts.map((post) => (
               <div key={post.id} className="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <div 
+                <div
                   className="w-16 h-16 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity flex-shrink-0"
                   onClick={() => handlePostClick(post.postUrl)}
                   title="Click to view original post"
                 >
-                  <img
-                    src={post.imageUrl}
-                    alt="Post preview"
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={post.imageUrl} alt="Post preview" className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center mb-2">
                     <span className="font-medium text-gray-900 mr-2">{post.author}</span>
-                    <span className={`px-2 py-1 rounded-md text-xs font-medium ${getPlatformColor(post.platform)}`}>
-                      {post.platform}
-                    </span>
+                    <span className={`px-2 py-1 rounded-md text-xs font-medium ${getPlatformColor(post.platform)}`}>{post.platform}</span>
                     <span className="text-xs text-gray-500 ml-auto">{post.date}</span>
                   </div>
                   <p className="text-gray-700 mb-3">{post.content}</p>
@@ -680,26 +679,18 @@ const SocialMediaFootprintPage: React.FC = () => {
           <div className="space-y-4">
             {socialMediaData.topCustomerPosts.map((post) => (
               <div key={post.id} className="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <div 
+                <div
                   className="w-16 h-16 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity flex-shrink-0"
                   onClick={() => handlePostClick(post.postUrl)}
                   title="Click to view original post"
                 >
-                  <img
-                    src={post.imageUrl}
-                    alt="Customer post preview"
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={post.imageUrl} alt="Customer post preview" className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center mb-2">
                     <span className="font-medium text-gray-900 mr-2">{post.author}</span>
-                    <span className={`px-2 py-1 rounded-md text-xs font-medium ${getPlatformColor(post.platform)}`}>
-                      {post.platform}
-                    </span>
-                    <span className={`px-2 py-1 rounded-md text-xs font-medium ml-2 ${getHashtagColor(post.category)}`}>
-                      {post.category}
-                    </span>
+                    <span className={`px-2 py-1 rounded-md text-xs font-medium ${getPlatformColor(post.platform)}`}>{post.platform}</span>
+                    <span className={`px-2 py-1 rounded-md text-xs font-medium ml-2 ${getHashtagColor(post.category)}`}>{post.category}</span>
                     <span className="text-xs text-gray-500 ml-auto">{post.date}</span>
                   </div>
                   <p className="text-gray-700 mb-3">{post.content}</p>
@@ -723,9 +714,7 @@ const SocialMediaFootprintPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <button className="text-xs text-caribbean_current-600 hover:text-caribbean_current-700 font-medium">
-                    View Post
-                  </button>
+                  <button className="text-xs text-caribbean_current-600 hover:text-caribbean_current-700 font-medium">View Post</button>
                 </div>
               </div>
             ))}
@@ -746,7 +735,10 @@ const SocialMediaFootprintPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {socialMediaData.recommendedHashtags.map((hashtag) => (
-              <div key={hashtag.rank} className={`flex items-center justify-between p-6 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-200 ${getHashtagCardColor(hashtag.rank)}`}>
+              <div
+                key={hashtag.rank}
+                className={`flex items-center justify-between p-6 rounded-xl border border-gray-200 hover:shadow-md transition-all duration-200 ${getHashtagCardColor(hashtag.rank)}`}
+              >
                 <div className="flex items-center">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center mr-4 ${getRankColor(hashtag.rank)}`}>
                     <span className="text-lg font-bold">{hashtag.rank}</span>
@@ -754,9 +746,7 @@ const SocialMediaFootprintPage: React.FC = () => {
                   <div>
                     <div className="flex items-center mb-2">
                       <span className="font-bold text-gray-900 text-lg mr-3">{hashtag.hashtag}</span>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getHashtagColor(hashtag.category)}`}>
-                        {hashtag.category}
-                      </span>
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getHashtagColor(hashtag.category)}`}>{hashtag.category}</span>
                     </div>
                     <p className="text-sm text-gray-600">{hashtag.posts} posts</p>
                   </div>
