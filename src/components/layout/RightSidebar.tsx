@@ -33,7 +33,7 @@ export const RightSidebar: React.FC = () => {
             <button
               onClick={() => setActiveTab("chat")}
               className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
-                activeTab === "chat" ? "text-oxford_blue-600 border-b-2 border-oxford_blue-600" : "text-gray-600 hover:text-gray-900"
+                activeTab === "chat" ? "text-charcoal-600 border-b-2 border-charcoal-600" : "text-gray-600 hover:text-gray-900"
               }`}
             >
               <MessageCircle className="w-4 h-4 mx-auto" />
@@ -41,7 +41,7 @@ export const RightSidebar: React.FC = () => {
             <button
               onClick={() => setActiveTab("notifications")}
               className={`flex-1 px-4 py-3 text-sm font-medium transition-colors relative ${
-                activeTab === "notifications" ? "text-oxford_blue-600 border-b-2 border-oxford_blue-600" : "text-gray-600 hover:text-gray-900"
+                activeTab === "notifications" ? "text-charcoal-600 border-b-2 border-charcoal-600" : "text-gray-600 hover:text-gray-900"
               }`}
             >
               <Bell className="w-4 h-4 mx-auto" />
@@ -50,7 +50,7 @@ export const RightSidebar: React.FC = () => {
             <button
               onClick={() => setActiveTab("insights")}
               className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
-                activeTab === "insights" ? "text-oxford_blue-600 border-b-2 border-oxford_blue-600" : "text-gray-600 hover:text-gray-900"
+                activeTab === "insights" ? "text-charcoal-600 border-b-2 border-charcoal-600" : "text-gray-600 hover:text-gray-900"
               }`}
             >
               <TrendingUp className="w-4 h-4 mx-auto" />
@@ -62,8 +62,8 @@ export const RightSidebar: React.FC = () => {
             {activeTab === "chat" && (
               <div className="p-4">
                 <div className="flex items-center mb-4">
-                  <div className="p-2 bg-oxford_blue-100 rounded-lg mr-3">
-                    <Bot className="w-5 h-5 text-oxford_blue-600" />
+                  <div className="p-2 bg-charcoal-100 rounded-lg mr-3">
+                    <Bot className="w-5 h-5 text-charcoal-600" />
                   </div>
                   <div>
                     <h3 className="font-medium text-gray-900">AI Assistant</h3>
@@ -77,14 +77,14 @@ export const RightSidebar: React.FC = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <button className="w-full text-left p-3 bg-oxford_blue-50 hover:bg-oxford_blue-100 rounded-lg transition-colors">
-                      <p className="text-sm font-medium text-oxford_blue-900">How are my reviews trending?</p>
+                    <button className="w-full text-left p-3 bg-charcoal-50 hover:bg-charcoal-100 rounded-lg transition-colors">
+                      <p className="text-sm font-medium text-charcoal-900">How are my reviews trending?</p>
                     </button>
-                    <button className="w-full text-left p-3 bg-oxford_blue-50 hover:bg-oxford_blue-100 rounded-lg transition-colors">
-                      <p className="text-sm font-medium text-oxford_blue-900">What's my best performing content?</p>
+                    <button className="w-full text-left p-3 bg-charcoal-50 hover:bg-charcoal-100 rounded-lg transition-colors">
+                      <p className="text-sm font-medium text-charcoal-900">What's my best performing content?</p>
                     </button>
-                    <button className="w-full text-left p-3 bg-oxford_blue-50 hover:bg-oxford_blue-100 rounded-lg transition-colors">
-                      <p className="text-sm font-medium text-oxford_blue-900">Show me improvement areas</p>
+                    <button className="w-full text-left p-3 bg-charcoal-50 hover:bg-charcoal-100 rounded-lg transition-colors">
+                      <p className="text-sm font-medium text-charcoal-900">Show me improvement areas</p>
                     </button>
                   </div>
                 </div>
@@ -106,7 +106,7 @@ export const RightSidebar: React.FC = () => {
                         <div
                           className={`p-1 rounded-full mr-3 mt-0.5 ${
                             notification.type === "positive"
-                              ? "bg-green-100"
+                              ? "bg-caribbean_current-100"
                               : notification.type === "warning"
                                 ? "bg-yellow-100"
                                 : notification.type === "error"
@@ -114,7 +114,7 @@ export const RightSidebar: React.FC = () => {
                                   : "bg-blue-100"
                           }`}
                         >
-                          {notification.type === "positive" && <TrendingUp className="w-3 h-3 text-green-600" />}
+                          {notification.type === "positive" && <TrendingUp className="w-3 h-3 text-caribbean_current-600" />}
                           {notification.type === "warning" && <AlertCircle className="w-3 h-3 text-yellow-600" />}
                           {notification.type === "error" && <AlertCircle className="w-3 h-3 text-red-600" />}
                           {notification.type === "info" && <Bell className="w-3 h-3 text-blue-600" />}
@@ -142,10 +142,10 @@ export const RightSidebar: React.FC = () => {
                         <div key={insight.id} className="bg-gray-50 rounded-lg p-3">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center">
-                              <TrendingUp className="w-4 h-4 text-oxford_blue-600 mr-2" />
+                              <TrendingUp className="w-4 h-4 text-charcoal-600 mr-2" />
                               <span className="text-sm font-medium text-gray-900">{insight.title}</span>
                             </div>
-                            <span className={`text-sm font-bold ${insight.positive ? "text-green-600" : "text-red-600"}`}>{insight.value}</span>
+                            <span className={`text-sm font-bold ${insight.positive ? "text-caribbean_current-600" : "text-red-600"}`}>{insight.value}</span>
                           </div>
                           <p className="text-xs text-gray-600">{insight.description}</p>
                         </div>
@@ -163,18 +163,18 @@ export const RightSidebar: React.FC = () => {
                             item.category === "improvement"
                               ? "bg-yellow-50 border-yellow-200"
                               : item.category === "opportunity"
-                                ? "bg-green-50 border-green-200"
+                                ? "bg-caribbean_current-50 border-caribbean_current-200"
                                 : "bg-red-50 border-red-200"
                           }`}
                         >
                           <p
                             className={`text-sm font-medium ${
-                              item.category === "improvement" ? "text-yellow-800" : item.category === "opportunity" ? "text-green-800" : "text-red-800"
+                              item.category === "improvement" ? "text-yellow-800" : item.category === "opportunity" ? "text-caribbean_current-800" : "text-red-800"
                             }`}
                           >
                             {item.title}
                           </p>
-                          <p className={`text-xs ${item.category === "improvement" ? "text-yellow-700" : item.category === "opportunity" ? "text-green-700" : "text-red-700"}`}>
+                          <p className={`text-xs ${item.category === "improvement" ? "text-yellow-700" : item.category === "opportunity" ? "text-caribbean_current-700" : "text-red-700"}`}>
                             {item.description}
                           </p>
                         </div>

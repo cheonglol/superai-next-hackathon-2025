@@ -79,7 +79,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center px-6 py-8 border-b border-gray-200">
-            <BarChart3 className="w-8 h-8 text-oxford_blue-600 mr-3" />
+            <BarChart3 className="w-8 h-8 text-charcoal-600 mr-3" />
             <div>
               <h1 className="text-xl font-bold text-gray-900">Analytics Hub</h1>
               <p className="text-sm text-gray-500">Business Insights</p>
@@ -100,11 +100,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   onClick={handleLinkClick}
                   className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
                     isActive
-                      ? "bg-oxford_blue-50 text-oxford_blue-700 border-r-2 border-oxford_blue-600"
+                      ? "bg-charcoal-50 text-charcoal-700 border-r-2 border-charcoal-600"
                       : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   }`}
                 >
-                  <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-oxford_blue-600" : "text-gray-400"}`} />
+                  <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-charcoal-600" : "text-gray-400"}`} />
                   {item.label}
                 </Link>
               );
@@ -116,7 +116,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 <div className="pt-6 pb-2">
                   <div className="flex items-center">
                     <div className="flex-1 border-t border-gray-200"></div>
-                    <span className="px-3 text-xs font-medium text-gray-500 bg-gray-50">Social Media Insights</span>
+                    <span className="px-3 text-xs font-medium text-caribbean_current-600 bg-gray-50">Social Media Insights</span>
                     <div className="flex-1 border-t border-gray-200"></div>
                   </div>
                 </div>
@@ -131,11 +131,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       onClick={handleLinkClick}
                       className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
                         isActive
-                          ? "bg-oxford_blue-50 text-oxford_blue-700 border-r-2 border-oxford_blue-600"
+                          ? "bg-caribbean_current-50 text-caribbean_current-700 border-r-2 border-caribbean_current-600"
                           : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                       }`}
                     >
-                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-oxford_blue-600" : "text-gray-400"}`} />
+                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-caribbean_current-600" : "text-gray-400"}`} />
                       {item.label}
                     </Link>
                   );
@@ -149,7 +149,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 <div className="pt-6 pb-2">
                   <div className="flex items-center">
                     <div className="flex-1 border-t border-gray-200"></div>
-                    <span className="px-3 text-xs font-medium text-gray-500 bg-gray-50">Financials</span>
+                    <span className="px-3 text-xs font-medium text-prussian_blue-600 bg-gray-50">Financials</span>
                     <div className="flex-1 border-t border-gray-200"></div>
                   </div>
                 </div>
@@ -164,11 +164,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       onClick={handleLinkClick}
                       className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
                         isActive
-                          ? "bg-oxford_blue-50 text-oxford_blue-700 border-r-2 border-oxford_blue-600"
+                          ? "bg-prussian_blue-50 text-prussian_blue-700 border-r-2 border-prussian_blue-600"
                           : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                       }`}
                     >
-                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-oxford_blue-600" : "text-gray-400"}`} />
+                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-prussian_blue-600" : "text-gray-400"}`} />
                       {item.label}
                     </Link>
                   );
