@@ -114,6 +114,102 @@ export const TrendingContent: React.FC = () => {
             icon={<TrendingUp className="w-8 h-8 text-gray-700" />}
           />
 
+          {/* Content Strategies - Moved to top */}
+          <div className="bg-white rounded-xl shadow-lg border border-gray-200">
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center gap-3">
+                <div className="p-3 bg-caribbean_current-100 rounded-lg">
+                  <Target className="w-5 h-5 text-caribbean_current-700" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900">Recommended Content Strategies</h2>
+                  <p className="text-sm text-gray-600 mt-1">Actionable strategies based on trending content analysis</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="p-6 space-y-6">
+              {contentStrategies.map((strategy) => (
+                <div key={strategy.id} className="border border-gray-200 rounded-lg p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{strategy.title}</h3>
+                      <p className="text-gray-600 mb-3">{strategy.description}</p>
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-1 text-xs rounded ${getDifficultyColor(strategy.difficulty)}`}>
+                          {strategy.difficulty}
+                        </span>
+                        <span className={`px-2 py-1 text-xs rounded ${getRoiColor(strategy.expectedRoi)}`}>
+                          {strategy.expectedRoi} ROI
+                        </span>
+                        <span className="px-2 py-1 text-xs rounded bg-gray-100 text-gray-800">
+                          {strategy.category}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-3">Success Examples</h4>
+                      <div className="space-y-3">
+                        {strategy.successExamples.map((example, index) => (
+                          <div key={index} className="bg-gray-100 rounded-lg p-3">
+                            <div className="font-medium text-gray-900 text-sm">{example.restaurant}</div>
+                            <div className="text-caribbean_current-600 text-sm">{example.result}</div>
+                            <div className="text-xs text-gray-600">{example.metric}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="font-medium text-gray-900 mb-3">Action Steps</h4>
+                      <ol className="space-y-2">
+                        {strategy.actionSteps.map((step, index) => (
+                          <li key={index} className="flex items-start gap-3 text-sm text-gray-600">
+                            <span className="flex items-center justify-center w-5 h-5 bg-caribbean_current-600 text-white rounded-full text-xs font-medium flex-shrink-0">
+                              {index + 1}
+                            </span>
+                            {step}
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="text-sm text-gray-600">
+                          Platforms: {strategy.platforms.join(', ')}
+                        </div>
+                        <div className="text-sm text-gray-600">
+                          Key Metrics: {strategy.keyMetrics.join(', ')}
+                        </div>
+                      </div>
+                      <button 
+                        className="relative px-4 py-2 bg-caribbean_current-600 text-white rounded-lg text-sm hover:bg-caribbean_current-700 transition-all duration-300 shadow-lg hover:shadow-caribbean_current-600/20 hover:shadow-2xl"
+                        style={{
+                          boxShadow: '0 4px 20px rgba(11, 99, 88, 0.15), 0 0 0 1px rgba(11, 99, 88, 0.1)'
+                        }}
+                      >
+                        Start Strategy
+                        <div 
+                          className="absolute inset-0 rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-300"
+                          style={{
+                            background: 'linear-gradient(135deg, rgba(11, 99, 88, 0.1) 0%, rgba(40, 231, 209, 0.1) 100%)',
+                            boxShadow: '0 0 30px rgba(40, 231, 209, 0.3)'
+                          }}
+                        />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Trending Posts Section */}
           <div className="bg-white rounded-xl shadow-lg border border-gray-200">
             <div className="p-6 border-b border-gray-200">
@@ -298,102 +394,6 @@ export const TrendingContent: React.FC = () => {
                           </button>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Content Strategies */}
-          <div className="bg-white rounded-xl shadow-lg border border-gray-200">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center gap-3">
-                <div className="p-3 bg-caribbean_current-100 rounded-lg">
-                  <Target className="w-5 h-5 text-caribbean_current-700" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-900">Recommended Content Strategies</h2>
-                  <p className="text-sm text-gray-600 mt-1">Actionable strategies based on trending content analysis</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="p-6 space-y-6">
-              {contentStrategies.map((strategy) => (
-                <div key={strategy.id} className="border border-gray-200 rounded-lg p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">{strategy.title}</h3>
-                      <p className="text-gray-600 mb-3">{strategy.description}</p>
-                      <div className="flex items-center gap-2">
-                        <span className={`px-2 py-1 text-xs rounded ${getDifficultyColor(strategy.difficulty)}`}>
-                          {strategy.difficulty}
-                        </span>
-                        <span className={`px-2 py-1 text-xs rounded ${getRoiColor(strategy.expectedRoi)}`}>
-                          {strategy.expectedRoi} ROI
-                        </span>
-                        <span className="px-2 py-1 text-xs rounded bg-gray-100 text-gray-800">
-                          {strategy.category}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-3">Success Examples</h4>
-                      <div className="space-y-3">
-                        {strategy.successExamples.map((example, index) => (
-                          <div key={index} className="bg-gray-100 rounded-lg p-3">
-                            <div className="font-medium text-gray-900 text-sm">{example.restaurant}</div>
-                            <div className="text-caribbean_current-600 text-sm">{example.result}</div>
-                            <div className="text-xs text-gray-600">{example.metric}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-3">Action Steps</h4>
-                      <ol className="space-y-2">
-                        {strategy.actionSteps.map((step, index) => (
-                          <li key={index} className="flex items-start gap-3 text-sm text-gray-600">
-                            <span className="flex items-center justify-center w-5 h-5 bg-caribbean_current-600 text-white rounded-full text-xs font-medium flex-shrink-0">
-                              {index + 1}
-                            </span>
-                            {step}
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="text-sm text-gray-600">
-                          Platforms: {strategy.platforms.join(', ')}
-                        </div>
-                        <div className="text-sm text-gray-600">
-                          Key Metrics: {strategy.keyMetrics.join(', ')}
-                        </div>
-                      </div>
-                      <button 
-                        className="relative px-4 py-2 bg-caribbean_current-600 text-white rounded-lg text-sm hover:bg-caribbean_current-700 transition-all duration-300 shadow-lg hover:shadow-caribbean_current-600/20 hover:shadow-2xl"
-                        style={{
-                          boxShadow: '0 4px 20px rgba(11, 99, 88, 0.15), 0 0 0 1px rgba(11, 99, 88, 0.1)'
-                        }}
-                      >
-                        Start Strategy
-                        <div 
-                          className="absolute inset-0 rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-300"
-                          style={{
-                            background: 'linear-gradient(135deg, rgba(11, 99, 88, 0.1) 0%, rgba(40, 231, 209, 0.1) 100%)',
-                            boxShadow: '0 0 30px rgba(40, 231, 209, 0.3)'
-                          }}
-                        />
-                      </button>
                     </div>
                   </div>
                 </div>
