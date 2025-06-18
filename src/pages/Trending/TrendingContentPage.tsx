@@ -114,44 +114,11 @@ export const TrendingContent: React.FC = () => {
             icon={<TrendingUp className="w-8 h-8 text-gray-700" />}
           />
 
-          {/* Market Insights Overview */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {marketInsights.slice(0, 3).map((insight) => (
-              <div key={insight.id} className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-shadow">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className={`p-2 rounded-lg ${getImpactColor(insight.impact)} bg-opacity-10`}>
-                    {getCategoryIcon(insight.category)}
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">{insight.title}</h3>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className={`text-xs px-2 py-1 rounded ${insight.category === 'Trend' ? 'bg-prussian_blue-100 text-prussian_blue-800' : insight.category === 'Opportunity' ? 'bg-caribbean_current-100 text-caribbean_current-800' : 'bg-orange-100 text-orange-800'}`}>
-                        {insight.category}
-                      </span>
-                      <span className={`text-xs font-medium ${getImpactColor(insight.impact)}`}>
-                        {insight.impact} Impact
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-600 mb-4">{insight.description}</p>
-                <div className="space-y-2">
-                  {insight.dataPoints.slice(0, 2).map((point, index) => (
-                    <div key={index} className="flex justify-between text-sm">
-                      <span className="text-gray-600">{point.metric}</span>
-                      <span className="font-semibold text-gray-900">{point.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
           {/* Trending Posts Section */}
           <div className="bg-white rounded-xl shadow-lg border border-gray-200">
             <div className="p-6 border-b border-gray-200">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-900">Viral Content Analysis</h2>
+                <h2 className="text-xl font-semibold text-gray-900">7-Day Viral Content Analysis</h2>
               </div>
               
               {/* Tab Navigation */}
@@ -198,9 +165,6 @@ export const TrendingContent: React.FC = () => {
                             <Play className="h-8 w-8 text-white" />
                           </div>
                         )}
-                        <div className="absolute top-2 right-2 bg-caribbean_current-600 text-white text-xs px-2 py-1 rounded">
-                          {post.viralScore}
-                        </div>
                       </div>
                     </div>
 
