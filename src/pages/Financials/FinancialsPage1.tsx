@@ -15,7 +15,6 @@ const FinancialsPage1: React.FC = () => {
   
   const [showAddBranch, setShowAddBranch] = useState(false);
   const [newBranchName, setNewBranchName] = useState("");
-  const [newBranchLocation, setNewBranchLocation] = useState("");
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     profitLoss: true,
     balanceSheet: false,
@@ -72,14 +71,13 @@ const FinancialsPage1: React.FC = () => {
   };
 
   const handleAddBranch = () => {
-    if (newBranchName.trim() && newBranchLocation.trim()) {
+    if (newBranchName.trim()) {
       dispatch(addBranch({
         name: newBranchName.trim(),
-        location: newBranchLocation.trim(),
+        location: "", // Default empty location since it's not required
         isActive: true,
       }));
       setNewBranchName("");
-      setNewBranchLocation("");
       setShowAddBranch(false);
     }
   };
@@ -231,7 +229,7 @@ const FinancialsPage1: React.FC = () => {
           {showAddBranch && (
             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
               <h3 className="text-sm font-semibold text-gray-900 mb-3">Add New Branch</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">Branch Name</label>
                   <input
@@ -240,16 +238,6 @@ const FinancialsPage1: React.FC = () => {
                     onChange={(e) => setNewBranchName(e.target.value)}
                     className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-prussian_blue-500 focus:border-transparent"
                     placeholder="e.g., Downtown Branch"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Location</label>
-                  <input
-                    type="text"
-                    value={newBranchLocation}
-                    onChange={(e) => setNewBranchLocation(e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-prussian_blue-500 focus:border-transparent"
-                    placeholder="e.g., 123 Main St"
                   />
                 </div>
               </div>
