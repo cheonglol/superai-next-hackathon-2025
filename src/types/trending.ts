@@ -35,6 +35,70 @@ export interface ViralContent {
   thumbnailUrl?: string;
 }
 
+export interface TrendingPost {
+  id: string;
+  platform: string;
+  content: string;
+  imageUrl: string;
+  videoUrl?: string;
+  author: string;
+  authorAvatar: string;
+  authorFollowers: number;
+  likes: number;
+  comments: number;
+  shares: number;
+  views: number;
+  engagement: number;
+  viralScore: number;
+  postUrl: string;
+  createdAt: string;
+  location?: string;
+  hashtags: string[];
+  contentType: "organic" | "paid" | "partnership";
+  category: string;
+  businessInsights: {
+    keyTakeaways: string[];
+    applicableStrategies: string[];
+    estimatedCost?: string;
+    difficulty: "Easy" | "Medium" | "Hard";
+    roi: "Low" | "Medium" | "High";
+  };
+}
+
+export interface ContentStrategy {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+  expectedRoi: "Low" | "Medium" | "High";
+  platforms: string[];
+  keyMetrics: string[];
+  successExamples: {
+    restaurant: string;
+    result: string;
+    metric: string;
+  }[];
+  actionSteps: string[];
+  requiredResources: string[];
+}
+
+export interface MarketInsight {
+  id: string;
+  title: string;
+  description: string;
+  impact: "Low" | "Medium" | "High";
+  urgency: "Low" | "Medium" | "High";
+  category: "Trend" | "Opportunity" | "Threat" | "Innovation";
+  dataPoints: {
+    metric: string;
+    value: string;
+    change: string;
+  }[];
+  recommendations: string[];
+  relatedPosts: string[];
+}
+
 export interface TrendingAnalytics {
   hashtags: TrendingHashtag[];
   topics: TrendingTopic[];
