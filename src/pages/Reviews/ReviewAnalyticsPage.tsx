@@ -88,6 +88,11 @@ const ReviewAnalyticsPage: React.FC = () => {
           actions={headerActions} 
         />
 
+        {/* AI Analysis & Trends Summary - Moved to top */}
+        <div className="mb-8">
+          <AIAnalysis />
+        </div>
+
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <MetricCard
@@ -168,9 +173,6 @@ const ReviewAnalyticsPage: React.FC = () => {
             <KeywordList keywords={data.keywords.value} categoryColor={CATEGORY_COLORS.value} />
           </div>
         </div>
-
-        {/* AI Analysis & Trends Summary */}
-        <AIAnalysis />
       </div>
     </div>
   );
