@@ -1,5 +1,15 @@
 import MainLayout from "@/layout/MainLayout";
-import { DashboardPage, ErrorBoundaryPage, FinancialsPage1, FinancialsPage2, ReviewAnalyticsPage, SocialMediaFootprintPage, TrendingContentPage } from "@/pages";
+import {
+  DashboardPage,
+  ErrorBoundaryPage,
+  DataInputPage,
+  PerformanceInsightsPage,
+  NextStepsPage,
+  ReviewAnalyticsPage,
+  SocialMediaFootprintPage,
+  TrendingContentPage,
+  GrowthCoachPage,
+} from "@/pages";
 import { ReactElement } from "react";
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 import ProtectedRoute from "./logic/ProtectedRouteLogic";
@@ -35,7 +45,7 @@ export const routes: ExtendedRouteObject[] = [
   {
     title: "Review Analytics",
     logicType: undefined,
-    category: "Social Media Insights",
+    category: "Social Media",
     routeObject: {
       path: `${ROOT_PATH}/review`,
       element: (
@@ -49,7 +59,7 @@ export const routes: ExtendedRouteObject[] = [
   {
     title: "Social Media Footprint",
     logicType: undefined,
-    category: "Social Media Insights",
+    category: "Social Media",
     routeObject: {
       path: `${ROOT_PATH}/social-media-footprint`,
       element: (
@@ -63,7 +73,7 @@ export const routes: ExtendedRouteObject[] = [
   {
     title: "Trending Content",
     logicType: undefined,
-    category: "Social Media Insights",
+    category: "Social Media",
     routeObject: {
       path: `${ROOT_PATH}/trending-content`,
       element: (
@@ -75,28 +85,56 @@ export const routes: ExtendedRouteObject[] = [
     },
   },
   {
-    title: "Financials Page 1",
+    title: "Data Input",
     logicType: undefined,
     category: "Financials",
     routeObject: {
-      path: `${ROOT_PATH}/financials/page1`,
+      path: `${ROOT_PATH}/financials/data-input`,
       element: (
         <MainLayout>
-          <FinancialsPage1 />
+          <DataInputPage />
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,
     },
   },
   {
-    title: "Financials Page 2",
+    title: "Performance Insights",
     logicType: undefined,
     category: "Financials",
     routeObject: {
-      path: `${ROOT_PATH}/financials/page2`,
+      path: `${ROOT_PATH}/financials/performance-insights`,
       element: (
         <MainLayout>
-          <FinancialsPage2 />
+          <PerformanceInsightsPage />
+        </MainLayout>
+      ),
+      errorElement: <ErrorBoundaryPage />,
+    },
+  },
+  {
+    title: "Next Steps",
+    logicType: undefined,
+    category: "Financials",
+    routeObject: {
+      path: `${ROOT_PATH}/financials/next-steps`,
+      element: (
+        <MainLayout>
+          <NextStepsPage />
+        </MainLayout>
+      ),
+      errorElement: <ErrorBoundaryPage />,
+    },
+  },
+  {
+    title: "Growth Coach AI",
+    logicType: undefined,
+    category: "Growth Coach",
+    routeObject: {
+      path: `${ROOT_PATH}/growth-coach`,
+      element: (
+        <MainLayout>
+          <GrowthCoachPage />
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,

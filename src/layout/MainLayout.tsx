@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BarChart3, MessageSquare, Share2, TrendingUp, Menu, X, DollarSign, PieChart } from "lucide-react";
+import { BarChart3, MessageSquare, Share2, TrendingUp, Menu, X, DollarSign, PieChart, Target, Bot } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { toggleSidebar, setSidebarOpen } from "@/store/slices/uiSlice";
 
@@ -23,14 +23,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const navigationItems: NavigationItem[] = [
     { path: "/", icon: BarChart3, label: "Dashboard" },
 
-    // Social Media Insights Group
-    { path: "/review", icon: MessageSquare, label: "Review Analytics", category: "Social Media Insights" },
-    { path: "/social-media-footprint", icon: Share2, label: "Social Media Footprint", category: "Social Media Insights" },
-    { path: "/trending-content", icon: TrendingUp, label: "Trending Content", category: "Social Media Insights" },
+    // Social Media Group
+    { path: "/review", icon: MessageSquare, label: "Review Analytics", category: "Social Media" },
+    { path: "/social-media-footprint", icon: Share2, label: "Social Media Footprint", category: "Social Media" },
+    { path: "/trending-content", icon: TrendingUp, label: "Trending Content", category: "Social Media" },
 
     // Financials Group
-    { path: "/financials/page1", icon: DollarSign, label: "Page 1", category: "Financials" },
-    { path: "/financials/page2", icon: PieChart, label: "Page 2", category: "Financials" },
+    { path: "/financials/data-input", icon: DollarSign, label: "Data Input", category: "Financials" },
+    { path: "/financials/performance-insights", icon: PieChart, label: "Performance Insights", category: "Financials" },
+    { path: "/financials/next-steps", icon: Target, label: "Next Steps", category: "Financials" },
+
+    // Growth Coach Group
+    { path: "/growth-coach", icon: Bot, label: "Growth Coach AI", category: "Growth Coach" },
   ];
 
   const isActivePath = (path: string) => {
@@ -83,8 +87,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <div className="flex items-center px-6 py-8 border-b border-charcoal-600">
             <BarChart3 className="w-8 h-8 text-caribbean_current-400 mr-3" />
             <div>
-              <h1 className="text-xl font-bold text-white">Analytics Hub</h1>
-              <p className="text-sm text-charcoal-200">Social Media Insights</p>
+              <h1 className="text-xl font-bold text-white">JSLW Bistro</h1>
+              <p className="text-sm text-charcoal-200">Business Intelligence</p>
             </div>
           </div>
 
@@ -110,8 +114,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               );
             })}
 
-            {/* Social Media Insights Group */}
-            {groupedItems["Social Media Insights"] && (
+            {/* Social Media Group */}
+            {groupedItems["Social Media"] && (
               <>
                 <div className="pt-6 pb-2">
                   <div className="flex items-center">
@@ -120,7 +124,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     <div className="flex-1 border-t border-charcoal-600"></div>
                   </div>
                 </div>
-                {groupedItems["Social Media Insights"].map((item) => {
+                {groupedItems["Social Media"].map((item) => {
                   const Icon = item.icon;
                   const isActive = isActivePath(item.path);
 
@@ -171,11 +175,42 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 })}
               </>
             )}
+
+            {/* Growth Coach Group */}
+            {groupedItems["Growth Coach"] && (
+              <>
+                <div className="pt-6 pb-2">
+                  <div className="flex items-center">
+                    <div className="flex-1 border-t border-charcoal-600"></div>
+                    <span className="px-3 text-xs font-medium text-purple-300 bg-charcoal-700 uppercase tracking-wider">Growth Coach</span>
+                    <div className="flex-1 border-t border-charcoal-600"></div>
+                  </div>
+                </div>
+                {groupedItems["Growth Coach"].map((item) => {
+                  const Icon = item.icon;
+                  const isActive = isActivePath(item.path);
+
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={handleLinkClick}
+                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                        isActive ? "bg-purple-600 text-white shadow-lg" : "text-charcoal-100 hover:bg-charcoal-600 hover:text-white"
+                      }`}
+                    >
+                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-white" : "text-charcoal-200"}`} />
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </>
+            )}
           </nav>
 
           {/* Footer */}
           <div className="px-6 py-4 border-t border-charcoal-600">
-            <p className="text-xs text-charcoal-300">© 2025 Analytics Hub</p>
+            <p className="text-xs text-charcoal-300">© 2025 JSLW Bistro</p>
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ import { useDashboardData } from "@/hooks/useDashboardData";
 import { useFinancialsData } from "@/hooks/useFinancialsData";
 import { useReviewsData } from "@/hooks/useReviewsData";
 import { useSocialMediaData } from "@/hooks/useSocialMediaData";
-import { BarChart3, DollarSign, Eye, MessageSquare, PieChart, Share2, Star, TrendingUp, Users } from "lucide-react";
+import { BarChart3, DollarSign, Eye, MessageSquare, PieChart, Share2, Star, TrendingUp, Users, AlertTriangle, CheckCircle, Target, Zap } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -34,6 +34,48 @@ const DashboardPage: React.FC = () => {
     return Array.from({ length: 5 }, (_, i) => <Star key={i} className={`w-4 h-4 ${i < Math.floor(rating) ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`} />);
   };
 
+  // Key insights from each section
+  const getKeyInsights = () => {
+    return {
+      socialMedia: {
+        wins: [
+          { text: "Food quality ratings improved by 0.4 points", impact: "high", type: "positive" },
+          { text: "TikTok engagement up 15.8% with viral pasta content", impact: "high", type: "positive" },
+          { text: "Weekend dinner service showing improvement", impact: "medium", type: "positive" },
+        ],
+        losses: [
+          { text: "Service speed complaints up 15% during peak hours", impact: "high", type: "negative" },
+          { text: "Value perception declining with 'expensive' mentions +12%", impact: "medium", type: "negative" },
+        ],
+      },
+      financials: {
+        wins: [
+          { text: "Revenue growth of 12.5% month-over-month", impact: "high", type: "positive" },
+          { text: "Strong gross margin at 65% vs industry 60-70%", impact: "medium", type: "positive" },
+          { text: "6+ months cash runway available", impact: "medium", type: "positive" },
+        ],
+        losses: [
+          { text: "Operating efficiency at 25% - needs improvement", impact: "high", type: "negative" },
+          { text: "Debt-to-equity ratio at 1.2 (above ideal 0.3-0.6)", impact: "medium", type: "negative" },
+        ],
+      },
+      nextSteps: {
+        quickWins: [
+          { text: "Negotiate rent reduction: $2,500/month savings", impact: "high", type: "opportunity", timeframe: "1-2 weeks" },
+          { text: "Implement 1% price increase: $5,000/month profit boost", impact: "high", type: "opportunity", timeframe: "1 week" },
+          { text: "Accelerate collections: $5,000 one-time improvement", impact: "medium", type: "opportunity", timeframe: "2 weeks" },
+        ],
+        priorities: [
+          { text: "Cash flow: 6 months runway (Healthy)", status: "green", type: "status" },
+          { text: "Profitability: Strong margins (Healthy)", status: "green", type: "status" },
+          { text: "Debt management: Above ideal ratios (Caution)", status: "amber", type: "status" },
+        ],
+      },
+    };
+  };
+
+  const insights = getKeyInsights();
+
   if (dashboardLoading) {
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -61,6 +103,127 @@ const DashboardPage: React.FC = () => {
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-7xl mx-auto">
         <PageHeader title="Dashboard Overview" description="Comprehensive business insights across all analytics" icon={<BarChart3 className="w-8 h-8 text-gray-700" />} />
+
+        {/* Executive Summary - Key Wins & Losses */}
+        <div className="mb-8">
+          <div className="flex items-center mb-6">
+            <div className="flex-1 border-t border-gray-300"></div>
+            <div className="px-6 py-2 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full">
+              <span className="text-lg font-semibold text-gray-800">📊 Executive Summary</span>
+            </div>
+            <div className="flex-1 border-t border-gray-300"></div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Key Wins */}
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+              <div className="flex items-center mb-4">
+                <div className="p-3 bg-green-100 rounded-lg mr-3">
+                  <CheckCircle className="w-5 h-5 text-green-700" />
+                </div>
+                <h2 className="text-xl font-semibold text-gray-900">🎉 Key Wins</h2>
+              </div>
+              <div className="space-y-3">
+                {[...insights.socialMedia.wins, ...insights.financials.wins].slice(0, 4).map((win, index) => (
+                  <div key={index} className="flex items-start p-3 bg-green-50 rounded-lg border border-green-200">
+                    <div className={`w-2 h-2 rounded-full mt-2 mr-3 flex-shrink-0 ${win.impact === "high" ? "bg-green-600" : "bg-green-400"}`}></div>
+                    <div className="flex-1">
+                      <p className="text-sm text-green-800 font-medium">{win.text}</p>
+                      <span className={`inline-block mt-1 px-2 py-1 text-xs rounded-full ${win.impact === "high" ? "bg-green-200 text-green-800" : "bg-green-100 text-green-700"}`}>
+                        {win.impact} impact
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Areas for Attention */}
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+              <div className="flex items-center mb-4">
+                <div className="p-3 bg-orange-100 rounded-lg mr-3">
+                  <AlertTriangle className="w-5 h-5 text-orange-700" />
+                </div>
+                <h2 className="text-xl font-semibold text-gray-900">⚠️ Areas for Attention</h2>
+              </div>
+              <div className="space-y-3">
+                {[...insights.socialMedia.losses, ...insights.financials.losses].map((loss, index) => (
+                  <div key={index} className="flex items-start p-3 bg-orange-50 rounded-lg border border-orange-200">
+                    <div className={`w-2 h-2 rounded-full mt-2 mr-3 flex-shrink-0 ${loss.impact === "high" ? "bg-orange-600" : "bg-orange-400"}`}></div>
+                    <div className="flex-1">
+                      <p className="text-sm text-orange-800 font-medium">{loss.text}</p>
+                      <span
+                        className={`inline-block mt-1 px-2 py-1 text-xs rounded-full ${loss.impact === "high" ? "bg-orange-200 text-orange-800" : "bg-orange-100 text-orange-700"}`}
+                      >
+                        {loss.impact} impact
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Action Items */}
+          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center">
+                <div className="p-3 bg-blue-100 rounded-lg mr-3">
+                  <Zap className="w-5 h-5 text-blue-700" />
+                </div>
+                <h2 className="text-xl font-semibold text-gray-900">⚡ Quick Wins Available</h2>
+              </div>
+              <Link to="/financials/next-steps" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                View All Actions →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {insights.nextSteps.quickWins.map((item, index) => (
+                <div key={index} className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-200">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-blue-800">{item.text}</p>
+                      <div className="flex items-center mt-2 space-x-2">
+                        <span className={`px-2 py-1 text-xs rounded-full ${item.impact === "high" ? "bg-blue-200 text-blue-800" : "bg-blue-100 text-blue-700"}`}>
+                          {item.impact} impact
+                        </span>
+                        <span className="text-xs text-blue-600">{item.timeframe}</span>
+                      </div>
+                    </div>
+                    <Target className="w-4 h-4 text-blue-600 flex-shrink-0 ml-2" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Business Health Status */}
+          <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mt-6">
+            <div className="flex items-center mb-4">
+              <div className="p-3 bg-purple-100 rounded-lg mr-3">
+                <BarChart3 className="w-5 h-5 text-purple-700" />
+              </div>
+              <h2 className="text-xl font-semibold text-gray-900">🏥 Business Health Status</h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {insights.nextSteps.priorities.map((priority, index) => (
+                <div
+                  key={index}
+                  className={`p-4 rounded-lg border-2 ${
+                    priority.status === "green" ? "bg-green-50 border-green-200" : priority.status === "amber" ? "bg-yellow-50 border-yellow-200" : "bg-red-50 border-red-200"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <p className={`text-sm font-medium ${priority.status === "green" ? "text-green-800" : priority.status === "amber" ? "text-yellow-800" : "text-red-800"}`}>
+                      {priority.text}
+                    </p>
+                    <div className={`w-3 h-3 rounded-full ${priority.status === "green" ? "bg-green-500" : priority.status === "amber" ? "bg-yellow-500" : "bg-red-500"}`}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
         {/* Social Media Insights Summary */}
         <div className="mb-8">
@@ -175,7 +338,7 @@ const DashboardPage: React.FC = () => {
               <div className="flex items-center text-sm text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full mb-3 w-fit">
                 <TrendingUp className="w-4 h-4 mr-1" />+{financialData?.summary.currentMonth.revenueGrowth || 0}%
               </div>
-              <Link to="/financials/page1" className="inline-flex items-center text-prussian_blue-700 hover:text-prussian_blue-800 text-sm font-medium transition-colors">
+              <Link to="/financials/data-input" className="inline-flex items-center text-prussian_blue-700 hover:text-prussian_blue-800 text-sm font-medium transition-colors">
                 View Details →
               </Link>
             </div>
@@ -192,7 +355,7 @@ const DashboardPage: React.FC = () => {
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">{financialData ? formatCurrency(financialData.summary.currentMonth.netProfit) : "Loading..."}</div>
               <div className="flex items-center text-sm text-gray-600 mb-3">{financialData?.summary.currentMonth.profitMargin || 0}% profit margin</div>
-              <Link to="/financials/page1" className="inline-flex items-center text-prussian_blue-700 hover:text-prussian_blue-800 text-sm font-medium transition-colors">
+              <Link to="/financials/data-input" className="inline-flex items-center text-prussian_blue-700 hover:text-prussian_blue-800 text-sm font-medium transition-colors">
                 Analyze Profit →
               </Link>
             </div>
@@ -211,7 +374,10 @@ const DashboardPage: React.FC = () => {
               <div className="flex items-center text-sm text-red-800 bg-red-100 px-3 py-1 rounded-full mb-3 w-fit">
                 <TrendingUp className="w-4 h-4 mr-1" />+{financialData?.summary.currentMonth.expenseGrowth || 0}%
               </div>
-              <Link to="/financials/page2" className="inline-flex items-center text-prussian_blue-700 hover:text-prussian_blue-800 text-sm font-medium transition-colors">
+              <Link
+                to="/financials/performance-insights"
+                className="inline-flex items-center text-prussian_blue-700 hover:text-prussian_blue-800 text-sm font-medium transition-colors"
+              >
                 View Breakdown →
               </Link>
             </div>
@@ -230,7 +396,10 @@ const DashboardPage: React.FC = () => {
                 {financialData && financialData.cashFlow.length > 0 ? formatCurrency(financialData.cashFlow[0].netFlow) : "Loading..."}
               </div>
               <div className="flex items-center text-sm text-gray-600 mb-3">Current month flow</div>
-              <Link to="/financials/page2" className="inline-flex items-center text-prussian_blue-700 hover:text-prussian_blue-800 text-sm font-medium transition-colors">
+              <Link
+                to="/financials/performance-insights"
+                className="inline-flex items-center text-prussian_blue-700 hover:text-prussian_blue-800 text-sm font-medium transition-colors"
+              >
                 Analyze Flow →
               </Link>
             </div>

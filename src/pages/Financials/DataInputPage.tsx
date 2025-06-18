@@ -1,13 +1,13 @@
-import { ErrorMessage } from "@/components/common/ErrorMessage";
-import { LoadingSpinner } from "@/components/common/LoadingSpinner";
-import { PageHeader } from "@/components/common/PageHeader";
+import React, { useState, useRef } from "react";
+import { DollarSign, Plus, Building2, Upload, FileText, Save, Eye, EyeOff, Settings, CheckCircle, AlertCircle } from "lucide-react";
 import { useFinancialsData } from "@/hooks/useFinancialsData";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { addBranch, saveBranchData, saveConsolidatedData, setNumberOfPeriods, setPeriodType, setSelectedBranch, uploadFinancialDocument } from "@/store/slices/financialsSlice";
-import { AlertCircle, Building2, CheckCircle, DollarSign, Eye, EyeOff, FileText, Plus, Save, Settings, Upload } from "lucide-react";
-import React, { useRef, useState } from "react";
+import { setSelectedBranch, setPeriodType, setNumberOfPeriods, saveBranchData, saveConsolidatedData, addBranch, uploadFinancialDocument } from "@/store/slices/financialsSlice";
+import { PageHeader } from "@/components/common/PageHeader";
+import { LoadingSpinner } from "@/components/common/LoadingSpinner";
+import { ErrorMessage } from "@/components/common/ErrorMessage";
 
-const FinancialsPage1: React.FC = () => {
+const DataInputPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { data, loading, error, refetch } = useFinancialsData();
   const { selectedBranchId, saving, uploading } = useAppSelector((state) => state.financials);
@@ -208,11 +208,9 @@ const FinancialsPage1: React.FC = () => {
     }
   };
 
-  const renderDataDisplay = (label: string, value: number, isRequired: boolean = false) => (
+  const renderDataDisplay = (label: string, value: number) => (
     <div className="space-y-1">
-      <label className="block text-xs font-medium text-gray-700">
-        {label} {isRequired && selectedBranchId !== "consolidated" && <span className="text-red-500">*</span>}
-      </label>
+      <label className="block text-xs font-medium text-gray-700">{label}</label>
       <div className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-gray-50">{formatCurrency(value)}</div>
     </div>
   );
@@ -263,7 +261,7 @@ const FinancialsPage1: React.FC = () => {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         <PageHeader
-          title="Financial Data Management"
+          title="Financial Data Input"
           description="Upload and manage financial documents across all branches"
           icon={<DollarSign className="w-8 h-8 text-oxford_blue-600" />}
           actions={
@@ -476,7 +474,7 @@ const FinancialsPage1: React.FC = () => {
                         <td className="py-3 px-4 font-medium text-gray-900">Revenue</td>
                         {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                           <td key={period.periodId} className="py-3 px-4">
-                            {renderDataDisplay("", period.revenue || 0, true)}
+                            {renderDataDisplay("", period.revenue || 0)}
                           </td>
                         ))}
                       </tr>
@@ -484,7 +482,7 @@ const FinancialsPage1: React.FC = () => {
                         <td className="py-3 px-4 font-medium text-gray-900">Gross Margin</td>
                         {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                           <td key={period.periodId} className="py-3 px-4">
-                            {renderDataDisplay("", period.grossMargin || 0, true)}
+                            {renderDataDisplay("", period.grossMargin || 0)}
                           </td>
                         ))}
                       </tr>
@@ -492,7 +490,7 @@ const FinancialsPage1: React.FC = () => {
                         <td className="py-3 px-4 font-medium text-gray-900">Net Profit (After Tax)</td>
                         {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                           <td key={period.periodId} className="py-3 px-4">
-                            {renderDataDisplay("", period.netProfitAfterTax || 0, true)}
+                            {renderDataDisplay("", period.netProfitAfterTax || 0)}
                           </td>
                         ))}
                       </tr>
@@ -566,7 +564,7 @@ const FinancialsPage1: React.FC = () => {
                           <td className="py-3 px-4 font-medium text-gray-900">Total Assets</td>
                           {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                             <td key={period.periodId} className="py-3 px-4">
-                              {renderDataDisplay("", period.totalAssets || 0, true)}
+                              {renderDataDisplay("", period.totalAssets || 0)}
                             </td>
                           ))}
                         </tr>
@@ -709,4 +707,4 @@ const FinancialsPage1: React.FC = () => {
   );
 };
 
-export default FinancialsPage1;
+export default DataInputPage;
