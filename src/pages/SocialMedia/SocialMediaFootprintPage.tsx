@@ -132,7 +132,9 @@ const SocialMediaFootprintPage: React.FC = () => {
         comments: "312",
         shares: "789",
         views: "45.2K",
-        date: "16/01/2025"
+        date: "16/01/2025",
+        imageUrl: "https://images.pexels.com/photos/1279330/pexels-photo-1279330.jpeg",
+        postUrl: "https://tiktok.com/@foodie_sara/video/truffle-pasta-review"
       },
       {
         id: 2,
@@ -144,7 +146,9 @@ const SocialMediaFootprintPage: React.FC = () => {
         comments: "156",
         shares: "234",
         views: "23.1K",
-        date: "14/01/2025"
+        date: "14/01/2025",
+        imageUrl: "https://images.pexels.com/photos/958545/pexels-photo-958545.jpeg",
+        postUrl: "https://instagram.com/p/gourmet-adventures-review"
       },
       {
         id: 3,
@@ -156,7 +160,9 @@ const SocialMediaFootprintPage: React.FC = () => {
         comments: "78",
         shares: "145",
         views: "12.3K",
-        date: "13/01/2025"
+        date: "13/01/2025",
+        imageUrl: "https://images.pexels.com/photos/1566837/pexels-photo-1566837.jpeg",
+        postUrl: "https://facebook.com/family.foodie/posts/family-dinner"
       },
       {
         id: 4,
@@ -168,7 +174,9 @@ const SocialMediaFootprintPage: React.FC = () => {
         comments: "34",
         shares: "89",
         views: "8.9K",
-        date: "12/01/2025"
+        date: "12/01/2025",
+        imageUrl: "https://images.pexels.com/photos/1099680/pexels-photo-1099680.jpeg",
+        postUrl: "https://instagram.com/stories/weekend_lover/brunch-review"
       }
     ],
 
@@ -658,8 +666,16 @@ const SocialMediaFootprintPage: React.FC = () => {
           <div className="space-y-4">
             {socialMediaData.topCustomerPosts.map((post) => (
               <div key={post.id} className="flex items-start space-x-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-medium text-gray-600">{post.author.slice(1, 3).toUpperCase()}</span>
+                <div 
+                  className="w-16 h-16 rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity flex-shrink-0"
+                  onClick={() => handlePostClick(post.postUrl)}
+                  title="Click to view original post"
+                >
+                  <img
+                    src={post.imageUrl}
+                    alt="Customer post preview"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center mb-2">
