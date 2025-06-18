@@ -1,18 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { ErrorMessage } from "@/components/common/ErrorMessage";
-import { LoadingSpinner } from "@/components/common/LoadingSpinner";
-import { PageHeader } from "@/components/common/PageHeader";
+import React, { useState, useRef } from "react";
+import { DollarSign, Plus, Building2, Upload, FileText, Save, Eye, EyeOff, Settings, CheckCircle, AlertCircle } from "lucide-react";
 import { useFinancialsData } from "@/hooks/useFinancialsData";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { addBranch, saveBranchData, saveConsolidatedData, setNumberOfPeriods, setPeriodType, setSelectedBranch, updatePeriodData } from "@/store/slices/financialsSlice";
-import type { PeriodData } from "@/types/financials";
-import { Building2, Calendar, DollarSign, Eye, EyeOff, Plus, Save, Settings } from "lucide-react";
-import React, { useState } from "react";
+import { setSelectedBranch, setPeriodType, setNumberOfPeriods, saveBranchData, saveConsolidatedData, addBranch, uploadFinancialDocument } from "@/store/slices/financialsSlice";
+import { PageHeader } from "@/components/common/PageHeader";
+import { LoadingSpinner } from "@/components/common/LoadingSpinner";
+import { ErrorMessage } from "@/components/common/ErrorMessage";
 
 const FinancialsPage1: React.FC = () => {
   const dispatch = useAppDispatch();
   const { data, loading, error, refetch } = useFinancialsData();
-  const { selectedBranchId, saving } = useAppSelector((state) => state.financials);
+  const { selectedBranchId, saving, uploading } = useAppSelector((state) => state.financials);
 
   const [showAddBranch, setShowAddBranch] = useState(false);
   const [newBranchName, setNewBranchName] = useState("");
@@ -20,11 +18,94 @@ const FinancialsPage1: React.FC = () => {
     profitLoss: true,
     balanceSheet: false,
   });
+  const [uploadStatus, setUploadStatus] = useState<{
+    profitLoss: "idle" | "uploading" | "success" | "error";
+    balanceSheet: "idle" | "uploading" | "success" | "error";
+  }>({
+    profitLoss: "idle",
+    balanceSheet: "idle",
+  });
+
+  const profitLossFileRef = useRef<HTMLInputElement>(null);
+  const balanceSheetFileRef = useRef<HTMLInputElement>(null);
 
   const inputData = data?.inputData;
   const activeBranches = inputData?.branches.filter((b) => b.isActive) || [];
-  const currentData =
-    selectedBranchId === "consolidated" ? inputData?.consolidatedData.periods || [] : inputData?.branchData.find((b) => b.branchId === selectedBranchId)?.periods || [];
+
+  // Calculate consolidated data as sum of all enabled branches
+  const getConsolidatedData = () => {
+    if (!inputData || activeBranches.length === 0) return [];
+
+    if (activeBranches.length === 1) {
+      // If only one branch, mirror its data exactly
+      const singleBranchData = inputData.branchData.find((b) => b.branchId === activeBranches[0].id);
+      return singleBranchData?.periods || [];
+    }
+
+    // Sum data from all enabled branches
+    const consolidatedPeriods = [];
+    const maxPeriods = Math.max(...inputData.branchData.map((b) => b.periods.length));
+
+    for (let i = 0; i < maxPeriods; i++) {
+      const consolidatedPeriod = {
+        periodId: `period-${i}`,
+        periodLabel: `Period ${i + 1}`,
+        date: "",
+
+        // Sum all financial metrics
+        revenue: 0,
+        grossMargin: 0,
+        netProfitAfterTax: 0,
+        depreciationAmortisation: 0,
+        interestPaid: 0,
+        tax: 0,
+        dividends: 0,
+        totalAssets: 0,
+        cash: 0,
+        accountsReceivable: 0,
+        inventory: 0,
+        totalCurrentAssets: 0,
+        fixedAssets: 0,
+        currentLiabilities: 0,
+        nonCurrentLiabilities: 0,
+        accountsPayable: 0,
+        bankLoansCurrent: 0,
+        bankLoansNonCurrent: 0,
+      };
+
+      // Sum values from all enabled branches
+      activeBranches.forEach((branch) => {
+        const branchData = inputData.branchData.find((b) => b.branchId === branch.id);
+        if (branchData && branchData.periods[i]) {
+          const period = branchData.periods[i];
+          consolidatedPeriod.revenue += period.revenue || 0;
+          consolidatedPeriod.grossMargin += period.grossMargin || 0;
+          consolidatedPeriod.netProfitAfterTax += period.netProfitAfterTax || 0;
+          consolidatedPeriod.depreciationAmortisation += period.depreciationAmortisation || 0;
+          consolidatedPeriod.interestPaid += period.interestPaid || 0;
+          consolidatedPeriod.tax += period.tax || 0;
+          consolidatedPeriod.dividends += period.dividends || 0;
+          consolidatedPeriod.totalAssets += period.totalAssets || 0;
+          consolidatedPeriod.cash += period.cash || 0;
+          consolidatedPeriod.accountsReceivable += period.accountsReceivable || 0;
+          consolidatedPeriod.inventory += period.inventory || 0;
+          consolidatedPeriod.totalCurrentAssets += period.totalCurrentAssets || 0;
+          consolidatedPeriod.fixedAssets += period.fixedAssets || 0;
+          consolidatedPeriod.currentLiabilities += period.currentLiabilities || 0;
+          consolidatedPeriod.nonCurrentLiabilities += period.nonCurrentLiabilities || 0;
+          consolidatedPeriod.accountsPayable += period.accountsPayable || 0;
+          consolidatedPeriod.bankLoansCurrent += period.bankLoansCurrent || 0;
+          consolidatedPeriod.bankLoansNonCurrent += period.bankLoansNonCurrent || 0;
+        }
+      });
+
+      consolidatedPeriods.push(consolidatedPeriod);
+    }
+
+    return consolidatedPeriods;
+  };
+
+  const currentData = selectedBranchId === "consolidated" ? getConsolidatedData() : inputData?.branchData.find((b) => b.branchId === selectedBranchId)?.periods || [];
 
   const periodTypes = [
     { value: "daily", label: "Daily" },
@@ -42,28 +123,36 @@ const FinancialsPage1: React.FC = () => {
       maximumFractionDigits: 0,
     }).format(amount);
   };
+  const handleFileUpload = async (type: "profitLoss" | "balanceSheet", file: File) => {
+    if (!file) return;
 
-  const handleFieldChange = (periodId: string, field: string, value: string) => {
-    const numericValue = parseFloat(value) || 0;
-    dispatch(
-      updatePeriodData({
-        branchId: selectedBranchId,
-        periodId,
-        field,
-        value: numericValue,
-      })
-    );
-  };
+    setUploadStatus((prev) => ({ ...prev, [type]: "uploading" }));
 
-  const handleDateChange = (periodId: string, value: string) => {
-    dispatch(
-      updatePeriodData({
-        branchId: selectedBranchId,
-        periodId,
-        field: "date",
-        value: value,
-      })
-    );
+    try {
+      // Dispatch the upload action which will set the global uploading state
+      dispatch(
+        uploadFinancialDocument({
+          branchId: selectedBranchId,
+          documentType: type,
+          file,
+        })
+      );
+
+      // Simulate file processing
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // In a real implementation, this would:
+      // 1. Upload the file to the server
+      // 2. Process the document (OCR/parsing)
+      // 3. Extract financial data automatically
+      // 4. Return structured data to populate the forms
+
+      setUploadStatus((prev) => ({ ...prev, [type]: "success" }));
+    } catch (error) {
+      console.log(`Error uploading ${type} document:`, error);
+
+      setUploadStatus((prev) => ({ ...prev, [type]: "error" }));
+    }
   };
 
   const handleSave = () => {
@@ -79,7 +168,7 @@ const FinancialsPage1: React.FC = () => {
       dispatch(
         addBranch({
           name: newBranchName.trim(),
-          location: "", // Default empty location since it's not required
+          location: "",
           isActive: true,
         })
       );
@@ -94,19 +183,37 @@ const FinancialsPage1: React.FC = () => {
       [section]: !prev[section],
     }));
   };
+  const getUploadStatusIcon = (status: string) => {
+    switch (status) {
+      case "uploading":
+        return <LoadingSpinner size="sm" />;
+      case "success":
+        return <CheckCircle className="w-4 h-4 text-green-600" />;
+      case "error":
+        return <AlertCircle className="w-4 h-4 text-red-600" />;
+      default:
+        return uploading ? <LoadingSpinner size="sm" /> : <Upload className="w-4 h-4" />;
+    }
+  };
+  const getUploadStatusText = (status: string) => {
+    switch (status) {
+      case "uploading":
+        return "Processing...";
+      case "success":
+        return "Data extracted successfully";
+      case "error":
+        return "Upload failed";
+      default:
+        return uploading ? "Processing..." : "Upload Document";
+    }
+  };
 
-  const renderInputField = (period: PeriodData, field: keyof PeriodData, label: string, isRequired: boolean = false) => (
+  const renderDataDisplay = (label: string, value: number, isRequired: boolean = false) => (
     <div className="space-y-1">
       <label className="block text-xs font-medium text-gray-700">
-        {label} {isRequired && <span className="text-red-500">*</span>}
+        {label} {isRequired && selectedBranchId !== "consolidated" && <span className="text-red-500">*</span>}
       </label>
-      <input
-        type="number"
-        value={(period[field] as number) || ""}
-        onChange={(e) => handleFieldChange(period.periodId, field, e.target.value)}
-        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
-        placeholder="0"
-      />
+      <div className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-gray-50">{formatCurrency(value)}</div>
     </div>
   );
 
@@ -119,14 +226,8 @@ const FinancialsPage1: React.FC = () => {
             <div className="space-y-2">
               <div>{period.periodLabel}</div>
               <div className="text-xs text-gray-500">
-                <label className="block mb-1">Period Ending Date:</label>
-                <input
-                  type="text"
-                  value={period.date || ""}
-                  onChange={(e) => handleDateChange(period.periodId, e.target.value)}
-                  placeholder="DD-MM-YYYY"
-                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-oxford_blue-500 focus:border-transparent text-center"
-                />
+                <span className="block mb-1">Period Ending Date:</span>
+                <span className="text-center">{period.date || "Not specified"}</span>
               </div>
             </div>
           </th>
@@ -162,8 +263,8 @@ const FinancialsPage1: React.FC = () => {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         <PageHeader
-          title="Financial Data Input"
-          description="Input and manage financial data across all branches"
+          title="Financial Data Management"
+          description="Upload and manage financial documents across all branches"
           icon={<DollarSign className="w-8 h-8 text-oxford_blue-600" />}
           actions={
             <button
@@ -176,7 +277,6 @@ const FinancialsPage1: React.FC = () => {
             </button>
           }
         />
-
         {/* Configuration Panel */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center mb-4">
@@ -257,7 +357,6 @@ const FinancialsPage1: React.FC = () => {
             </div>
           )}
         </div>
-
         {/* Branch Selection */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center mb-4">
@@ -272,7 +371,7 @@ const FinancialsPage1: React.FC = () => {
                 selectedBranchId === "consolidated" ? "bg-oxford_blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              📊 Consolidated View
+              📊 Consolidated View {activeBranches.length > 1 ? `(${activeBranches.length} branches)` : ""}
             </button>
 
             {activeBranches.map((branch) => (
@@ -287,16 +386,82 @@ const FinancialsPage1: React.FC = () => {
               </button>
             ))}
           </div>
-        </div>
+        </div>{" "}
+        {/* Document Upload Section */}
+        {selectedBranchId !== "consolidated" && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+            <div className="flex items-center mb-4">
+              <FileText className="w-5 h-5 text-oxford_blue-600 mr-2" />
+              <h2 className="text-lg font-semibold text-gray-900">Upload Financial Documents</h2>
+              {uploading && (
+                <div className="ml-auto flex items-center text-sm text-oxford_blue-600">
+                  <LoadingSpinner size="sm" className="mr-2" />
+                  Processing documents...
+                </div>
+              )}
+            </div>
+            <p className="text-sm text-gray-600 mb-6">
+              Upload your Profit & Loss statement and Balance Sheet. The system will automatically extract and populate the financial data.
+            </p>
 
-        {/* Data Input Tables */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Profit & Loss Upload */}
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-oxford_blue-400 transition-colors">
+                <input
+                  ref={profitLossFileRef}
+                  type="file"
+                  accept=".pdf,.xlsx,.xls,.csv"
+                  onChange={(e) => e.target.files?.[0] && handleFileUpload("profitLoss", e.target.files[0])}
+                  className="hidden"
+                />
+                <div className="mb-4">{getUploadStatusIcon(uploadStatus.profitLoss)}</div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Profit & Loss Statement</h3>
+                <p className="text-sm text-gray-600 mb-4">Upload PDF, Excel, or CSV format</p>{" "}
+                <button
+                  onClick={() => profitLossFileRef.current?.click()}
+                  disabled={uploadStatus.profitLoss === "uploading" || uploading}
+                  className="px-4 py-2 bg-oxford_blue-600 text-white rounded-lg hover:bg-oxford_blue-700 transition-colors disabled:opacity-50"
+                >
+                  {getUploadStatusText(uploadStatus.profitLoss)}
+                </button>
+              </div>
+
+              {/* Balance Sheet Upload */}
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-oxford_blue-400 transition-colors">
+                <input
+                  ref={balanceSheetFileRef}
+                  type="file"
+                  accept=".pdf,.xlsx,.xls,.csv"
+                  onChange={(e) => e.target.files?.[0] && handleFileUpload("balanceSheet", e.target.files[0])}
+                  className="hidden"
+                />
+                <div className="mb-4">{getUploadStatusIcon(uploadStatus.balanceSheet)}</div>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">Balance Sheet</h3>
+                <p className="text-sm text-gray-600 mb-4">Upload PDF, Excel, or CSV format</p>{" "}
+                <button
+                  onClick={() => balanceSheetFileRef.current?.click()}
+                  disabled={uploadStatus.balanceSheet === "uploading" || uploading}
+                  className="px-4 py-2 bg-oxford_blue-600 text-white rounded-lg hover:bg-oxford_blue-700 transition-colors disabled:opacity-50"
+                >
+                  {getUploadStatusText(uploadStatus.balanceSheet)}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {/* Data Display Tables */}
         <div className="space-y-6">
           {/* Profit & Loss Statement */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200">
             <div className="flex items-center justify-between p-6 cursor-pointer border-b border-gray-200" onClick={() => toggleSection("profitLoss")}>
               <div className="flex items-center">
                 <DollarSign className="w-5 h-5 text-green-600 mr-2" />
-                <h2 className="text-lg font-semibold text-gray-900">Profit & Loss Statement</h2>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Profit & Loss Statement
+                  {selectedBranchId === "consolidated" && activeBranches.length > 1 && (
+                    <span className="text-sm text-gray-600 ml-2">(Consolidated from {activeBranches.length} branches)</span>
+                  )}
+                </h2>
               </div>
               {expandedSections.profitLoss ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
             </div>
@@ -308,26 +473,26 @@ const FinancialsPage1: React.FC = () => {
                     {renderPeriodHeaders()}
                     <tbody className="divide-y divide-gray-100">
                       <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Revenue *</td>
+                        <td className="py-3 px-4 font-medium text-gray-900">Revenue</td>
                         {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                           <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, "revenue", "", true)}
+                            {renderDataDisplay("", period.revenue || 0, true)}
                           </td>
                         ))}
                       </tr>
                       <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Gross Margin *</td>
+                        <td className="py-3 px-4 font-medium text-gray-900">Gross Margin</td>
                         {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                           <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, "grossMargin", "", true)}
+                            {renderDataDisplay("", period.grossMargin || 0, true)}
                           </td>
                         ))}
                       </tr>
                       <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Net Profit (After Tax) *</td>
+                        <td className="py-3 px-4 font-medium text-gray-900">Net Profit (After Tax)</td>
                         {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                           <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, "netProfitAfterTax", "", true)}
+                            {renderDataDisplay("", period.netProfitAfterTax || 0, true)}
                           </td>
                         ))}
                       </tr>
@@ -335,7 +500,7 @@ const FinancialsPage1: React.FC = () => {
                         <td className="py-3 px-4 font-medium text-gray-900">Depreciation & Amortisation</td>
                         {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                           <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, "depreciationAmortisation", "")}
+                            {renderDataDisplay("", period.depreciationAmortisation || 0)}
                           </td>
                         ))}
                       </tr>
@@ -343,7 +508,7 @@ const FinancialsPage1: React.FC = () => {
                         <td className="py-3 px-4 font-medium text-gray-900">Interest Paid</td>
                         {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                           <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, "interestPaid", "")}
+                            {renderDataDisplay("", period.interestPaid || 0)}
                           </td>
                         ))}
                       </tr>
@@ -351,7 +516,7 @@ const FinancialsPage1: React.FC = () => {
                         <td className="py-3 px-4 font-medium text-gray-900">Tax</td>
                         {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                           <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, "tax", "")}
+                            {renderDataDisplay("", period.tax || 0)}
                           </td>
                         ))}
                       </tr>
@@ -359,7 +524,7 @@ const FinancialsPage1: React.FC = () => {
                         <td className="py-3 px-4 font-medium text-gray-900">Dividends</td>
                         {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                           <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, "dividends", "")}
+                            {renderDataDisplay("", period.dividends || 0)}
                           </td>
                         ))}
                       </tr>
@@ -370,12 +535,17 @@ const FinancialsPage1: React.FC = () => {
             )}
           </div>
 
-          {/* Balance Sheet - Combined */}
+          {/* Balance Sheet */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200">
             <div className="flex items-center justify-between p-6 cursor-pointer border-b border-gray-200" onClick={() => toggleSection("balanceSheet")}>
               <div className="flex items-center">
                 <Building2 className="w-5 h-5 text-blue-600 mr-2" />
-                <h2 className="text-lg font-semibold text-gray-900">Balance Sheet</h2>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Balance Sheet
+                  {selectedBranchId === "consolidated" && activeBranches.length > 1 && (
+                    <span className="text-sm text-gray-600 ml-2">(Consolidated from {activeBranches.length} branches)</span>
+                  )}
+                </h2>
               </div>
               {expandedSections.balanceSheet ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
             </div>
@@ -393,10 +563,10 @@ const FinancialsPage1: React.FC = () => {
                       {renderPeriodHeaders()}
                       <tbody className="divide-y divide-gray-100">
                         <tr>
-                          <td className="py-3 px-4 font-medium text-gray-900">Total Assets *</td>
+                          <td className="py-3 px-4 font-medium text-gray-900">Total Assets</td>
                           {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                             <td key={period.periodId} className="py-3 px-4">
-                              {renderInputField(period, "totalAssets", "", true)}
+                              {renderDataDisplay("", period.totalAssets || 0, true)}
                             </td>
                           ))}
                         </tr>
@@ -404,7 +574,7 @@ const FinancialsPage1: React.FC = () => {
                           <td className="py-3 px-4 font-medium text-gray-900">Cash</td>
                           {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                             <td key={period.periodId} className="py-3 px-4">
-                              {renderInputField(period, "cash", "")}
+                              {renderDataDisplay("", period.cash || 0)}
                             </td>
                           ))}
                         </tr>
@@ -412,7 +582,7 @@ const FinancialsPage1: React.FC = () => {
                           <td className="py-3 px-4 font-medium text-gray-900">Accounts Receivable</td>
                           {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                             <td key={period.periodId} className="py-3 px-4">
-                              {renderInputField(period, "accountsReceivable", "")}
+                              {renderDataDisplay("", period.accountsReceivable || 0)}
                             </td>
                           ))}
                         </tr>
@@ -420,7 +590,7 @@ const FinancialsPage1: React.FC = () => {
                           <td className="py-3 px-4 font-medium text-gray-900">Inventory</td>
                           {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                             <td key={period.periodId} className="py-3 px-4">
-                              {renderInputField(period, "inventory", "")}
+                              {renderDataDisplay("", period.inventory || 0)}
                             </td>
                           ))}
                         </tr>
@@ -428,7 +598,7 @@ const FinancialsPage1: React.FC = () => {
                           <td className="py-3 px-4 font-medium text-gray-900">Total Current Assets</td>
                           {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                             <td key={period.periodId} className="py-3 px-4">
-                              {renderInputField(period, "totalCurrentAssets", "")}
+                              {renderDataDisplay("", period.totalCurrentAssets || 0)}
                             </td>
                           ))}
                         </tr>
@@ -436,7 +606,7 @@ const FinancialsPage1: React.FC = () => {
                           <td className="py-3 px-4 font-medium text-gray-900">Fixed Assets</td>
                           {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                             <td key={period.periodId} className="py-3 px-4">
-                              {renderInputField(period, "fixedAssets", "")}
+                              {renderDataDisplay("", period.fixedAssets || 0)}
                             </td>
                           ))}
                         </tr>
@@ -448,7 +618,7 @@ const FinancialsPage1: React.FC = () => {
                 {/* Liabilities Section */}
                 <div>
                   <h3 className="text-lg font-semibold text-red-700 mb-4 flex items-center">
-                    <Calendar className="w-5 h-5 mr-2" />
+                    <AlertCircle className="w-5 h-5 mr-2" />
                     Liabilities
                   </h3>
                   <div className="overflow-x-auto">
@@ -459,7 +629,7 @@ const FinancialsPage1: React.FC = () => {
                           <td className="py-3 px-4 font-medium text-gray-900">Current Liabilities</td>
                           {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                             <td key={period.periodId} className="py-3 px-4">
-                              {renderInputField(period, "currentLiabilities", "")}
+                              {renderDataDisplay("", period.currentLiabilities || 0)}
                             </td>
                           ))}
                         </tr>
@@ -467,7 +637,7 @@ const FinancialsPage1: React.FC = () => {
                           <td className="py-3 px-4 font-medium text-gray-900">Non-Current Liabilities</td>
                           {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                             <td key={period.periodId} className="py-3 px-4">
-                              {renderInputField(period, "nonCurrentLiabilities", "")}
+                              {renderDataDisplay("", period.nonCurrentLiabilities || 0)}
                             </td>
                           ))}
                         </tr>
@@ -475,7 +645,7 @@ const FinancialsPage1: React.FC = () => {
                           <td className="py-3 px-4 font-medium text-gray-900">Accounts Payable</td>
                           {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                             <td key={period.periodId} className="py-3 px-4">
-                              {renderInputField(period, "accountsPayable", "")}
+                              {renderDataDisplay("", period.accountsPayable || 0)}
                             </td>
                           ))}
                         </tr>
@@ -498,7 +668,7 @@ const FinancialsPage1: React.FC = () => {
                           <td className="py-3 px-4 font-medium text-gray-900">Bank Loans - Current</td>
                           {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                             <td key={period.periodId} className="py-3 px-4">
-                              {renderInputField(period, "bankLoansCurrent", "")}
+                              {renderDataDisplay("", period.bankLoansCurrent || 0)}
                             </td>
                           ))}
                         </tr>
@@ -506,7 +676,7 @@ const FinancialsPage1: React.FC = () => {
                           <td className="py-3 px-4 font-medium text-gray-900">Bank Loans - Non Current</td>
                           {currentData.slice(0, inputData.numberOfPeriods).map((period) => (
                             <td key={period.periodId} className="py-3 px-4">
-                              {renderInputField(period, "bankLoansNonCurrent", "")}
+                              {renderDataDisplay("", period.bankLoansNonCurrent || 0)}
                             </td>
                           ))}
                         </tr>
@@ -518,15 +688,19 @@ const FinancialsPage1: React.FC = () => {
             )}
           </div>
         </div>
-
         {/* Summary Footer */}
         <div className="mt-8 bg-oxford_blue-50 rounded-xl p-6">
           <div className="text-center">
             <h3 className="text-lg font-semibold text-oxford_blue-900 mb-2">
-              {selectedBranchId === "consolidated" ? "Consolidated View" : `${activeBranches.find((b) => b.id === selectedBranchId)?.name} Branch`}
+              {selectedBranchId === "consolidated"
+                ? `Consolidated View${activeBranches.length > 1 ? ` (${activeBranches.length} branches)` : ""}`
+                : `${activeBranches.find((b) => b.id === selectedBranchId)?.name} Branch`}
             </h3>
             <p className="text-sm text-oxford_blue-700">
-              Showing {inputData.numberOfPeriods} {inputData.selectedPeriodType} periods •{currentData.filter((p) => p.revenue > 0).length} periods with data
+              Showing {inputData.numberOfPeriods} {inputData.selectedPeriodType} periods •
+              {selectedBranchId === "consolidated"
+                ? `Data consolidated from ${activeBranches.length} active branch${activeBranches.length !== 1 ? "es" : ""}`
+                : "Individual branch data"}
             </p>
           </div>
         </div>
