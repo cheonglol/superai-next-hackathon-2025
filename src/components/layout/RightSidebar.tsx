@@ -33,7 +33,7 @@ export const RightSidebar: React.FC = () => {
             <button
               onClick={() => setActiveTab("notifications")}
               className={`flex-1 px-4 py-3 text-sm font-medium transition-colors relative ${
-                activeTab === "notifications" ? "text-charcoal-600 border-b-2 border-charcoal-600" : "text-gray-600 hover:text-gray-900"
+                activeTab === "notifications" ? "text-oxford_blue-600 border-b-2 border-oxford_blue-600" : "text-gray-600 hover:text-gray-900"
               }`}
             >
               <Bell className="w-4 h-4 mx-auto" />
@@ -42,7 +42,7 @@ export const RightSidebar: React.FC = () => {
             <button
               onClick={() => setActiveTab("insights")}
               className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
-                activeTab === "insights" ? "text-charcoal-600 border-b-2 border-charcoal-600" : "text-gray-600 hover:text-gray-900"
+                activeTab === "insights" ? "text-oxford_blue-600 border-b-2 border-oxford_blue-600" : "text-gray-600 hover:text-gray-900"
               }`}
             >
               <TrendingUp className="w-4 h-4 mx-auto" />
@@ -102,7 +102,7 @@ export const RightSidebar: React.FC = () => {
                         <div key={insight.id} className="bg-gray-50 rounded-lg p-3">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center">
-                              <TrendingUp className="w-4 h-4 text-charcoal-600 mr-2" />
+                              <TrendingUp className="w-4 h-4 text-oxford_blue-600 mr-2" />
                               <span className="text-sm font-medium text-gray-900">{insight.title}</span>
                             </div>
                             <span className={`text-sm font-bold ${insight.positive ? "text-green-600" : "text-red-600"}`}>{insight.value}</span>
