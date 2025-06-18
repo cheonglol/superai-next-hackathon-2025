@@ -138,9 +138,9 @@ const ReviewAnalyticsPage: React.FC = () => {
               <div className="p-3 bg-orange-100 rounded-lg mr-3">
                 <ChefHat className="w-5 h-5 text-orange-700" />
               </div>
-              <h3 className="text-lg font-semibold text-orange-800">Top Keywords - Food</h3>
+              <h3 className="text-lg font-semibold text-orange-800">Food</h3>
             </div>
-            <KeywordList keywords={data.keywords.food} categoryColor={CATEGORY_COLORS.food} />
+            <KeywordList keywords={data.keywords.food} categoryColor={CATEGORY_COLORS.food} categoryName="Food" />
           </div>
 
           <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-shadow">
@@ -148,9 +148,9 @@ const ReviewAnalyticsPage: React.FC = () => {
               <div className="p-3 bg-blue-100 rounded-lg mr-3">
                 <Users className="w-5 h-5 text-blue-700" />
               </div>
-              <h3 className="text-lg font-semibold text-blue-800">Top Keywords - Service</h3>
+              <h3 className="text-lg font-semibold text-blue-800">Service</h3>
             </div>
-            <KeywordList keywords={data.keywords.service} categoryColor={CATEGORY_COLORS.service} />
+            <KeywordList keywords={data.keywords.service} categoryColor={CATEGORY_COLORS.service} categoryName="Service" />
           </div>
 
           <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-shadow">
@@ -158,9 +158,9 @@ const ReviewAnalyticsPage: React.FC = () => {
               <div className="p-3 bg-purple-100 rounded-lg mr-3">
                 <Heart className="w-5 h-5 text-purple-700" />
               </div>
-              <h3 className="text-lg font-semibold text-purple-800">Top Keywords - Ambience</h3>
+              <h3 className="text-lg font-semibold text-purple-800">Ambience</h3>
             </div>
-            <KeywordList keywords={data.keywords.ambience} categoryColor={CATEGORY_COLORS.ambience} />
+            <KeywordList keywords={data.keywords.ambience} categoryColor={CATEGORY_COLORS.ambience} categoryName="Ambience" />
           </div>
 
           <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-shadow">
@@ -168,9 +168,9 @@ const ReviewAnalyticsPage: React.FC = () => {
               <div className="p-3 bg-emerald-100 rounded-lg mr-3">
                 <DollarSign className="w-5 h-5 text-emerald-700" />
               </div>
-              <h3 className="text-lg font-semibold text-emerald-800">Top Keywords - Value for Money</h3>
+              <h3 className="text-lg font-semibold text-emerald-800">Value for Money</h3>
             </div>
-            <KeywordList keywords={data.keywords.value} categoryColor={CATEGORY_COLORS.value} />
+            <KeywordList keywords={data.keywords.value} categoryColor={CATEGORY_COLORS.value} categoryName="Value for Money" />
           </div>
         </div>
       </div>
