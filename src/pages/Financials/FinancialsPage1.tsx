@@ -18,9 +18,7 @@ const FinancialsPage1: React.FC = () => {
   const [newBranchLocation, setNewBranchLocation] = useState("");
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     profitLoss: true,
-    assets: false,
-    liabilities: false,
-    debt: false,
+    balanceSheet: false,
   });
 
   const inputData = data?.inputData;
@@ -111,6 +109,31 @@ const FinancialsPage1: React.FC = () => {
         placeholder="0"
       />
     </div>
+  );
+
+  const renderPeriodHeaders = () => (
+    <thead>
+      <tr className="border-b border-gray-200">
+        <th className="text-left py-3 px-4 font-medium text-gray-900">Item</th>
+        {currentData.slice(0, inputData?.numberOfPeriods || 4).map(period => (
+          <th key={period.periodId} className="text-center py-3 px-4 font-medium text-gray-900 min-w-[150px]">
+            <div className="space-y-2">
+              <div>{period.periodLabel}</div>
+              <div className="text-xs text-gray-500">
+                <label className="block mb-1">Period Ending Date:</label>
+                <input
+                  type="text"
+                  value={period.date || ''}
+                  onChange={(e) => handleDateChange(period.periodId, e.target.value)}
+                  placeholder="DD-MM-YYYY"
+                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-oxford_blue-500 focus:border-transparent text-center"
+                />
+              </div>
+            </div>
+          </th>
+        ))}
+      </tr>
+    </thead>
   );
 
   if (loading) {
@@ -302,28 +325,7 @@ const FinancialsPage1: React.FC = () => {
               <div className="p-6">
                 <div className="overflow-x-auto">
                   <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-200">
-                        <th className="text-left py-3 px-4 font-medium text-gray-900">Item</th>
-                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
-                          <th key={period.periodId} className="text-center py-3 px-4 font-medium text-gray-900 min-w-[150px]">
-                            <div className="space-y-2">
-                              <div>{period.periodLabel}</div>
-                              <div className="text-xs text-gray-500">
-                                <label className="block mb-1">Period Ending Date:</label>
-                                <input
-                                  type="text"
-                                  value={period.date || ''}
-                                  onChange={(e) => handleDateChange(period.periodId, e.target.value)}
-                                  placeholder="DD-MM-YYYY"
-                                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-oxford_blue-500 focus:border-transparent text-center"
-                                />
-                              </div>
-                            </div>
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
+                    {renderPeriodHeaders()}
                     <tbody className="divide-y divide-gray-100">
                       <tr>
                         <td className="py-3 px-4 font-medium text-gray-900">Revenue *</td>
@@ -388,230 +390,152 @@ const FinancialsPage1: React.FC = () => {
             )}
           </div>
 
-          {/* Balance Sheet - Assets */}
+          {/* Balance Sheet - Combined */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200">
             <div 
               className="flex items-center justify-between p-6 cursor-pointer border-b border-gray-200"
-              onClick={() => toggleSection('assets')}
+              onClick={() => toggleSection('balanceSheet')}
             >
               <div className="flex items-center">
                 <Building2 className="w-5 h-5 text-blue-600 mr-2" />
-                <h2 className="text-lg font-semibold text-gray-900">Balance Sheet - Assets</h2>
+                <h2 className="text-lg font-semibold text-gray-900">Balance Sheet</h2>
               </div>
-              {expandedSections.assets ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
+              {expandedSections.balanceSheet ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
             </div>
             
-            {expandedSections.assets && (
-              <div className="p-6">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-200">
-                        <th className="text-left py-3 px-4 font-medium text-gray-900">Asset Type</th>
-                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
-                          <th key={period.periodId} className="text-center py-3 px-4 font-medium text-gray-900 min-w-[150px]">
-                            <div className="space-y-2">
-                              <div>{period.periodLabel}</div>
-                              <div className="text-xs text-gray-500">
-                                <label className="block mb-1">Period Ending Date:</label>
-                                <input
-                                  type="text"
-                                  value={period.date || ''}
-                                  onChange={(e) => handleDateChange(period.periodId, e.target.value)}
-                                  placeholder="DD-MM-YYYY"
-                                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-oxford_blue-500 focus:border-transparent text-center"
-                                />
-                              </div>
-                            </div>
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Total Assets *</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, 'totalAssets', '', true)}
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Cash</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, 'cash', '')}
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Accounts Receivable</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, 'accountsReceivable', '')}
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Inventory</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, 'inventory', '')}
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Total Current Assets</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, 'totalCurrentAssets', '')}
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Fixed Assets</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, 'fixedAssets', '')}
-                          </td>
-                        ))}
-                      </tr>
-                    </tbody>
-                  </table>
+            {expandedSections.balanceSheet && (
+              <div className="p-6 space-y-8">
+                {/* Assets Section */}
+                <div>
+                  <h3 className="text-lg font-semibold text-blue-700 mb-4 flex items-center">
+                    <Building2 className="w-5 h-5 mr-2" />
+                    Assets
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      {renderPeriodHeaders()}
+                      <tbody className="divide-y divide-gray-100">
+                        <tr>
+                          <td className="py-3 px-4 font-medium text-gray-900">Total Assets *</td>
+                          {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                            <td key={period.periodId} className="py-3 px-4">
+                              {renderInputField(period, 'totalAssets', '', true)}
+                            </td>
+                          ))}
+                        </tr>
+                        <tr>
+                          <td className="py-3 px-4 font-medium text-gray-900">Cash</td>
+                          {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                            <td key={period.periodId} className="py-3 px-4">
+                              {renderInputField(period, 'cash', '')}
+                            </td>
+                          ))}
+                        </tr>
+                        <tr>
+                          <td className="py-3 px-4 font-medium text-gray-900">Accounts Receivable</td>
+                          {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                            <td key={period.periodId} className="py-3 px-4">
+                              {renderInputField(period, 'accountsReceivable', '')}
+                            </td>
+                          ))}
+                        </tr>
+                        <tr>
+                          <td className="py-3 px-4 font-medium text-gray-900">Inventory</td>
+                          {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                            <td key={period.periodId} className="py-3 px-4">
+                              {renderInputField(period, 'inventory', '')}
+                            </td>
+                          ))}
+                        </tr>
+                        <tr>
+                          <td className="py-3 px-4 font-medium text-gray-900">Total Current Assets</td>
+                          {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                            <td key={period.periodId} className="py-3 px-4">
+                              {renderInputField(period, 'totalCurrentAssets', '')}
+                            </td>
+                          ))}
+                        </tr>
+                        <tr>
+                          <td className="py-3 px-4 font-medium text-gray-900">Fixed Assets</td>
+                          {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                            <td key={period.periodId} className="py-3 px-4">
+                              {renderInputField(period, 'fixedAssets', '')}
+                            </td>
+                          ))}
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
 
-          {/* Balance Sheet - Liabilities */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div 
-              className="flex items-center justify-between p-6 cursor-pointer border-b border-gray-200"
-              onClick={() => toggleSection('liabilities')}
-            >
-              <div className="flex items-center">
-                <Calendar className="w-5 h-5 text-red-600 mr-2" />
-                <h2 className="text-lg font-semibold text-gray-900">Balance Sheet - Liabilities</h2>
-              </div>
-              {expandedSections.liabilities ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
-            </div>
-            
-            {expandedSections.liabilities && (
-              <div className="p-6">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-200">
-                        <th className="text-left py-3 px-4 font-medium text-gray-900">Liability Type</th>
-                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
-                          <th key={period.periodId} className="text-center py-3 px-4 font-medium text-gray-900 min-w-[150px]">
-                            <div className="space-y-2">
-                              <div>{period.periodLabel}</div>
-                              <div className="text-xs text-gray-500">
-                                <label className="block mb-1">Period Ending Date:</label>
-                                <input
-                                  type="text"
-                                  value={period.date || ''}
-                                  onChange={(e) => handleDateChange(period.periodId, e.target.value)}
-                                  placeholder="DD-MM-YYYY"
-                                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-oxford_blue-500 focus:border-transparent text-center"
-                                />
-                              </div>
-                            </div>
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Current Liabilities</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, 'currentLiabilities', '')}
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Non-Current Liabilities</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, 'nonCurrentLiabilities', '')}
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Accounts Payable</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, 'accountsPayable', '')}
-                          </td>
-                        ))}
-                      </tr>
-                    </tbody>
-                  </table>
+                {/* Liabilities Section */}
+                <div>
+                  <h3 className="text-lg font-semibold text-red-700 mb-4 flex items-center">
+                    <Calendar className="w-5 h-5 mr-2" />
+                    Liabilities
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      {renderPeriodHeaders()}
+                      <tbody className="divide-y divide-gray-100">
+                        <tr>
+                          <td className="py-3 px-4 font-medium text-gray-900">Current Liabilities</td>
+                          {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                            <td key={period.periodId} className="py-3 px-4">
+                              {renderInputField(period, 'currentLiabilities', '')}
+                            </td>
+                          ))}
+                        </tr>
+                        <tr>
+                          <td className="py-3 px-4 font-medium text-gray-900">Non-Current Liabilities</td>
+                          {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                            <td key={period.periodId} className="py-3 px-4">
+                              {renderInputField(period, 'nonCurrentLiabilities', '')}
+                            </td>
+                          ))}
+                        </tr>
+                        <tr>
+                          <td className="py-3 px-4 font-medium text-gray-900">Accounts Payable</td>
+                          {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                            <td key={period.periodId} className="py-3 px-4">
+                              {renderInputField(period, 'accountsPayable', '')}
+                            </td>
+                          ))}
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
 
-          {/* Debt Funding */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div 
-              className="flex items-center justify-between p-6 cursor-pointer border-b border-gray-200"
-              onClick={() => toggleSection('debt')}
-            >
-              <div className="flex items-center">
-                <DollarSign className="w-5 h-5 text-purple-600 mr-2" />
-                <h2 className="text-lg font-semibold text-gray-900">Debt Funding</h2>
-              </div>
-              {expandedSections.debt ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
-            </div>
-            
-            {expandedSections.debt && (
-              <div className="p-6">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-200">
-                        <th className="text-left py-3 px-4 font-medium text-gray-900">Debt Type</th>
-                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
-                          <th key={period.periodId} className="text-center py-3 px-4 font-medium text-gray-900 min-w-[150px]">
-                            <div className="space-y-2">
-                              <div>{period.periodLabel}</div>
-                              <div className="text-xs text-gray-500">
-                                <label className="block mb-1">Period Ending Date:</label>
-                                <input
-                                  type="text"
-                                  value={period.date || ''}
-                                  onChange={(e) => handleDateChange(period.periodId, e.target.value)}
-                                  placeholder="DD-MM-YYYY"
-                                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-oxford_blue-500 focus:border-transparent text-center"
-                                />
-                              </div>
-                            </div>
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Bank Loans - Current</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, 'bankLoansCurrent', '')}
-                          </td>
-                        ))}
-                      </tr>
-                      <tr>
-                        <td className="py-3 px-4 font-medium text-gray-900">Bank Loans - Non Current</td>
-                        {currentData.slice(0, inputData.numberOfPeriods).map(period => (
-                          <td key={period.periodId} className="py-3 px-4">
-                            {renderInputField(period, 'bankLoansNonCurrent', '')}
-                          </td>
-                        ))}
-                      </tr>
-                    </tbody>
-                  </table>
+                {/* Debt Funding Section */}
+                <div>
+                  <h3 className="text-lg font-semibold text-purple-700 mb-4 flex items-center">
+                    <DollarSign className="w-5 h-5 mr-2" />
+                    Debt Funding
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      {renderPeriodHeaders()}
+                      <tbody className="divide-y divide-gray-100">
+                        <tr>
+                          <td className="py-3 px-4 font-medium text-gray-900">Bank Loans - Current</td>
+                          {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                            <td key={period.periodId} className="py-3 px-4">
+                              {renderInputField(period, 'bankLoansCurrent', '')}
+                            </td>
+                          ))}
+                        </tr>
+                        <tr>
+                          <td className="py-3 px-4 font-medium text-gray-900">Bank Loans - Non Current</td>
+                          {currentData.slice(0, inputData.numberOfPeriods).map(period => (
+                            <td key={period.periodId} className="py-3 px-4">
+                              {renderInputField(period, 'bankLoansNonCurrent', '')}
+                            </td>
+                          ))}
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             )}
