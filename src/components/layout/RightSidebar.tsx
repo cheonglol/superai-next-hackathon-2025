@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { MessageCircle, Bot, Bell, ChevronLeft, ChevronRight, TrendingUp, AlertCircle } from "lucide-react";
+import { Bell, ChevronLeft, ChevronRight, TrendingUp, AlertCircle } from "lucide-react";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useInsights } from "@/hooks/useInsights";
 
 export const RightSidebar: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [activeTab, setActiveTab] = useState<"chat" | "notifications" | "insights">("chat");
+  const [activeTab, setActiveTab] = useState<"notifications" | "insights">("notifications");
 
   const { notifications, unreadCount, markAsRead } = useNotifications();
   const { data: insights } = useInsights();
@@ -31,14 +31,6 @@ export const RightSidebar: React.FC = () => {
           {/* Tab Navigation */}
           <div className="flex border-b border-gray-200">
             <button
-              onClick={() => setActiveTab("chat")}
-              className={`flex-1 px-4 py-3 text-sm font-medium transition-colors ${
-                activeTab === "chat" ? "text-oxford_blue-600 border-b-2 border-oxford_blue-600" : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              <MessageCircle className="w-4 h-4 mx-auto" />
-            </button>
-            <button
               onClick={() => setActiveTab("notifications")}
               className={`flex-1 px-4 py-3 text-sm font-medium transition-colors relative ${
                 activeTab === "notifications" ? "text-oxford_blue-600 border-b-2 border-oxford_blue-600" : "text-gray-600 hover:text-gray-900"
@@ -59,38 +51,6 @@ export const RightSidebar: React.FC = () => {
 
           {/* Content Area */}
           <div className="flex-1 overflow-y-auto">
-            {activeTab === "chat" && (
-              <div className="p-4">
-                <div className="flex items-center mb-4">
-                  <div className="p-2 bg-oxford_blue-100 rounded-lg mr-3">
-                    <Bot className="w-5 h-5 text-oxford_blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-gray-900">AI Assistant</h3>
-                    <p className="text-xs text-gray-500">Ask about your data</p>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="bg-gray-50 rounded-lg p-3">
-                    <p className="text-sm text-gray-700">Hi! I can help you understand your analytics. Try asking:</p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <button className="w-full text-left p-3 bg-oxford_blue-50 hover:bg-oxford_blue-100 rounded-lg transition-colors">
-                      <p className="text-sm font-medium text-oxford_blue-900">How are my reviews trending?</p>
-                    </button>
-                    <button className="w-full text-left p-3 bg-oxford_blue-50 hover:bg-oxford_blue-100 rounded-lg transition-colors">
-                      <p className="text-sm font-medium text-oxford_blue-900">What's my best performing content?</p>
-                    </button>
-                    <button className="w-full text-left p-3 bg-oxford_blue-50 hover:bg-oxford_blue-100 rounded-lg transition-colors">
-                      <p className="text-sm font-medium text-oxford_blue-900">Show me improvement areas</p>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {activeTab === "notifications" && (
               <div className="p-4">
                 <div className="space-y-3">
@@ -190,9 +150,6 @@ export const RightSidebar: React.FC = () => {
 
       {isCollapsed && (
         <div className="flex flex-col items-center py-4 space-y-4">
-          <button className="p-3 hover:bg-gray-100 rounded-lg transition-colors">
-            <MessageCircle className="w-5 h-5 text-gray-600" />
-          </button>
           <button className="p-3 hover:bg-gray-100 rounded-lg transition-colors relative">
             <Bell className="w-5 h-5 text-gray-600" />
             {unreadCount > 0 && <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>}

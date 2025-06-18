@@ -140,7 +140,7 @@ const ReviewAnalyticsPage: React.FC = () => {
               <ChefHat className="w-5 h-5 text-orange-600 mr-2" />
               <h3 className="text-lg font-semibold text-orange-700">Top Keywords - Food</h3>
             </div>
-            <KeywordList keywords={data.keywords.food} categoryColor={CATEGORY_COLORS.food} />
+            <KeywordList keywords={data.keywords.food} categoryColor={CATEGORY_COLORS.food} categoryName={""} />
           </div>
 
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -148,7 +148,7 @@ const ReviewAnalyticsPage: React.FC = () => {
               <Users className="w-5 h-5 text-blue-600 mr-2" />
               <h3 className="text-lg font-semibold text-blue-700">Top Keywords - Service</h3>
             </div>
-            <KeywordList keywords={data.keywords.service} categoryColor={CATEGORY_COLORS.service} />
+            <KeywordList keywords={data.keywords.service} categoryColor={CATEGORY_COLORS.service} categoryName={""} />
           </div>
 
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -156,7 +156,7 @@ const ReviewAnalyticsPage: React.FC = () => {
               <Heart className="w-5 h-5 text-purple-600 mr-2" />
               <h3 className="text-lg font-semibold text-purple-700">Top Keywords - Ambience</h3>
             </div>
-            <KeywordList keywords={data.keywords.ambience} categoryColor={CATEGORY_COLORS.ambience} />
+            <KeywordList keywords={data.keywords.ambience} categoryColor={CATEGORY_COLORS.ambience} categoryName={""} />
           </div>
 
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -164,7 +164,7 @@ const ReviewAnalyticsPage: React.FC = () => {
               <DollarSign className="w-5 h-5 text-green-600 mr-2" />
               <h3 className="text-lg font-semibold text-green-700">Top Keywords - Value for Money</h3>
             </div>
-            <KeywordList keywords={data.keywords.value} categoryColor={CATEGORY_COLORS.value} />
+            <KeywordList keywords={data.keywords.value} categoryColor={CATEGORY_COLORS.value} categoryName={""} />
           </div>
         </div>
 
