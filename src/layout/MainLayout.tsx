@@ -72,17 +72,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
       {/* Left Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out ${
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-charcoal-500 border-r border-charcoal-400 transform transition-transform duration-300 ease-in-out ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 lg:static lg:flex-shrink-0`}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="flex items-center px-6 py-8 border-b border-gray-200">
-            <BarChart3 className="w-8 h-8 text-charcoal-600 mr-3" />
+          <div className="flex items-center px-6 py-8 border-b border-charcoal-400">
+            <BarChart3 className="w-8 h-8 text-caribbean_current-400 mr-3" />
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Analytics Hub</h1>
-              <p className="text-sm text-gray-500">Business Insights</p>
+              <h1 className="text-xl font-bold text-white">Analytics Hub</h1>
+              <p className="text-sm text-cadet_gray-400">Business Insights</p>
             </div>
           </div>
 
@@ -100,11 +100,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   onClick={handleLinkClick}
                   className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
                     isActive
-                      ? "bg-charcoal-50 text-charcoal-700 border-r-2 border-charcoal-600"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                      ? "bg-charcoal-400 text-white border-r-2 border-caribbean_current-400"
+                      : "text-cadet_gray-300 hover:bg-charcoal-400 hover:text-white"
                   }`}
                 >
-                  <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-charcoal-600" : "text-gray-400"}`} />
+                  <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-caribbean_current-400" : "text-cadet_gray-400"}`} />
                   {item.label}
                 </Link>
               );
@@ -115,9 +115,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <>
                 <div className="pt-6 pb-2">
                   <div className="flex items-center">
-                    <div className="flex-1 border-t border-gray-200"></div>
-                    <span className="px-3 text-xs font-medium text-caribbean_current-600 bg-gray-50">Social Media Insights</span>
-                    <div className="flex-1 border-t border-gray-200"></div>
+                    <div className="flex-1 border-t border-charcoal-400"></div>
+                    <span className="px-3 text-xs font-medium text-caribbean_current-400 bg-charcoal-500">Social Media Insights</span>
+                    <div className="flex-1 border-t border-charcoal-400"></div>
                   </div>
                 </div>
                 {groupedItems["Social Media Insights"].map((item) => {
@@ -131,11 +131,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       onClick={handleLinkClick}
                       className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
                         isActive
-                          ? "bg-caribbean_current-50 text-caribbean_current-700 border-r-2 border-caribbean_current-600"
-                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                          ? "bg-caribbean_current-800 text-caribbean_current-100 border-r-2 border-caribbean_current-400"
+                          : "text-cadet_gray-300 hover:bg-charcoal-400 hover:text-white"
                       }`}
                     >
-                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-caribbean_current-600" : "text-gray-400"}`} />
+                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-caribbean_current-400" : "text-cadet_gray-400"}`} />
                       {item.label}
                     </Link>
                   );
@@ -148,9 +148,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <>
                 <div className="pt-6 pb-2">
                   <div className="flex items-center">
-                    <div className="flex-1 border-t border-gray-200"></div>
-                    <span className="px-3 text-xs font-medium text-prussian_blue-600 bg-gray-50">Financials</span>
-                    <div className="flex-1 border-t border-gray-200"></div>
+                    <div className="flex-1 border-t border-charcoal-400"></div>
+                    <span className="px-3 text-xs font-medium text-prussian_blue-400 bg-charcoal-500">Financials</span>
+                    <div className="flex-1 border-t border-charcoal-400"></div>
                   </div>
                 </div>
                 {groupedItems["Financials"].map((item) => {
@@ -164,11 +164,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                       onClick={handleLinkClick}
                       className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
                         isActive
-                          ? "bg-prussian_blue-50 text-prussian_blue-700 border-r-2 border-prussian_blue-600"
-                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                          ? "bg-prussian_blue-800 text-prussian_blue-100 border-r-2 border-prussian_blue-400"
+                          : "text-cadet_gray-300 hover:bg-charcoal-400 hover:text-white"
                       }`}
                     >
-                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-prussian_blue-600" : "text-gray-400"}`} />
+                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-prussian_blue-400" : "text-cadet_gray-400"}`} />
                       {item.label}
                     </Link>
                   );
@@ -178,8 +178,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           </nav>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-gray-200">
-            <p className="text-xs text-gray-500">© 2025 Analytics Hub</p>
+          <div className="px-6 py-4 border-t border-charcoal-400">
+            <p className="text-xs text-cadet_gray-500">© 2025 Analytics Hub</p>
           </div>
         </div>
       </div>
