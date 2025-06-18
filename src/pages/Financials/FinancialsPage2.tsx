@@ -9,7 +9,7 @@ const FinancialsPage2: React.FC = () => {
         <PageHeader
           title="Financial Analytics - Page 2"
           description="Advanced financial reporting and trend analysis"
-          icon={<PieChart className="w-8 h-8 text-prussian_blue-600" />}
+          icon={<PieChart className="w-8 h-8 text-oxford_blue-600" />}
         />
 
         {/* Placeholder Content */}
@@ -17,7 +17,7 @@ const FinancialsPage2: React.FC = () => {
           {/* Cash Flow Card */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="flex items-center mb-6">
-              <TrendingUp className="w-5 h-5 text-caribbean_current-600 mr-2" />
+              <TrendingUp className="w-5 h-5 text-blue-600 mr-2" />
               <h2 className="text-xl font-semibold text-gray-900">Cash Flow Analysis</h2>
             </div>
             <div className="text-center py-12">
@@ -32,7 +32,7 @@ const FinancialsPage2: React.FC = () => {
           {/* Budget vs Actual Card */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="flex items-center mb-6">
-              <BarChart3 className="w-5 h-5 text-charcoal-600 mr-2" />
+              <BarChart3 className="w-5 h-5 text-purple-600 mr-2" />
               <h2 className="text-xl font-semibold text-gray-900">Budget vs Actual</h2>
             </div>
             <div className="text-center py-12">
@@ -48,7 +48,7 @@ const FinancialsPage2: React.FC = () => {
         {/* Financial Forecasting */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
           <div className="flex items-center mb-6">
-            <DollarSign className="w-5 h-5 text-prussian_blue-600 mr-2" />
+            <DollarSign className="w-5 h-5 text-green-600 mr-2" />
             <h2 className="text-xl font-semibold text-gray-900">Financial Forecasting</h2>
           </div>
           <div className="text-center py-16">
@@ -64,7 +64,7 @@ const FinancialsPage2: React.FC = () => {
         {/* Performance Indicators */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center mb-6">
-            <BarChart3 className="w-5 h-5 text-charcoal-600 mr-2" />
+            <BarChart3 className="w-5 h-5 text-oxford_blue-600 mr-2" />
             <h2 className="text-xl font-semibold text-gray-900">Key Performance Indicators</h2>
           </div>
           

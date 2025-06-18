@@ -1,16 +1,8 @@
+import MainLayout from "@/layout/MainLayout";
+import { DashboardPage, ErrorBoundaryPage, FinancialsPage1, FinancialsPage2, ReviewAnalyticsPage, SocialMediaFootprintPage, TrendingContentPage } from "@/pages";
+import { ReactElement } from "react";
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 import ProtectedRoute from "./logic/ProtectedRouteLogic";
-import { 
-  ErrorBoundaryPage, 
-  DashboardPage, 
-  ReviewAnalyticsPage, 
-  SocialMediaFootprintPage, 
-  TrendingContentPage,
-  FinancialsPage1,
-  FinancialsPage2
-} from "@/pages";
-import MainLayout from "@/layout/MainLayout";
-import { ReactElement } from "react";
 
 const ROOT_PATH = "";
 

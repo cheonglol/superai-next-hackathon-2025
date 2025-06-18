@@ -15,6 +15,7 @@ const FinancialsPage1: React.FC = () => {
   
   const [showAddBranch, setShowAddBranch] = useState(false);
   const [newBranchName, setNewBranchName] = useState("");
+  const [newBranchLocation, setNewBranchLocation] = useState("");
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     profitLoss: true,
     balanceSheet: false,
@@ -71,13 +72,14 @@ const FinancialsPage1: React.FC = () => {
   };
 
   const handleAddBranch = () => {
-    if (newBranchName.trim()) {
+    if (newBranchName.trim() && newBranchLocation.trim()) {
       dispatch(addBranch({
         name: newBranchName.trim(),
-        location: "", // Default empty location since it's not required
+        location: newBranchLocation.trim(),
         isActive: true,
       }));
       setNewBranchName("");
+      setNewBranchLocation("");
       setShowAddBranch(false);
     }
   };
@@ -103,7 +105,7 @@ const FinancialsPage1: React.FC = () => {
         type="number"
         value={(period[field] as number) || ''}
         onChange={(e) => handleFieldChange(period.periodId, field, e.target.value)}
-        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-prussian_blue-500 focus:border-transparent"
+        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
         placeholder="0"
       />
     </div>
@@ -124,7 +126,7 @@ const FinancialsPage1: React.FC = () => {
                   value={period.date || ''}
                   onChange={(e) => handleDateChange(period.periodId, e.target.value)}
                   placeholder="DD-MM-YYYY"
-                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-prussian_blue-500 focus:border-transparent text-center"
+                  className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:ring-1 focus:ring-oxford_blue-500 focus:border-transparent text-center"
                 />
               </div>
             </div>
@@ -163,12 +165,12 @@ const FinancialsPage1: React.FC = () => {
         <PageHeader
           title="Financial Data Input"
           description="Input and manage financial data across all branches"
-          icon={<DollarSign className="w-8 h-8 text-prussian_blue-600" />}
+          icon={<DollarSign className="w-8 h-8 text-oxford_blue-600" />}
           actions={
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex items-center px-4 py-2 bg-prussian_blue-600 text-white rounded-lg hover:bg-prussian_blue-700 transition-colors disabled:opacity-50"
+              className="flex items-center px-4 py-2 bg-oxford_blue-600 text-white rounded-lg hover:bg-oxford_blue-700 transition-colors disabled:opacity-50"
             >
               {saving ? <LoadingSpinner size="sm" className="mr-2" /> : <Save className="w-4 h-4 mr-2" />}
               Save Data
@@ -179,7 +181,7 @@ const FinancialsPage1: React.FC = () => {
         {/* Configuration Panel */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center mb-4">
-            <Settings className="w-5 h-5 text-prussian_blue-600 mr-2" />
+            <Settings className="w-5 h-5 text-oxford_blue-600 mr-2" />
             <h2 className="text-lg font-semibold text-gray-900">Configuration</h2>
           </div>
           
@@ -190,7 +192,7 @@ const FinancialsPage1: React.FC = () => {
               <select
                 value={inputData.selectedPeriodType}
                 onChange={(e) => dispatch(setPeriodType(e.target.value as any))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-prussian_blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
               >
                 {periodTypes.map(type => (
                   <option key={type.value} value={type.value}>{type.label}</option>
@@ -204,7 +206,7 @@ const FinancialsPage1: React.FC = () => {
               <select
                 value={inputData.numberOfPeriods}
                 onChange={(e) => dispatch(setNumberOfPeriods(parseInt(e.target.value)))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-prussian_blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
               >
                 {[2, 3, 4, 5, 6].map(num => (
                   <option key={num} value={num}>{num} Periods</option>
@@ -217,7 +219,7 @@ const FinancialsPage1: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">Manage Branches</label>
               <button
                 onClick={() => setShowAddBranch(!showAddBranch)}
-                className="flex items-center px-3 py-2 bg-caribbean_current-600 text-white rounded-md hover:bg-caribbean_current-700 transition-colors"
+                className="flex items-center px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add Branch
@@ -229,15 +231,25 @@ const FinancialsPage1: React.FC = () => {
           {showAddBranch && (
             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
               <h3 className="text-sm font-semibold text-gray-900 mb-3">Add New Branch</h3>
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-gray-700 mb-1">Branch Name</label>
                   <input
                     type="text"
                     value={newBranchName}
                     onChange={(e) => setNewBranchName(e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-prussian_blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
                     placeholder="e.g., Downtown Branch"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-700 mb-1">Location</label>
+                  <input
+                    type="text"
+                    value={newBranchLocation}
+                    onChange={(e) => setNewBranchLocation(e.target.value)}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-oxford_blue-500 focus:border-transparent"
+                    placeholder="e.g., 123 Main St"
                   />
                 </div>
               </div>
@@ -250,7 +262,7 @@ const FinancialsPage1: React.FC = () => {
                 </button>
                 <button
                   onClick={handleAddBranch}
-                  className="px-3 py-2 text-sm bg-prussian_blue-600 text-white rounded-md hover:bg-prussian_blue-700"
+                  className="px-3 py-2 text-sm bg-oxford_blue-600 text-white rounded-md hover:bg-oxford_blue-700"
                 >
                   Add Branch
                 </button>
@@ -262,7 +274,7 @@ const FinancialsPage1: React.FC = () => {
         {/* Branch Selection */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center mb-4">
-            <Building2 className="w-5 h-5 text-prussian_blue-600 mr-2" />
+            <Building2 className="w-5 h-5 text-oxford_blue-600 mr-2" />
             <h2 className="text-lg font-semibold text-gray-900">Select Branch/View</h2>
           </div>
           
@@ -271,7 +283,7 @@ const FinancialsPage1: React.FC = () => {
               onClick={() => dispatch(setSelectedBranch('consolidated'))}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 selectedBranchId === 'consolidated'
-                  ? 'bg-prussian_blue-600 text-white'
+                  ? 'bg-oxford_blue-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
@@ -284,7 +296,7 @@ const FinancialsPage1: React.FC = () => {
                 onClick={() => dispatch(setSelectedBranch(branch.id))}
                 className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                   selectedBranchId === branch.id
-                    ? 'bg-prussian_blue-600 text-white'
+                    ? 'bg-oxford_blue-600 text-white'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
@@ -303,7 +315,7 @@ const FinancialsPage1: React.FC = () => {
               onClick={() => toggleSection('profitLoss')}
             >
               <div className="flex items-center">
-                <DollarSign className="w-5 h-5 text-caribbean_current-600 mr-2" />
+                <DollarSign className="w-5 h-5 text-green-600 mr-2" />
                 <h2 className="text-lg font-semibold text-gray-900">Profit & Loss Statement</h2>
               </div>
               {expandedSections.profitLoss ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
@@ -385,7 +397,7 @@ const FinancialsPage1: React.FC = () => {
               onClick={() => toggleSection('balanceSheet')}
             >
               <div className="flex items-center">
-                <Building2 className="w-5 h-5 text-charcoal-600 mr-2" />
+                <Building2 className="w-5 h-5 text-blue-600 mr-2" />
                 <h2 className="text-lg font-semibold text-gray-900">Balance Sheet</h2>
               </div>
               {expandedSections.balanceSheet ? <EyeOff className="w-5 h-5 text-gray-400" /> : <Eye className="w-5 h-5 text-gray-400" />}
@@ -395,7 +407,7 @@ const FinancialsPage1: React.FC = () => {
               <div className="p-6 space-y-8">
                 {/* Assets Section */}
                 <div>
-                  <h3 className="text-lg font-semibold text-charcoal-700 mb-4 flex items-center">
+                  <h3 className="text-lg font-semibold text-blue-700 mb-4 flex items-center">
                     <Building2 className="w-5 h-5 mr-2" />
                     Assets
                   </h3>
@@ -531,12 +543,12 @@ const FinancialsPage1: React.FC = () => {
         </div>
 
         {/* Summary Footer */}
-        <div className="mt-8 bg-prussian_blue-50 rounded-xl p-6">
+        <div className="mt-8 bg-oxford_blue-50 rounded-xl p-6">
           <div className="text-center">
-            <h3 className="text-lg font-semibold text-prussian_blue-900 mb-2">
+            <h3 className="text-lg font-semibold text-oxford_blue-900 mb-2">
               {selectedBranchId === 'consolidated' ? 'Consolidated View' : `${activeBranches.find(b => b.id === selectedBranchId)?.name} Branch`}
             </h3>
-            <p className="text-sm text-prussian_blue-700">
+            <p className="text-sm text-oxford_blue-700">
               Showing {inputData.numberOfPeriods} {inputData.selectedPeriodType} periods • 
               {currentData.filter(p => p.revenue > 0).length} periods with data
             </p>
