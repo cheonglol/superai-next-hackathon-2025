@@ -9,6 +9,7 @@ export interface FinancialsState {
   error: string | null;
   lastUpdated: string | null;
   saving: boolean;
+  uploading: boolean;
   selectedBranchId: string | 'consolidated';
 }
 
@@ -21,6 +22,7 @@ const initialState: FinancialsState = {
   error: null,
   lastUpdated: null,
   saving: false,
+  uploading: false,
   selectedBranchId: 'consolidated',
 };
 
@@ -88,6 +90,30 @@ export const addBranch = createAsyncThunk(
         error instanceof Error
           ? error.message
           : "Failed to add branch";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
+
+export const uploadFinancialDocument = createAsyncThunk(
+  "financials/uploadDocument",
+  async ({ branchId, documentType, file }: { branchId: string; documentType: 'profitLoss' | 'balanceSheet'; file: File }, { rejectWithValue }) => {
+    try {
+      // Simulate document processing and data extraction
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // In a real implementation, this would:
+      // 1. Upload the file to the server
+      // 2. Process the document using OCR/parsing
+      // 3. Extract financial data automatically
+      // 4. Return structured data to populate the forms
+      
+      return { branchId, documentType, extractedData: {} };
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to upload and process document";
       return rejectWithValue(errorMessage);
     }
   }
@@ -177,6 +203,18 @@ const financialsSlice = createSlice({
         if (state.data?.inputData) {
           state.data.inputData.branches.push(action.payload);
         }
+      })
+      .addCase(uploadFinancialDocument.pending, (state) => {
+        state.uploading = true;
+      })
+      .addCase(uploadFinancialDocument.fulfilled, (state) => {
+        state.uploading = false;
+        // In a real implementation, this would update the financial data
+        // with the extracted information from the uploaded document
+      })
+      .addCase(uploadFinancialDocument.rejected, (state, action) => {
+        state.uploading = false;
+        state.error = action.payload as string;
       });
   },
 });
