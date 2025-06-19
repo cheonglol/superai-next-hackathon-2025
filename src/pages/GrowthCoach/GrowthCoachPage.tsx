@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Bot, MessageCircle, Send, Sparkles, Brain, CheckCircle, FileText, User, TrendingUp, Heart } from "lucide-react";
+import { PageHeader } from "@/components/common/PageHeader";
+import { Bot, Brain, CheckCircle, FileText, Heart, MessageCircle, Send, Sparkles, TrendingUp, User } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { PageHeader } from "@/components/common/PageHeader";
-import { growthDocuments, DocumentKey } from "../../data/growthDocuments";
-import { sambanovaService, SambanovaMessage } from "../../services/sambanovaService";
+import { DocumentKey, growthDocuments } from "../../data/growthDocuments";
+import { SambanovaMessage, sambanovaService } from "../../services/sambanovaService";
 
 // Hybrid Message Renderer Component
 interface MessageRendererProps {

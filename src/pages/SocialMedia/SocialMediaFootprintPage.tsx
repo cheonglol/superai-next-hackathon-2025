@@ -1,8 +1,52 @@
 import React, { useState } from "react";
-import { Share2, Users, Eye, Heart, MessageCircle, TrendingUp, ChevronDown } from "lucide-react";
+import { Share2, Users, Eye, Heart, MessageCircle, TrendingUp, ChevronDown, X, CheckCircle } from "lucide-react";
 
 const SocialMediaFootprintPage: React.FC = () => {
   const [selectedTimeframe, setSelectedTimeframe] = useState("Last 30 Days");
+  const [showAISuggestions, setShowAISuggestions] = useState(false);
+
+  // Show AI suggestions automatically after a delay when page loads
+  React.useEffect(() => {
+    // Show the toast automatically after 3 seconds
+    const timer = setTimeout(() => {
+      showAISuggestionsToast();
+    }, 3000);
+
+    // Clean up the timer
+    return () => clearTimeout(timer);
+  }, []); // AI suggestions data
+  const aiSuggestions = {
+    reviewTarget: "@foodie_sara's post about truffle pasta",
+    suggestions: [
+      "Repost this positive review on your Instagram with a thank you note",
+      "Create a 'Foodie Sara's Choice' special menu item",
+      "Offer a discount to customers who mention this review",
+    ],
+    impactMetrics: {
+      engagementBoost: "+18%",
+      potentialReach: "2.4K followers",
+    },
+  };
+  // Function to show AI suggestions toast
+  const showAISuggestionsToast = (postId = 1) => {
+    // Update AI suggestions based on which post is being analyzed
+    if (postId === 1) {
+      // First post - truffle pasta post
+      // No need to update as default is already for this post
+    } else {
+      // Other posts would have different suggestions
+      // This is just a mockup, so we're using the same data
+    }
+
+    setShowAISuggestions(true);
+    // Auto-dismiss after 10 seconds
+    setTimeout(() => setShowAISuggestions(false), 10000);
+  };
+
+  // Function to close the toast
+  const closeAISuggestionsToast = () => {
+    setShowAISuggestions(false);
+  };
 
   const socialMediaData = {
     // Top metrics
@@ -215,7 +259,7 @@ const SocialMediaFootprintPage: React.FC = () => {
               <div className="p-3 bg-caribbean_current-100 rounded-lg mr-3">
                 <Share2 className="w-8 h-8 text-caribbean_current-700" />
               </div>
-              <h1 className="text-3xl font-bold text-gray-900">Social Media Footprint</h1>
+              <h1 className="text-3xl font-bold text-gray-900">Social Media Footprints</h1>
             </div>
             <p className="text-gray-600">Track your presence and engagement across all social platforms</p>
           </div>
@@ -232,7 +276,6 @@ const SocialMediaFootprintPage: React.FC = () => {
             <ChevronDown className="w-4 h-4 text-gray-400 ml-2" />
           </div>
         </div>
-
         {/* Top Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-all duration-200">
@@ -299,7 +342,6 @@ const SocialMediaFootprintPage: React.FC = () => {
             </div>
           </div>
         </div>
-
         {/* Business Generated Content */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
           <div className="flex items-center mb-6">
@@ -438,7 +480,6 @@ const SocialMediaFootprintPage: React.FC = () => {
             </div>
           </div>
         </div>
-
         {/* Top Performing Business Posts */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
           <div className="flex items-center mb-6">
@@ -487,7 +528,6 @@ const SocialMediaFootprintPage: React.FC = () => {
             ))}
           </div>
         </div>
-
         {/* Customer Generated Content */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
           <div className="flex items-center mb-6">
@@ -626,7 +666,6 @@ const SocialMediaFootprintPage: React.FC = () => {
             </div>
           </div>
         </div>
-
         {/* Top Performing Customer-Generated Posts */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 mb-8">
           <div className="flex items-center mb-6">
@@ -671,15 +710,36 @@ const SocialMediaFootprintPage: React.FC = () => {
                       <span>{post.views}</span>
                     </div>
                   </div>
-                </div>
-                <div className="text-right">
-                  <button className="text-xs text-caribbean_current-600 hover:text-caribbean_current-700 font-medium">View Post</button>
+                </div>{" "}
+                <div className="text-right flex flex-col gap-2">
+                  <button className="text-xs text-caribbean_current-600 hover:text-caribbean_current-700 font-medium">View Post</button>{" "}
+                  {post.id === 1 && (
+                    <button
+                      onClick={() => showAISuggestionsToast(post.id)}
+                      className="text-xs flex items-center bg-gradient-to-r from-caribbean_current-600 to-caribbean_current-700 text-white hover:from-caribbean_current-700 hover:to-caribbean_current-800 px-3 py-1.5 rounded-md font-medium shadow-sm transition-all hover:shadow"
+                    >
+                      {" "}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="w-3 h-3 mr-1"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 16v-4M12 8h.01"></path>
+                      </svg>
+                      Get AI Suggestions
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
           </div>
         </div>
-
         {/* Recommended Hashtags for F&B Business */}
         <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
           <div className="flex items-center mb-6">
@@ -729,7 +789,60 @@ const SocialMediaFootprintPage: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div>{" "}
+        {/* AI Suggestions Toast Notification */}
+        {showAISuggestions && (
+          <div className="fixed bottom-4 right-4 w-96 bg-white rounded-lg shadow-xl border border-gray-200 p-4 z-50 animate-slide-in-right">
+            <div className="flex items-start">
+              {" "}
+              <div className="p-2 bg-caribbean_current-100 rounded-lg mr-3">
+                <CheckCircle className="w-5 h-5 text-caribbean_current-700" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-2">
+                  <h4 className="text-sm font-bold text-gray-800">AI Action Suggestions</h4>
+                  <button onClick={closeAISuggestionsToast} className="text-gray-500 hover:text-gray-700">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+                <p className="text-sm text-gray-700 mb-2 bg-blue-50 p-2 rounded border border-blue-100">
+                  Based on <span className="font-semibold">{aiSuggestions.reviewTarget}</span>
+                </p>
+                <div className="mb-2">
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>Potential impact:</span>
+                    <span className="text-emerald-600">
+                      {aiSuggestions.impactMetrics.engagementBoost} engagement • {aiSuggestions.impactMetrics.potentialReach}
+                    </span>
+                  </div>
+                </div>
+                <ul className="space-y-2 my-3">
+                  {aiSuggestions.suggestions.map((suggestion, index) => (
+                    <li key={index} className="text-sm bg-gray-50 p-2 rounded border border-gray-100 flex items-start">
+                      <span className="mr-2">•</span>
+                      <span className="text-gray-800">{suggestion}</span>
+                    </li>
+                  ))}
+                </ul>{" "}
+                <div className="flex justify-end space-x-2 mt-3 pt-2 border-t border-gray-100">
+                  <button onClick={closeAISuggestionsToast} className="text-xs px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded transition-colors">
+                    Dismiss
+                  </button>{" "}
+                  <button
+                    className="text-xs px-3 py-1.5 bg-caribbean_current-600 hover:bg-caribbean_current-700 text-white rounded transition-colors"
+                    onClick={() => {
+                      // This would typically implement the suggestions
+                      // For now just close the toast with a slight delay
+                      setTimeout(closeAISuggestionsToast, 500);
+                    }}
+                  >
+                    Apply Suggestions
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
