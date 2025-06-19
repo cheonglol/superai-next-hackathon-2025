@@ -4,6 +4,10 @@
 
 An AI-powered business consultant for small and growing companies, delivering expert advice—like what big consultancy firms such as McKinsey offer—but at a fraction of the cost. ScaleUp AI is built to spot problems and provide clear, actionable steps to grow your business with comprehensive React + TypeScript application featuring AI-powered insights, financial analysis, and data-driven growth strategies.
 
+## Demo Slides:
+
+https://www.canva.com/design/DAGqu_QRbKE/ZoQ3sp0vLcNisPGxcy2Mkw/edit
+
 ## Challenge Topic
 
 **Open Track: AI for Business Optimization**
@@ -17,10 +21,6 @@ ScaleUp AI democratizes high-quality business consulting by leveraging advanced 
 - **Problem identification**: Intelligent analysis to spot business challenges
 - **Growth strategies**: Clear, actionable steps for business expansion
 - **Data-driven insights**: Comprehensive analysis across multiple business dimensions
-
-## Demo Slides:
-
-https://www.canva.com/design/DAGqu_QRbKE/ZoQ3sp0vLcNisPGxcy2Mkw/edit
 
 ## 🚀 Features
 
