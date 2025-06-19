@@ -2,6 +2,9 @@
 
 A comprehensive React + TypeScript application for business growth analysis and coaching, featuring AI-powered insights, financial analysis, and data-driven growth strategies.
 
+## Demo Slides:
+https://www.canva.com/design/DAGqu_QRbKE/ZoQ3sp0vLcNisPGxcy2Mkw/edit
+
 ## 🚀 Features
 
 ### Core Modules
