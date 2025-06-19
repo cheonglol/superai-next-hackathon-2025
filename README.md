@@ -1,8 +1,25 @@
-# Plant Bean Stalk - Business Growth Hacking Coach
+# ScaleUp AI: Your 24/7 Business Consultant
 
-A comprehensive React + TypeScript application for business growth analysis and coaching, featuring AI-powered insights, financial analysis, and data-driven growth strategies.
+![Image](https://github.com/user-attachments/assets/42d1324e-1d0d-4f49-b468-03cd11a5c493)
+
+An AI-powered business consultant for small and growing companies, delivering expert advice—like what big consultancy firms such as McKinsey offer—but at a fraction of the cost. ScaleUp AI is built to spot problems and provide clear, actionable steps to grow your business with comprehensive React + TypeScript application featuring AI-powered insights, financial analysis, and data-driven growth strategies.
+
+## Challenge Topic
+
+**Open Track: AI for Business Optimization**
+
+## Project Overview
+
+ScaleUp AI democratizes high-quality business consulting by leveraging advanced AI to provide:
+
+- **Expert-level consulting**: McKinsey-quality insights at affordable pricing
+- **24/7 availability**: Round-the-clock business guidance and support
+- **Problem identification**: Intelligent analysis to spot business challenges
+- **Growth strategies**: Clear, actionable steps for business expansion
+- **Data-driven insights**: Comprehensive analysis across multiple business dimensions
 
 ## Demo Slides:
+
 https://www.canva.com/design/DAGqu_QRbKE/ZoQ3sp0vLcNisPGxcy2Mkw/edit
 
 ## 🚀 Features
@@ -13,7 +30,7 @@ https://www.canva.com/design/DAGqu_QRbKE/ZoQ3sp0vLcNisPGxcy2Mkw/edit
 - **💰 Financials**: Upload and analyze P&L statements and balance sheets
 - **🤖 Growth Coach**: AI-powered growth strategy coaching with RAG integration
 - **⭐ Reviews Analytics**: Customer feedback analysis and insights
-- **📱 Social Media**: Social media footprint and engagement tracking
+- **📱 Social Media**: Social media footprint and engagement tracking with real-time insights
 - **📈 Trending Content**: Market trend analysis and content insights
 
 ### Key Technologies
@@ -22,13 +39,16 @@ https://www.canva.com/design/DAGqu_QRbKE/ZoQ3sp0vLcNisPGxcy2Mkw/edit
 - **State Management**: Redux Toolkit
 - **Styling**: Tailwind CSS
 - **AI Integration**:
-  - SambaNova LLM Provider with DeepSeek (Growth Coach)
+  - SambaNova Systems with DeepSeek V3 for lightning-fast LLM performance (Growth Coach)
   - SambaNova LLM Provider with Mistral (Financials)
 - **Data APIs**:
-  - BrightData API (Social Media)
+  - BrightData API (Real-time Social Media Insights)
   - Mastra.ai (Financial Analysis)
 - **Icons**: Lucide React
 - **Routing**: React Router DOM
+- **Deployment**:
+  - Frontend: AWS Amplify
+  - Backend: Amazon AppRunner
 
 ## 🏗️ Project Structure
 
@@ -74,14 +94,16 @@ Features include:
 
 ### Growth Coach AI
 
-**AI Provider**: SambaNova LLM Provider with DeepSeek model
+**AI Provider**: SambaNova Systems with DeepSeek V3 model
 
 Capabilities:
 
-- RAG-enhanced coaching strategies
-- Context-aware business advice
-- Strategy-specific knowledge application
-- Real-time conversational coaching
+- Lightning-fast LLM performance for real-time consulting
+- RAG-enhanced coaching strategies with expert knowledge bases
+- Context-aware business advice comparable to top consulting firms
+- Strategy-specific knowledge application across industries
+- Real-time conversational coaching with McKinsey-level insights
+- 24/7 availability for continuous business support
 
 ### API Documentation
 
@@ -348,7 +370,7 @@ VITE_MASTRA_API_KEY=your_mastra_api_key_here
 VITE_MASTRA_BASE_URL=https://api.mastra.ai
 
 # App Configuration
-VITE_APP_NAME=Business Growth Hacking Coach
+VITE_APP_NAME=ScaleUp AI
 VITE_APP_ENV=development
 
 # API Configuration
@@ -396,14 +418,16 @@ VITE_API_BASE_URL=https://hf3ifrfjgk.us-west-2.awsapprunner.com
 
 ## 🤖 AI Integration
 
-The application features dual AI integration powered by SambaNova LLM Provider:
+ScaleUp AI leverages cutting-edge AI technology to deliver McKinsey-level consulting insights:
 
-### Growth Coach AI (DeepSeek Model)
+### Growth Coach AI (SambaNova Systems + DeepSeek V3)
 
+- **Lightning-fast Performance**: Ultra-low latency responses powered by SambaNova Systems
 - **RAG Integration**: Each growth strategy uses specific knowledge bases
 - **Specialized Coaching**: Bootstrap, Category-Defining, and Complete Framework strategies
 - **Real-time Streaming**: Live conversation with AI coach
 - **Context Awareness**: Session memory and strategy-specific responses
+- **Expert-level Insights**: Business consulting quality comparable to top-tier firms
 
 ### Financial Analysis AI (Mistral Model)
 
@@ -411,6 +435,14 @@ The application features dual AI integration powered by SambaNova LLM Provider:
 - **Data Analysis**: Advanced financial metrics calculation
 - **Insights Generation**: AI-powered financial recommendations
 - **Pattern Recognition**: Trend analysis and forecasting
+- **Professional Analysis**: Investment-grade financial reporting and insights
+
+### Real-time Social Media Intelligence (BrightData)
+
+- **Live Data Collection**: Real-time social media metrics and engagement tracking
+- **Market Intelligence**: Instant insights into customer sentiment and brand perception
+- **Competitive Analysis**: Monitor competitor social media performance
+- **Trend Detection**: Identify emerging trends and opportunities
 
 ### Growth Strategies
 
@@ -470,12 +502,36 @@ The financials module integrates with multiple services for comprehensive analys
 
 ## 🚀 Deployment
 
-The application supports deployment to AWS Elastic Beanstalk:
+ScaleUp AI is deployed using AWS cloud infrastructure for scalability and reliability:
+
+### AWS Services
+
+- **Frontend**: AWS Amplify
+
+  - Automatic builds and deployments
+  - Global CDN distribution
+  - SSL/TLS certificates
+  - Custom domain support
+
+- **Backend**: Amazon AppRunner
+  - Fully managed container service
+  - Auto-scaling based on demand
+  - Built-in load balancing
+  - Zero-downtime deployments
+
+### Deployment Commands
 
 ```bash
 npm run deploy-package  # Create deployment package
 npm run deploy          # Deploy to AWS
 ```
+
+### Infrastructure Benefits
+
+- **Scalability**: Automatic scaling based on traffic
+- **Reliability**: High availability across multiple AWS regions
+- **Security**: Enterprise-grade security and compliance
+- **Performance**: Global edge locations for fast content delivery
 
 ## 📋 License
 
