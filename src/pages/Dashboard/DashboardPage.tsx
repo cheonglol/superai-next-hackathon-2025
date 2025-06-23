@@ -1,19 +1,34 @@
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { PageHeader } from "@/components/common/PageHeader";
-import { useDashboardData } from "@/hooks/useDashboardData";
-import { useFinancialsData } from "@/hooks/useFinancialsData";
-import { useReviewsData } from "@/hooks/useReviewsData";
-import { useSocialMediaData } from "@/hooks/useSocialMediaData";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { fetchDashboardData } from "@/store/slices/dashboardSlice";
+import { fetchFinancialData } from "@/store/slices/financialsSlice";
+import { fetchReviewsAnalytics } from "@/store/slices/reviewsSlice";
+import { fetchSocialMediaData } from "@/store/slices/socialMediaSlice";
 import { BarChart3, DollarSign, Eye, MessageSquare, PieChart, Share2, Star, TrendingUp, Users, AlertTriangle, CheckCircle, Target, Zap } from "lucide-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const DashboardPage: React.FC = () => {
-  const { data: dashboardData, loading: dashboardLoading, error: dashboardError, refetch: refetchDashboard } = useDashboardData();
-  const { data: reviewsData } = useReviewsData();
-  const socialData = useSocialMediaData();
-  const { data: financialData } = useFinancialsData();
+  const dispatch = useAppDispatch();
+
+  // Redux selectors
+  const { data: dashboardData, loading: dashboardLoading, error: dashboardError } = useAppSelector((state) => state.dashboard);
+  const { data: reviewsData } = useAppSelector((state) => state.reviews);
+  const socialData = useAppSelector((state) => state.socialMedia);
+  const { data: financialData } = useAppSelector((state) => state.financials); // Fetch data on component mount
+  useEffect(() => {
+    dispatch(fetchDashboardData());
+    dispatch(fetchReviewsAnalytics({ selectedPeriod: "12months", comparisonPeriod: "previous12months" }));
+    dispatch(fetchSocialMediaData("30days"));
+    dispatch(fetchFinancialData({ period: "currentMonth" }));
+  }, [dispatch]);
+
+  // Refetch functions
+  const refetchDashboard = () => {
+    dispatch(fetchDashboardData());
+  };
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";

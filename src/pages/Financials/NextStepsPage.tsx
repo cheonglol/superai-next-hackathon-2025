@@ -1,13 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TrendingUp, BarChart3, DollarSign, Target, AlertTriangle, Clock, Users, Zap, Activity, CreditCard, CheckCircle, ArrowRight } from "lucide-react";
 import { PageHeader } from "@/components/common/PageHeader";
-import { useFinancialsData } from "@/hooks/useFinancialsData";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { fetchFinancialData } from "@/store/slices/financialsSlice";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 
 const NextStepsPage: React.FC = () => {
-  const { data, loading, error, refetch } = useFinancialsData();
+  const dispatch = useAppDispatch();
+  const { data, loading, error, filters } = useAppSelector((state) => state.financials);
   const [viewMode, setViewMode] = useState<"priority" | "timeline">("priority");
+
+  // Fetch data on component mount
+  useEffect(() => {
+    dispatch(fetchFinancialData(filters));
+  }, [dispatch, filters]);
+
+  const refetch = () => {
+    dispatch(fetchFinancialData(filters));
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-US", {

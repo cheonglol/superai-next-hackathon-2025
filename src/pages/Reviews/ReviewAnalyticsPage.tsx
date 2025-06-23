@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Download, Star, MessageCircle, ChefHat, Clock, Users, Heart, DollarSign } from "lucide-react";
-import { useReviewsData } from "@/hooks/useReviewsData";
-import { useAppDispatch } from "@/store";
-import { exportReviewsReport } from "@/store/slices/reviewsSlice";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { fetchReviewsAnalytics, exportReviewsReport, setFilters } from "@/store/slices/reviewsSlice";
 import { MetricCard } from "@/components/MetricCard";
 import { CategoryRatings } from "@/components/CategoryRatings";
 import { PlatformDistribution } from "@/components/PlatformDistribution";
@@ -15,7 +14,20 @@ import { TIME_PERIODS, COMPARISON_PERIODS, CATEGORY_COLORS } from "@/config/cons
 
 const ReviewAnalyticsPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { data, loading, error, filters, updateFilters, refetch } = useReviewsData();
+  const { data, loading, error, filters } = useAppSelector((state) => state.reviews);
+
+  // Fetch data on component mount and when filters change
+  useEffect(() => {
+    dispatch(fetchReviewsAnalytics(filters));
+  }, [dispatch, filters]);
+
+  const updateFilters = (newFilters: Partial<typeof filters>) => {
+    dispatch(setFilters(newFilters));
+  };
+
+  const refetch = () => {
+    dispatch(fetchReviewsAnalytics(filters));
+  };
 
   const handleExportReport = () => {
     dispatch(exportReviewsReport(filters));

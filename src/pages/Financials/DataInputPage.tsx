@@ -1,8 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import { DollarSign, Plus, Building2, Upload, FileText, Eye, EyeOff, Settings, CheckCircle, AlertCircle, RefreshCw, Search, X } from "lucide-react";
-import { useFinancialsData } from "@/hooks/useFinancialsData";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { setSelectedBranch, setPeriodType, setNumberOfPeriods, saveBranchData, saveConsolidatedData, addBranch, uploadFinancialDocument } from "@/store/slices/financialsSlice";
+import {
+  fetchFinancialData,
+  setSelectedBranch,
+  setPeriodType,
+  setNumberOfPeriods,
+  saveBranchData,
+  saveConsolidatedData,
+  addBranch,
+  uploadFinancialDocument,
+} from "@/store/slices/financialsSlice";
 import { PageHeader } from "@/components/common/PageHeader";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
@@ -10,8 +18,16 @@ import { apiService } from "@/services/apiService";
 
 const DataInputPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { data, loading, error, refetch } = useFinancialsData();
-  const { selectedBranchId, saving, uploading } = useAppSelector((state) => state.financials);
+  const { data, loading, error, filters, selectedBranchId, saving, uploading } = useAppSelector((state) => state.financials);
+
+  // Fetch data on component mount
+  useEffect(() => {
+    dispatch(fetchFinancialData(filters));
+  }, [dispatch, filters]);
+
+  const refetch = () => {
+    dispatch(fetchFinancialData(filters));
+  };
 
   const [showAddBranch, setShowAddBranch] = useState(false);
   const [newBranchName, setNewBranchName] = useState("");
