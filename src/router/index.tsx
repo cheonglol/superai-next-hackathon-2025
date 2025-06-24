@@ -12,7 +12,7 @@ import {
 } from "@/pages";
 import { ReactElement } from "react";
 import { createBrowserRouter, RouteObject } from "react-router-dom";
-import ProtectedRoute from "./logic/ProtectedRouteLogic";
+import AuthProtectedRouteLogic from "./logic/AuthProtectedRouteLogic";
 
 const ROOT_PATH = "";
 
@@ -147,7 +147,7 @@ const applyRouteLogic = (route: ExtendedRouteObject) => {
     case ROUTE_LOGIC_TYPE.AUTH_CHECK:
       return {
         ...route.routeObject,
-        element: <ProtectedRoute>{route.routeObject.element as ReactElement}</ProtectedRoute>,
+        element: <AuthProtectedRouteLogic>{route.routeObject.element as ReactElement}</AuthProtectedRouteLogic>,
       };
 
     default:
