@@ -1,8 +1,9 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BarChart3, MessageSquare, Share2, TrendingUp, Menu, X, DollarSign, PieChart, Target, Bot } from "lucide-react";
+import { BarChart3, MessageSquare, Share2, TrendingUp, Menu, X, DollarSign, PieChart, Target, Bot, LogOut } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { toggleSidebar, setSidebarOpen } from "@/store/slices/uiSlice";
+import { logout } from "@/store/slices/authSlice";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -19,6 +20,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const location = useLocation();
   const dispatch = useAppDispatch();
   const { sidebarOpen } = useAppSelector((state) => state.ui);
+  const { user } = useAppSelector((state) => state.auth);
 
   const navigationItems: NavigationItem[] = [
     { path: "/", icon: BarChart3, label: "Dashboard" },
@@ -47,9 +49,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const handleMenuToggle = () => {
     dispatch(toggleSidebar());
   };
-
   const handleLinkClick = () => {
     dispatch(setSidebarOpen(false));
+  };
+  const handleLogout = async () => {
+    try {
+      await dispatch(logout()).unwrap();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
 
   // Group items by category
@@ -91,7 +99,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <p className="text-sm text-charcoal-200">Business Intelligence</p>
             </div>
           </div>
-
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
             {/* Dashboard - standalone */}
@@ -206,10 +213,27 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 })}
               </>
             )}
-          </nav>
-
+          </nav>{" "}
           {/* Footer */}
           <div className="px-6 py-4 border-t border-charcoal-600">
+            {user && (
+              <div className="mb-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="w-8 h-8 bg-caribbean_current-500 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-xs font-semibold text-white">{user.name.charAt(0).toUpperCase()}</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-white">{user.name}</p>
+                      <p className="text-xs text-charcoal-300">{user.role}</p>
+                    </div>
+                  </div>
+                  <button onClick={handleLogout} className="p-2 text-charcoal-300 hover:text-white hover:bg-charcoal-600 rounded-lg transition-colors" title="Logout">
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
             <p className="text-xs text-charcoal-300">© 2025 JSLW Bistro</p>
           </div>
         </div>

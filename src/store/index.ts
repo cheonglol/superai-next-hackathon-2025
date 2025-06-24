@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
 import appContextReducer from "./slices/appContextSlice";
+import authReducer from "./slices/authSlice";
 import dashboardReducer from "./slices/dashboardSlice";
 import reviewsReducer from "./slices/reviewsSlice";
 import socialMediaReducer from "./slices/socialMediaSlice";
@@ -13,6 +14,7 @@ import notificationsReducer from "./slices/notificationsSlice";
 export const store = configureStore({
   reducer: {
     appContext: appContextReducer,
+    auth: authReducer,
     dashboard: dashboardReducer,
     reviews: reviewsReducer,
     socialMedia: socialMediaReducer,

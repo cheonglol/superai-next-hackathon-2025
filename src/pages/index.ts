@@ -1,6 +1,9 @@
 // Dashboard
 export { default as DashboardPage } from "./Dashboard/DashboardPage";
 
+// Auth
+export { default as LoginPage } from "./Auth/LoginPage";
+
 // Reviews
 export { default as ReviewAnalyticsPage } from "./Reviews/ReviewAnalyticsPage";
 
