@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { apiService } from "@/services/apiService";
 import type { User, LoginCredentials, RegisterData, AuthResponse, ResetPasswordData, ChangePasswordData } from "@/types/auth";
 
 export interface AuthState {
@@ -27,56 +26,54 @@ const initialState: AuthState = {
 // Async thunks
 export const login = createAsyncThunk("auth/login", async (credentials: LoginCredentials, { rejectWithValue }) => {
   try {
-    // For development, simulate login with mock data
-    if (import.meta.env.DEV) {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Use mock authentication for both dev and production (for stakeholder demo)
+    // Simulate API delay
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Mock authentication - in production this would call actual API
-      if (credentials.email === "admin@jslwbistro.com" && credentials.password === "admin123") {
-        const mockResponse: AuthResponse = {
-          success: true,
-          user: {
-            id: "1",
-            email: "admin@jslwbistro.com",
-            name: "Admin User",
-            role: "admin",
-            avatar: "",
-            permissions: ["read", "write", "delete", "admin"],
-            lastLogin: new Date().toISOString(),
-          },
-          token: "mock-jwt-token-" + Date.now(),
-          refreshToken: "mock-refresh-token-" + Date.now(),
-          expiresIn: 3600,
-          message: "Login successful",
-        };
-        return { ...mockResponse, rememberMe: credentials.rememberMe };
-      } else if (credentials.email === "user@jslwbistro.com" && credentials.password === "user123") {
-        const mockResponse: AuthResponse = {
-          success: true,
-          user: {
-            id: "2",
-            email: "user@jslwbistro.com",
-            name: "Regular User",
-            role: "user",
-            avatar: "",
-            permissions: ["read"],
-            lastLogin: new Date().toISOString(),
-          },
-          token: "mock-jwt-token-" + Date.now(),
-          refreshToken: "mock-refresh-token-" + Date.now(),
-          expiresIn: 3600,
-          message: "Login successful",
-        };
-        return { ...mockResponse, rememberMe: credentials.rememberMe };
-      } else {
-        throw new Error("Invalid email or password");
-      }
+    // Mock authentication - same logic for dev and production
+    if (credentials.email === "admin@jslwbistro.com" && credentials.password === "admin123") {
+      const mockResponse: AuthResponse = {
+        success: true,
+        user: {
+          id: "1",
+          email: "admin@jslwbistro.com",
+          name: "Admin User",
+          role: "admin",
+          avatar: "",
+          permissions: ["read", "write", "delete", "admin"],
+          lastLogin: new Date().toISOString(),
+        },
+        token: "mock-jwt-token-" + Date.now(),
+        refreshToken: "mock-refresh-token-" + Date.now(),
+        expiresIn: 3600,
+        message: "Login successful",
+      };
+      return { ...mockResponse, rememberMe: credentials.rememberMe };
+    } else if (credentials.email === "user@jslwbistro.com" && credentials.password === "user123") {
+      const mockResponse: AuthResponse = {
+        success: true,
+        user: {
+          id: "2",
+          email: "user@jslwbistro.com",
+          name: "Regular User",
+          role: "user",
+          avatar: "",
+          permissions: ["read"],
+          lastLogin: new Date().toISOString(),
+        },
+        token: "mock-jwt-token-" + Date.now(),
+        refreshToken: "mock-refresh-token-" + Date.now(),
+        expiresIn: 3600,
+        message: "Login successful",
+      };
+      return { ...mockResponse, rememberMe: credentials.rememberMe };
+    } else {
+      throw new Error("Invalid email or password");
     }
 
-    // In production, this would call the real API
-    const response = await apiService.post<AuthResponse>("/auth/login", credentials);
-    return { ...response, rememberMe: credentials.rememberMe };
+    // TODO: In future production, uncomment this for real API calls
+    // const response = await apiService.post<AuthResponse>("/auth/login", credentials);
+    // return { ...response, rememberMe: credentials.rememberMe };
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : "Login failed";
     return rejectWithValue(errorMessage);
@@ -85,30 +82,30 @@ export const login = createAsyncThunk("auth/login", async (credentials: LoginCre
 
 export const register = createAsyncThunk("auth/register", async (data: RegisterData, { rejectWithValue }) => {
   try {
-    // For development, simulate registration
-    if (import.meta.env.DEV) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Use mock registration for both dev and production (for stakeholder demo)
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      const mockResponse: AuthResponse = {
-        success: true,
-        user: {
-          id: Date.now().toString(),
-          email: data.email,
-          name: data.name,
-          role: data.role || "user",
-          avatar: "",
-          permissions: data.role === "admin" ? ["read", "write", "delete", "admin"] : ["read"],
-          lastLogin: new Date().toISOString(),
-        },
-        token: "mock-jwt-token-" + Date.now(),
-        refreshToken: "mock-refresh-token-" + Date.now(),
-        expiresIn: 3600,
-        message: "Registration successful",
-      };
-      return mockResponse;
-    }
-    const response = await apiService.post<AuthResponse>("/auth/register", data);
-    return response;
+    const mockResponse: AuthResponse = {
+      success: true,
+      user: {
+        id: Date.now().toString(),
+        email: data.email,
+        name: data.name,
+        role: data.role || "user",
+        avatar: "",
+        permissions: data.role === "admin" ? ["read", "write", "delete", "admin"] : ["read"],
+        lastLogin: new Date().toISOString(),
+      },
+      token: "mock-jwt-token-" + Date.now(),
+      refreshToken: "mock-refresh-token-" + Date.now(),
+      expiresIn: 3600,
+      message: "Registration successful",
+    };
+    return mockResponse;
+
+    // TODO: In future production, uncomment this for real API calls
+    // const response = await apiService.post<AuthResponse>("/auth/register", data);
+    // return response;
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : "Registration failed";
     return rejectWithValue(errorMessage);
@@ -121,10 +118,9 @@ export const logout = createAsyncThunk("auth/logout", async (_, { getState, reje
     const { token } = state.auth;
 
     if (token) {
-      // In production, this would call the API to invalidate the token
-      if (import.meta.env.PROD) {
-        await apiService.post("/auth/logout", { token });
-      }
+      // For stakeholder demo, we skip API calls in both dev and production
+      // TODO: In future production, uncomment this for real API calls
+      // await apiService.post("/auth/logout", { token });
     }
     return true;
   } catch (error: unknown) {
@@ -137,41 +133,64 @@ export const logout = createAsyncThunk("auth/logout", async (_, { getState, reje
 export const refreshAuth = createAsyncThunk("auth/refresh", async (_, { getState, rejectWithValue }) => {
   try {
     const state = getState() as { auth: AuthState };
-    const { refreshToken } = state.auth;
+    const { refreshToken, user } = state.auth;
 
     if (!refreshToken) {
       throw new Error("No refresh token available");
     }
 
-    const response = await apiService.post<AuthResponse>("/auth/refresh", { refreshToken });
-    return response;
-  } catch (error: any) {
-    const errorMessage = error.response?.data?.message || error.message || "Token refresh failed";
+    // Use mock refresh for both dev and production (for stakeholder demo)
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    if (user) {
+      const mockResponse: AuthResponse = {
+        success: true,
+        user: user,
+        token: "mock-jwt-token-refreshed-" + Date.now(),
+        refreshToken: "mock-refresh-token-refreshed-" + Date.now(),
+        expiresIn: 3600,
+        message: "Token refreshed successfully",
+      };
+      return mockResponse;
+    }
+
+    throw new Error("No user found for refresh");
+
+    // TODO: In future production, uncomment this for real API calls
+    // const response = await apiService.post<AuthResponse>("/auth/refresh", { refreshToken });
+    // return response;
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Token refresh failed";
     return rejectWithValue(errorMessage);
   }
 });
 
 export const resetPassword = createAsyncThunk("auth/resetPassword", async (data: ResetPasswordData, { rejectWithValue }) => {
   try {
-    if (import.meta.env.DEV) {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      return { message: "Password reset email sent successfully" };
-    }
+    // Use mock reset password for both dev and production (for stakeholder demo)
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return { message: "Password reset email sent successfully" };
 
-    const response = await apiService.post("/auth/reset-password", data);
-    return response;
-  } catch (error: any) {
-    const errorMessage = error.response?.data?.message || error.message || "Password reset failed";
+    // TODO: In future production, uncomment this for real API calls
+    // const response = await apiService.post("/auth/reset-password", data);
+    // return response;
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Password reset failed";
     return rejectWithValue(errorMessage);
   }
 });
 
 export const changePassword = createAsyncThunk("auth/changePassword", async (data: ChangePasswordData, { rejectWithValue }) => {
   try {
-    const response = await apiService.post("/auth/change-password", data);
-    return response;
-  } catch (error: any) {
-    const errorMessage = error.response?.data?.message || error.message || "Password change failed";
+    // Use mock change password for both dev and production (for stakeholder demo)
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return { message: "Password changed successfully" };
+
+    // TODO: In future production, uncomment this for real API calls
+    // const response = await apiService.post("/auth/change-password", data);
+    // return response;
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Password change failed";
     return rejectWithValue(errorMessage);
   }
 });
