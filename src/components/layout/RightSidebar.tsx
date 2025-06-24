@@ -1,20 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Bell, ChevronLeft, ChevronRight, TrendingUp, AlertCircle } from "lucide-react";
-import { useNotifications } from "@/hooks/useNotifications";
-import { useInsights } from "@/hooks/useInsights";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { fetchNotifications, markNotificationAsRead } from "@/store/slices/notificationsSlice";
+import { fetchInsights } from "@/store/slices/insightsSlice";
+import type { Notification } from "@/types/notifications";
+import type { QuickInsight, ActionItem } from "@/types/insights";
 
 export const RightSidebar: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState<"notifications" | "insights">("notifications");
 
-  const { notifications, unreadCount, markAsRead } = useNotifications();
-  const { data: insights } = useInsights();
+  // Redux selectors
+  const { notifications } = useAppSelector((state) => state.notifications);
+  const { data: insights } = useAppSelector((state) => state.insights);
+
+  // Calculate unread count
+  const unreadCount = notifications.filter((n: Notification) => !n.read).length;
+
+  // Fetch data on component mount
+  useEffect(() => {
+    dispatch(fetchNotifications());
+    dispatch(fetchInsights());
+  }, [dispatch]);
+  const handleNotificationClick = (notificationId: string) => {
+    dispatch(markNotificationAsRead(notificationId));
+  };
 
   const sidebarWidth = isCollapsed ? "w-16" : "w-80";
-
-  const handleNotificationClick = (notificationId: string) => {
-    markAsRead(notificationId);
-  };
 
   return (
     <div className={`hidden lg:flex flex-col bg-white border-l border-gray-200 transition-all duration-300 ${sidebarWidth} flex-shrink-0`}>
@@ -54,7 +67,7 @@ export const RightSidebar: React.FC = () => {
             {activeTab === "notifications" && (
               <div className="p-4">
                 <div className="space-y-3">
-                  {notifications.slice(0, 5).map((notification) => (
+                  {notifications.slice(0, 5).map((notification: Notification) => (
                     <div
                       key={notification.id}
                       className={`border border-gray-200 rounded-lg p-3 cursor-pointer hover:bg-gray-50 transition-colors ${
@@ -98,7 +111,7 @@ export const RightSidebar: React.FC = () => {
                   <div>
                     <h3 className="text-sm font-semibold text-gray-900 mb-3">Quick Insights</h3>
                     <div className="space-y-3">
-                      {insights.quickInsights.slice(0, 3).map((insight) => (
+                      {insights.quickInsights.slice(0, 3).map((insight: QuickInsight) => (
                         <div key={insight.id} className="bg-gray-50 rounded-lg p-3">
                           <div className="flex items-center justify-between mb-2">
                             <div className="flex items-center">
@@ -116,7 +129,7 @@ export const RightSidebar: React.FC = () => {
                   <div>
                     <h3 className="text-sm font-semibold text-gray-900 mb-3">Action Items</h3>
                     <div className="space-y-2">
-                      {insights.actionItems.slice(0, 2).map((item) => (
+                      {insights.actionItems.slice(0, 2).map((item: ActionItem) => (
                         <div
                           key={item.id}
                           className={`border rounded-lg p-3 ${

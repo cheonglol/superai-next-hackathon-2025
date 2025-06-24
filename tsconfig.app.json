@@ -35,7 +35,7 @@
       "@/utils/*": ["src/utils/*"],
       "@/shared/*": ["src/shared/*"],
       "@/http/*": ["src/http/*"],
-      "@/routes/*": ["src/routes/*"],
+      "@/routes/*": ["src/router/*"],
       "@/controllers/*": ["src/controllers/*"],
       "@/types/*": ["src/types/*"],
       "@/components/*": ["src/components/*"],
@@ -47,7 +47,7 @@
       "@/loaders/*": ["src/loaders/*"],
       "@/store": ["src/store/index"],
       "@/store/*": ["src/store/*"],
-      "@/routes": ["src/routes/index"]
+      "@/routes": ["src/router/index"]
     },
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { PieChart, TrendingUp, DollarSign, Calculator, Target, Activity, AlertTriangle, Building2, FileText, ArrowRight, CheckCircle, RefreshCw } from "lucide-react";
 import { PageHeader } from "@/components/common/PageHeader";
-import { useFinancialsData } from "@/hooks/useFinancialsData";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { fetchFinancialData } from "@/store/slices/financialsSlice";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
 import { apiService } from "@/services/apiService";
@@ -13,9 +14,19 @@ import ValuationTool from "@/components/ValuationTool";
 import ProcessingScreen from "@/components/ProcessingScreen";
 
 const PerformanceInsightsPage: React.FC = () => {
-  const { loading, error, refetch } = useFinancialsData();
+  const dispatch = useAppDispatch();
+  const { loading, error, filters } = useAppSelector((state) => state.financials);
   const [activeSegment, setActiveSegment] = useState("profitability");
   const [ebitdaMultiplier, setEbitdaMultiplier] = useState(8);
+
+  // Fetch data on component mount
+  useEffect(() => {
+    dispatch(fetchFinancialData(filters));
+  }, [dispatch, filters]);
+
+  const refetch = () => {
+    dispatch(fetchFinancialData(filters));
+  };
 
   // Branch selection state
   const [selectedBranch, setSelectedBranch] = useState<string | null>(null);

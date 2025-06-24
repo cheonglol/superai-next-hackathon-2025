@@ -9,10 +9,11 @@ import {
   SocialMediaFootprintPage,
   TrendingContentPage,
   GrowthCoachPage,
+  LoginPage,
 } from "@/pages";
 import { ReactElement } from "react";
 import { createBrowserRouter, RouteObject } from "react-router-dom";
-import ProtectedRoute from "./logic/ProtectedRouteLogic";
+import AuthProtectedRouteLogic from "./logic/AuthProtectedRouteLogic";
 
 const ROOT_PATH = "";
 
@@ -30,8 +31,18 @@ export interface ExtendedRouteObject {
 
 export const routes: ExtendedRouteObject[] = [
   {
-    title: "Dashboard",
+    title: "Login",
     logicType: undefined,
+    hidden: true,
+    routeObject: {
+      path: `${ROOT_PATH}/login`,
+      element: <LoginPage />,
+      errorElement: <ErrorBoundaryPage />,
+    },
+  },
+  {
+    title: "Dashboard",
+    logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
     routeObject: {
       path: `${ROOT_PATH}/`,
       element: (
@@ -44,7 +55,7 @@ export const routes: ExtendedRouteObject[] = [
   },
   {
     title: "Review Analytics",
-    logicType: undefined,
+    logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
     category: "Social Media",
     routeObject: {
       path: `${ROOT_PATH}/review`,
@@ -58,7 +69,7 @@ export const routes: ExtendedRouteObject[] = [
   },
   {
     title: "Social Media Footprint",
-    logicType: undefined,
+    logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
     category: "Social Media",
     routeObject: {
       path: `${ROOT_PATH}/social-media-footprint`,
@@ -72,7 +83,7 @@ export const routes: ExtendedRouteObject[] = [
   },
   {
     title: "Trending Content",
-    logicType: undefined,
+    logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
     category: "Social Media",
     routeObject: {
       path: `${ROOT_PATH}/trending-content`,
@@ -86,7 +97,7 @@ export const routes: ExtendedRouteObject[] = [
   },
   {
     title: "Data Input",
-    logicType: undefined,
+    logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
     category: "Financials",
     routeObject: {
       path: `${ROOT_PATH}/financials/data-input`,
@@ -100,7 +111,7 @@ export const routes: ExtendedRouteObject[] = [
   },
   {
     title: "Performance Insights",
-    logicType: undefined,
+    logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
     category: "Financials",
     routeObject: {
       path: `${ROOT_PATH}/financials/performance-insights`,
@@ -114,7 +125,7 @@ export const routes: ExtendedRouteObject[] = [
   },
   {
     title: "Next Steps",
-    logicType: undefined,
+    logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
     category: "Financials",
     routeObject: {
       path: `${ROOT_PATH}/financials/next-steps`,
@@ -128,7 +139,7 @@ export const routes: ExtendedRouteObject[] = [
   },
   {
     title: "Growth Coach AI",
-    logicType: undefined,
+    logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
     category: "Growth Coach",
     routeObject: {
       path: `${ROOT_PATH}/growth-coach`,
@@ -147,7 +158,7 @@ const applyRouteLogic = (route: ExtendedRouteObject) => {
     case ROUTE_LOGIC_TYPE.AUTH_CHECK:
       return {
         ...route.routeObject,
-        element: <ProtectedRoute>{route.routeObject.element as ReactElement}</ProtectedRoute>,
+        element: <AuthProtectedRouteLogic>{route.routeObject.element as ReactElement}</AuthProtectedRouteLogic>,
       };
 
     default:
