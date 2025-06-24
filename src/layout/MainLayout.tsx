@@ -4,6 +4,7 @@ import { BarChart3, MessageSquare, Share2, TrendingUp, Menu, X, DollarSign, PieC
 import { useAppDispatch, useAppSelector } from "@/store";
 import { toggleSidebar, setSidebarOpen } from "@/store/slices/uiSlice";
 import { logout } from "@/store/slices/authSlice";
+import { RightSidebar } from "@/components/layout/RightSidebar";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -242,8 +243,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       {/* Mobile overlay */}
       {sidebarOpen && <div className="fixed inset-0 z-30 bg-black bg-opacity-50 lg:hidden" onClick={() => dispatch(setSidebarOpen(false))} />}
 
-      {/* Main content area - Full width without right sidebar */}
-      <main className="flex-1 min-h-screen bg-gray-100">{children}</main>
+      {/* Main content area */}
+      <div className="flex-1 flex">
+        <main className="flex-1 min-h-screen bg-gray-100">{children}</main>
+
+        {/* Right Sidebar */}
+        <RightSidebar />
+      </div>
     </div>
   );
 };
