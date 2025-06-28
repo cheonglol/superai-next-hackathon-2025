@@ -116,7 +116,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
       issue: 'Suboptimal pricing strategy', 
       impact: '$5,000/month', 
       severity: 'medium',
-      details: 'Current pricing structure doesn't account for seasonal demand fluctuations'
+      details: 'Current pricing structure doesn\'t account for seasonal demand fluctuations'
     },
     { 
       category: 'Operations', 
