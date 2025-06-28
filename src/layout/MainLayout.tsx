@@ -1,11 +1,11 @@
+import { RightSidebar } from "@/components/layout/RightSidebar";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { logout } from "@/store/slices/authSlice";
+import { setSidebarOpen, toggleSidebar } from "@/store/slices/uiSlice";
+import { BarChart3, LogOut, Menu, X } from "lucide-react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BarChart3, MessageSquare, Share2, TrendingUp, Menu, X, DollarSign, PieChart, Target, Bot, LogOut } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { toggleSidebar, setSidebarOpen } from "@/store/slices/uiSlice";
-import { logout } from "@/store/slices/authSlice";
-import { RightSidebar } from "@/components/layout/RightSidebar";
-import { routes } from "@/router/index";
+import { routes } from "../router";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -24,31 +24,30 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { sidebarOpen } = useAppSelector((state) => state.ui);
   const { user } = useAppSelector((state) => state.auth);
 
-  // Generate navigation items dynamically from router configuration
-  const generateNavigationItems = (): NavigationItem[] => {
-    const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-      "Dashboard": BarChart3,
-      "Review Analytics": MessageSquare,
-      "Social Media Footprint": Share2,
-      "Trending Content": TrendingUp,
-      "Data Input": DollarSign,
-      "Performance Insights": PieChart,
-      "Next Steps": Target,
-      "Growth Coach AI": Bot,
-    };
+  const navigationItems: NavigationItem[] = routes
+    .filter((route) => typeof route.routeObject.path === "string" && route.routeObject.path)
+    .map((route) => ({
+      path: route.routeObject.path as string,
+      icon: route.routeObject.icon || BarChart3, // Default icon if not specified
+      label: route.title,
+      category: route.category,
+    }));
+  // [
+  //   { path: "/", icon: BarChart3, label: "Dashboard" },
 
-    return routes
-      .filter(route => !route.hidden && route.routeObject.path !== "/login") // Filter out hidden routes and login
-      .map(route => ({
-        path: route.routeObject.path || "/",
-        icon: iconMap[route.title] || BarChart3,
-        label: route.title,
-        category: route.category,
-      }))
-      .filter(item => item.path !== "/"); // Remove duplicate dashboard entries if any
-  };
+  //   // Social Media Group
+  //   { path: "/review", icon: MessageSquare, label: "Review Analytics", category: "Social Media" },
+  //   { path: "/social-media-footprint", icon: Share2, label: "Social Media Footprint", category: "Social Media" },
+  //   { path: "/trending-content", icon: TrendingUp, label: "Trending Content", category: "Social Media" },
 
-  const navigationItems = generateNavigationItems();
+  //   // Financials Group
+  //   { path: "/financials/data-input", icon: DollarSign, label: "Data Input", category: "Financials" },
+  //   { path: "/financials/performance-insights", icon: PieChart, label: "Performance Insights", category: "Financials" },
+  //   { path: "/financials/next-steps", icon: Target, label: "Next Steps", category: "Financials" },
+
+  //   // Growth Coach Group
+  //   { path: "/growth-coach", icon: Bot, label: "Growth Coach AI", category: "Growth Coach" },
+  // ];
 
   const isActivePath = (path: string) => {
     if (path === "/") {
@@ -60,11 +59,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const handleMenuToggle = () => {
     dispatch(toggleSidebar());
   };
-  
   const handleLinkClick = () => {
     dispatch(setSidebarOpen(false));
   };
-  
   const handleLogout = async () => {
     try {
       await dispatch(logout()).unwrap();
@@ -112,7 +109,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <p className="text-sm text-charcoal-200">Business Intelligence</p>
             </div>
           </div>
-          
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
             {/* Dashboard - standalone */}
@@ -227,41 +223,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 })}
               </>
             )}
-
-            {/* Dynamic categories - for any other categories that might be added */}
-            {Object.entries(groupedItems)
-              .filter(([category]) => !["Social Media", "Financials", "Growth Coach"].includes(category) && category !== "standalone")
-              .map(([category, items]) => (
-                <div key={category}>
-                  <div className="pt-6 pb-2">
-                    <div className="flex items-center">
-                      <div className="flex-1 border-t border-charcoal-600"></div>
-                      <span className="px-3 text-xs font-medium text-gray-300 bg-charcoal-700 uppercase tracking-wider">{category}</span>
-                      <div className="flex-1 border-t border-charcoal-600"></div>
-                    </div>
-                  </div>
-                  {items.map((item) => {
-                    const Icon = item.icon;
-                    const isActive = isActivePath(item.path);
-
-                    return (
-                      <Link
-                        key={item.path}
-                        to={item.path}
-                        onClick={handleLinkClick}
-                        className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
-                          isActive ? "bg-gray-600 text-white shadow-lg" : "text-charcoal-100 hover:bg-charcoal-600 hover:text-white"
-                        }`}
-                      >
-                        <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-white" : "text-charcoal-200"}`} />
-                        {item.label}
-                      </Link>
-                    );
-                  })}
-                </div>
-              ))}
-          </nav>
-          
+          </nav>{" "}
           {/* Footer */}
           <div className="px-6 py-4 border-t border-charcoal-600">
             {user && (
