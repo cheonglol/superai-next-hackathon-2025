@@ -478,7 +478,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
               }`}
             >
               <Percent className="w-4 h-4 mr-2 inline" />
-              1% Fix
+              Your 1% Fix
             </button>
             <button
               onClick={() => setActiveTab('actions')}
@@ -574,12 +574,12 @@ const CashFlowDiagnosticianPage: React.FC = () => {
             </div>
           )}
 
-          {/* 1% Fix Tab */}
+          {/* Your 1% Fix Tab */}
           {activeTab === 'onepercent' && (
             <div>
               <div className="flex items-center mb-6">
                 <Percent className="w-5 h-5 text-green-600 mr-2" />
-                <h3 className="text-lg font-semibold text-gray-900">1% Fix</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Your 1% Fix</h3>
               </div>
               
               <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -614,9 +614,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                       <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Impact on Operating Profit
                       </th>
-                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Action
-                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
@@ -638,11 +635,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                             {formatCurrency(fix.profitImpact)}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
-                          <button className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors flex items-center mx-auto">
-                            Implement <ArrowRight className="w-3 h-3 ml-1" />
-                          </button>
-                        </td>
                       </tr>
                     ))}
                     {/* Total Row */}
@@ -658,9 +650,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-green-700">
                         {formatCurrency(totalProfitImpact)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
-                        
                       </td>
                     </tr>
                   </tbody>
