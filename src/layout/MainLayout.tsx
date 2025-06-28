@@ -1,10 +1,11 @@
+import { RightSidebar } from "@/components/layout/RightSidebar";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { logout } from "@/store/slices/authSlice";
+import { setSidebarOpen, toggleSidebar } from "@/store/slices/uiSlice";
+import { BarChart3, LogOut, Menu, X } from "lucide-react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BarChart3, MessageSquare, Share2, TrendingUp, Menu, X, DollarSign, PieChart, Target, Bot, LogOut } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { toggleSidebar, setSidebarOpen } from "@/store/slices/uiSlice";
-import { logout } from "@/store/slices/authSlice";
-import { RightSidebar } from "@/components/layout/RightSidebar";
+import { routes } from "../router";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -23,22 +24,30 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { sidebarOpen } = useAppSelector((state) => state.ui);
   const { user } = useAppSelector((state) => state.auth);
 
-  const navigationItems: NavigationItem[] = [
-    { path: "/", icon: BarChart3, label: "Dashboard" },
+  const navigationItems: NavigationItem[] = routes
+    .filter((route) => typeof route.routeObject.path === "string" && route.routeObject.path)
+    .map((route) => ({
+      path: route.routeObject.path as string,
+      icon: route.routeObject.icon || BarChart3, // Default icon if not specified
+      label: route.title,
+      category: route.category,
+    }));
+  // [
+  //   { path: "/", icon: BarChart3, label: "Dashboard" },
 
-    // Social Media Group
-    { path: "/review", icon: MessageSquare, label: "Review Analytics", category: "Social Media" },
-    { path: "/social-media-footprint", icon: Share2, label: "Social Media Footprint", category: "Social Media" },
-    { path: "/trending-content", icon: TrendingUp, label: "Trending Content", category: "Social Media" },
+  //   // Social Media Group
+  //   { path: "/review", icon: MessageSquare, label: "Review Analytics", category: "Social Media" },
+  //   { path: "/social-media-footprint", icon: Share2, label: "Social Media Footprint", category: "Social Media" },
+  //   { path: "/trending-content", icon: TrendingUp, label: "Trending Content", category: "Social Media" },
 
-    // Financials Group
-    { path: "/financials/data-input", icon: DollarSign, label: "Data Input", category: "Financials" },
-    { path: "/financials/performance-insights", icon: PieChart, label: "Performance Insights", category: "Financials" },
-    { path: "/financials/next-steps", icon: Target, label: "Next Steps", category: "Financials" },
+  //   // Financials Group
+  //   { path: "/financials/data-input", icon: DollarSign, label: "Data Input", category: "Financials" },
+  //   { path: "/financials/performance-insights", icon: PieChart, label: "Performance Insights", category: "Financials" },
+  //   { path: "/financials/next-steps", icon: Target, label: "Next Steps", category: "Financials" },
 
-    // Growth Coach Group
-    { path: "/growth-coach", icon: Bot, label: "Growth Coach AI", category: "Growth Coach" },
-  ];
+  //   // Growth Coach Group
+  //   { path: "/growth-coach", icon: Bot, label: "Growth Coach AI", category: "Growth Coach" },
+  // ];
 
   const isActivePath = (path: string) => {
     if (path === "/") {
