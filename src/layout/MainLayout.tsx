@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/store";
 import { logout } from "@/store/slices/authSlice";
 import { setSidebarOpen, toggleSidebar } from "@/store/slices/uiSlice";
-import { Brain, LogOut, Menu, X } from "lucide-react";
+import { BarChart3, LogOut, Menu, X } from "lucide-react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { routes } from "../router";
@@ -23,11 +23,19 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { sidebarOpen } = useAppSelector((state) => state.ui);
   const { user } = useAppSelector((state) => state.auth);
 
+  const handleLogout = async () => {
+    try {
+      await dispatch(logout()).unwrap();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   const navigationItems: NavigationItem[] = routes
-    .filter((route) => typeof route.routeObject.path === "string" && route.routeObject.path && !route.hidden)
+    .filter((route) => typeof route.routeObject.path === "string" && route.routeObject.path)
     .map((route) => ({
       path: route.routeObject.path as string,
-      icon: route.routeObject.icon || Brain,
+      icon: route.routeObject.icon || BarChart3,
       label: route.title,
       category: route.category,
     }));
@@ -46,14 +54,21 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const handleLinkClick = () => {
     dispatch(setSidebarOpen(false));
   };
-  
-  const handleLogout = async () => {
-    try {
-      await dispatch(logout()).unwrap();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
+
+  // Group items by category
+  const groupedItems = navigationItems.reduce(
+    (acc, item) => {
+      if (!item.category) {
+        acc.standalone = acc.standalone || [];
+        acc.standalone.push(item);
+      } else {
+        acc[item.category] = acc[item.category] || [];
+        acc[item.category].push(item);
+      }
+      return acc;
+    },
+    {} as Record<string, NavigationItem[]>
+  );
 
   return (
     <div className="min-h-screen bg-gray-900 flex">
@@ -73,7 +88,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center px-6 py-8 border-b border-charcoal-600">
-            <Brain className="w-8 h-8 text-blue-400 mr-3" />
+            <BarChart3 className="w-8 h-8 text-caribbean_current-400 mr-3" />
             <div>
               <h1 className="text-xl font-bold text-white">Agentic AI</h1>
               <p className="text-sm text-charcoal-200">SME Financial Platform</p>
@@ -82,7 +97,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-            {navigationItems.map((item) => {
+            {/* Dashboard - standalone */}
+            {groupedItems.standalone?.map((item) => {
               const Icon = item.icon;
               const isActive = isActivePath(item.path);
 
@@ -92,7 +108,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   to={item.path}
                   onClick={handleLinkClick}
                   className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
-                    isActive ? "bg-blue-600 text-white shadow-lg" : "text-charcoal-100 hover:bg-charcoal-600 hover:text-white"
+                    isActive ? "bg-caribbean_current-600 text-white shadow-lg" : "text-charcoal-100 hover:bg-charcoal-600 hover:text-white"
                   }`}
                 >
                   <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-white" : "text-charcoal-200"}`} />
@@ -100,6 +116,37 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </Link>
               );
             })}
+
+            {/* AI Agents Group */}
+            {groupedItems["AI Agents"] && (
+              <>
+                <div className="pt-6 pb-2">
+                  <div className="flex items-center">
+                    <div className="flex-1 border-t border-charcoal-600"></div>
+                    <span className="px-3 text-xs font-medium text-caribbean_current-300 bg-charcoal-700 uppercase tracking-wider">AI Agents</span>
+                    <div className="flex-1 border-t border-charcoal-600"></div>
+                  </div>
+                </div>
+                {groupedItems["AI Agents"].map((item) => {
+                  const Icon = item.icon;
+                  const isActive = isActivePath(item.path);
+
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={handleLinkClick}
+                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                        isActive ? "bg-caribbean_current-600 text-white shadow-lg" : "text-charcoal-100 hover:bg-charcoal-600 hover:text-white"
+                      }`}
+                    >
+                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-white" : "text-charcoal-200"}`} />
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </>
+            )}
           </nav>
           
           {/* Footer */}
@@ -108,7 +155,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <div className="mb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-3">
+                    <div className="w-8 h-8 bg-caribbean_current-500 rounded-full flex items-center justify-center mr-3">
                       <span className="text-xs font-semibold text-white">{user.name.charAt(0).toUpperCase()}</span>
                     </div>
                     <div>
@@ -130,10 +177,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       {/* Mobile overlay */}
       {sidebarOpen && <div className="fixed inset-0 z-30 bg-black bg-opacity-50 lg:hidden" onClick={() => dispatch(setSidebarOpen(false))} />}
 
-      {/* Main content area - full width without right sidebar */}
-      <div className="flex-1">
-        <main className="flex-1 min-h-screen bg-gray-100">{children}</main>
-      </div>
+      {/* Main content area - no right sidebar */}
+      <main className="flex-1 min-h-screen bg-gray-100">{children}</main>
     </div>
   );
 };
