@@ -402,21 +402,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                   </div>
                 ))}
               </div>
-              
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <div className="flex items-start">
-                  <div className="p-2 bg-blue-100 rounded-lg mr-3 mt-1">
-                    <Target className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-blue-900 mb-2">Powered by ML Anomaly Detection & Industry Benchmarking</h4>
-                    <p className="text-sm text-blue-800">
-                      These metrics are calculated using machine learning algorithms that analyze your financial data patterns and compare them against industry benchmarks. 
-                      Our AI identifies anomalies in your cash flow and provides context-aware comparisons to similar businesses in your industry.
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
           )}
 
@@ -461,21 +446,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     <p className="text-sm">{point.details}</p>
                   </div>
                 ))}
-              </div>
-              
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <div className="flex items-start">
-                  <div className="p-2 bg-blue-100 rounded-lg mr-3 mt-1">
-                    <Target className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-blue-900 mb-2">Powered by ML Anomaly Detection & Industry Benchmarking</h4>
-                    <p className="text-sm text-blue-800">
-                      Our AI identifies cash flow leakage points by analyzing transaction patterns and comparing them to industry benchmarks. 
-                      The system uses machine learning to detect inefficiencies and prioritize them based on financial impact and ease of resolution.
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
           )}
@@ -523,21 +493,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     </div>
                   </div>
                 ))}
-              </div>
-              
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <div className="flex items-start">
-                  <div className="p-2 bg-blue-100 rounded-lg mr-3 mt-1">
-                    <Target className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-blue-900 mb-2">Powered by ML Anomaly Detection & Industry Benchmarking</h4>
-                    <p className="text-sm text-blue-800">
-                      These corrective actions are generated using our AI's analysis of your cash flow patterns and industry benchmarks. 
-                      The system prioritizes actions based on financial impact, implementation difficulty, and alignment with industry best practices.
-                    </p>
-                  </div>
-                </div>
               </div>
             </div>
           )}
