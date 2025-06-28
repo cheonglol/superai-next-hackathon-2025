@@ -26,6 +26,17 @@ const CashFlowDiagnosticianPage: React.FC = () => {
   const [startDate, setStartDate] = useState<string>('2025-01-01');
   const [endDate, setEndDate] = useState<string>('2025-01-31');
 
+  // Financial data for calculations
+  const financialData = {
+    revenue: 6612000, // Annual revenue
+    cogs: 4694500, // Annual cost of goods sold
+    overheads: 1216200, // Annual overhead expenses
+    grossMargin: 0.29, // Gross margin percentage (29%)
+    accountsReceivable: 1811500, // Accounts receivable balance
+    inventory: 1286200, // Inventory balance
+    accountsPayable: 1286200, // Accounts payable balance
+  };
+
   // Mock cash flow data
   const mockCashFlowData: CashFlowData = {
     id: 'cf-001',
@@ -135,58 +146,99 @@ const CashFlowDiagnosticianPage: React.FC = () => {
     }
   ];
 
-  // 1% Fix suggestions based on the provided image
-  const onePercentFixes = [
-    {
-      category: 'Price Increase',
-      value: '1 %',
-      cashFlowImpact: 51690,
-      profitImpact: 66120,
-      details: 'Small price increase across all products and services'
-    },
-    {
-      category: 'Volume Increase',
-      value: '1 %',
-      cashFlowImpact: -4855,
-      profitImpact: 19175,
-      details: 'Increase sales volume through targeted marketing campaigns'
-    },
-    {
-      category: 'COGS Reduction',
-      value: '1 %',
-      cashFlowImpact: 56545,
-      profitImpact: 46945,
-      details: 'Negotiate better terms with suppliers or find alternative sources'
-    },
-    {
-      category: 'Overheads Reduction',
-      value: '1 %',
-      cashFlowImpact: 12162,
-      profitImpact: 12162,
-      details: 'Reduce overhead expenses through operational efficiency'
-    },
-    {
-      category: 'Reduction in Accounts Receivable Days',
-      value: '1 days',
-      cashFlowImpact: 18115,
-      profitImpact: 0,
-      details: 'Improve collection processes to receive payments faster'
-    },
-    {
-      category: 'Reduction in Inventory Days',
-      value: '1 days',
-      cashFlowImpact: 12862,
-      profitImpact: 0,
-      details: 'Optimize inventory management to reduce holding costs'
-    },
-    {
-      category: 'Increase in Accounts Payable Days',
-      value: '1 days',
-      cashFlowImpact: 12862,
-      profitImpact: 0,
-      details: 'Extend payment terms with suppliers without affecting relationships'
-    }
-  ];
+  // Calculate 1% Fix values using the provided formulas
+  const calculateOnePercentFixes = () => {
+    const revenue = financialData.revenue;
+    const cogs = financialData.cogs;
+    const overheads = financialData.overheads;
+    const grossMargin = financialData.grossMargin;
+    const ar = financialData.accountsReceivable;
+    const inventory = financialData.inventory;
+    const ap = financialData.accountsPayable;
+
+    // 1. Price Increase
+    const priceIncreaseProfitImpact = 0.01 * revenue;
+    const priceIncreaseCashFlowImpact = 0.01 * revenue * (1 - ar / revenue);
+
+    // 2. Volume Increase
+    const volumeIncreaseProfitImpact = 0.01 * revenue * grossMargin;
+    const volumeIncreaseCashFlowImpact = volumeIncreaseProfitImpact - (cogs/365) - (ar/365);
+
+    // 3. COGS Reduction
+    const cogsReductionProfitImpact = 0.01 * cogs;
+    const cogsReductionCashFlowImpact = cogsReductionProfitImpact + (0.01 * inventory);
+
+    // 4. Overheads Reduction
+    const overheadsReductionProfitImpact = 0.01 * overheads;
+    const overheadsReductionCashFlowImpact = overheadsReductionProfitImpact;
+
+    // 5. AR Days Reduction
+    const arDaysReductionProfitImpact = 0;
+    const arDaysReductionCashFlowImpact = revenue / 365;
+
+    // 6. Inventory Days Reduction
+    const inventoryDaysReductionProfitImpact = 0;
+    const inventoryDaysReductionCashFlowImpact = cogs / 365;
+
+    // 7. AP Days Increase
+    const apDaysIncreaseProfitImpact = 0;
+    const apDaysIncreaseCashFlowImpact = cogs / 365;
+
+    return [
+      {
+        category: 'Price Increase %',
+        value: '1 %',
+        cashFlowImpact: Math.round(priceIncreaseCashFlowImpact),
+        profitImpact: Math.round(priceIncreaseProfitImpact),
+        details: 'Small price increase across all products and services'
+      },
+      {
+        category: 'Volume Increase %',
+        value: '1 %',
+        cashFlowImpact: Math.round(volumeIncreaseCashFlowImpact),
+        profitImpact: Math.round(volumeIncreaseProfitImpact),
+        details: 'Increase sales volume through targeted marketing campaigns'
+      },
+      {
+        category: 'COGS Reduction %',
+        value: '1 %',
+        cashFlowImpact: Math.round(cogsReductionCashFlowImpact),
+        profitImpact: Math.round(cogsReductionProfitImpact),
+        details: 'Negotiate better terms with suppliers or find alternative sources'
+      },
+      {
+        category: 'Overheads Reduction %',
+        value: '1 %',
+        cashFlowImpact: Math.round(overheadsReductionCashFlowImpact),
+        profitImpact: Math.round(overheadsReductionProfitImpact),
+        details: 'Reduce overhead expenses through operational efficiency'
+      },
+      {
+        category: 'Reduction in Accounts Receivable Days',
+        value: '1 days',
+        cashFlowImpact: Math.round(arDaysReductionCashFlowImpact),
+        profitImpact: arDaysReductionProfitImpact,
+        details: 'Improve collection processes to receive payments faster'
+      },
+      {
+        category: 'Reduction in Inventory Days',
+        value: '1 days',
+        cashFlowImpact: Math.round(inventoryDaysReductionCashFlowImpact),
+        profitImpact: inventoryDaysReductionProfitImpact,
+        details: 'Optimize inventory management to reduce holding costs'
+      },
+      {
+        category: 'Increase in Accounts Payable Days',
+        value: '1 days',
+        cashFlowImpact: Math.round(apDaysIncreaseCashFlowImpact),
+        profitImpact: apDaysIncreaseProfitImpact,
+        details: 'Extend payment terms with suppliers without affecting relationships'
+      }
+    ];
+  };
+
+  // Get the calculated 1% fixes
+  const onePercentFixes = calculateOnePercentFixes();
 
   // Calculate totals for 1% Fix
   const totalCashFlowImpact = onePercentFixes.reduce((sum, fix) => sum + fix.cashFlowImpact, 0);
@@ -426,7 +478,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
               }`}
             >
               <Percent className="w-4 h-4 mr-2 inline" />
-              1% Fix
+              Your Power of One
             </button>
             <button
               onClick={() => setActiveTab('actions')}
