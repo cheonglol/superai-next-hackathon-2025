@@ -11,8 +11,6 @@ import {
   Zap,
   BarChart3,
   ArrowRight,
-  Search,
-  Filter,
   RefreshCw
 } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
@@ -24,6 +22,8 @@ const CashFlowDiagnosticianPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'metrics' | 'leakage' | 'actions'>('metrics');
+  const [startDate, setStartDate] = useState<string>('2025-01-01');
+  const [endDate, setEndDate] = useState<string>('2025-01-31');
 
   // Mock cash flow data
   const mockCashFlowData: CashFlowData = {
@@ -185,7 +185,15 @@ const CashFlowDiagnosticianPage: React.FC = () => {
   const runAnalysis = async () => {
     setLoading(true);
     try {
-      const result = await agentService.analyzeCashFlow(mockCashFlowData);
+      // Update the mock data with the selected date range
+      const updatedMockData = {
+        ...mockCashFlowData,
+        startDate,
+        endDate,
+        period: `${startDate.substring(0, 7)}` // Extract YYYY-MM format
+      };
+      
+      const result = await agentService.analyzeCashFlow(updatedMockData);
       setAnalysis(result);
       setLastUpdate(new Date().toLocaleString());
     } catch (error) {
@@ -193,6 +201,10 @@ const CashFlowDiagnosticianPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDateRangeChange = () => {
+    runAnalysis();
   };
 
   const formatCurrency = (amount: number | string) => {
@@ -275,7 +287,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
           icon={<Activity className="w-8 h-8 text-blue-600" />} 
         />
 
-        {/* Agent Header */}
+        {/* Agent Header with Date Range Selector */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="flex items-center mb-4 md:mb-0">
@@ -287,21 +299,32 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                 <p className="text-sm text-gray-600">Financial health assessment and optimization</p>
               </div>
             </div>
-            <div className="flex flex-wrap gap-2">
+            
+            {/* Date Range Selector */}
+            <div className="flex flex-wrap gap-3 items-center">
+              <div className="flex items-center">
+                <Calendar className="w-4 h-4 mr-2 text-gray-600" />
+                <span className="text-sm text-gray-600 mr-2">Date Range:</span>
+                <input 
+                  type="date" 
+                  value={startDate} 
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+                />
+                <span className="mx-2 text-gray-600">to</span>
+                <input 
+                  type="date" 
+                  value={endDate} 
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-md text-sm"
+                />
+              </div>
               <button
-                onClick={runAnalysis}
+                onClick={handleDateRangeChange}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
               >
                 <RefreshCw className="w-4 h-4 mr-2" />
-                Refresh Analysis
-              </button>
-              <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors flex items-center">
-                <Filter className="w-4 h-4 mr-2" />
-                Filter Data
-              </button>
-              <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors flex items-center">
-                <Search className="w-4 h-4 mr-2" />
-                Advanced Search
+                Analyze
               </button>
             </div>
           </div>
