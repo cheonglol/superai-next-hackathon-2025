@@ -23,7 +23,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
   const [analysis, setAnalysis] = useState<CashFlowAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<string>('');
-  const [activeTab, setActiveTab] = useState<'metrics' | 'leakage' | 'actions' | 'tools'>('metrics');
+  const [activeTab, setActiveTab] = useState<'metrics' | 'leakage' | 'actions'>('metrics');
 
   // Mock cash flow data
   const mockCashFlowData: CashFlowData = {
@@ -342,15 +342,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
               <Zap className="w-4 h-4 mr-2 inline" />
               Corrective Actions
             </button>
-            <button
-              onClick={() => setActiveTab('tools')}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                activeTab === 'tools' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}
-            >
-              <Target className="w-4 h-4 mr-2 inline" />
-              Analysis Tools
-            </button>
           </div>
         </div>
 
@@ -387,6 +378,21 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     </div>
                   </div>
                 ))}
+              </div>
+              
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-start">
+                  <div className="p-2 bg-blue-100 rounded-lg mr-3 mt-1">
+                    <Target className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-blue-900 mb-2">Powered by ML Anomaly Detection & Industry Benchmarking</h4>
+                    <p className="text-sm text-blue-800">
+                      These metrics are calculated using machine learning algorithms that analyze your financial data patterns and compare them against industry benchmarks. 
+                      Our AI identifies anomalies in your cash flow and provides context-aware comparisons to similar businesses in your industry.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -432,6 +438,21 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     <p className="text-sm">{point.details}</p>
                   </div>
                 ))}
+              </div>
+              
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-start">
+                  <div className="p-2 bg-blue-100 rounded-lg mr-3 mt-1">
+                    <Target className="w-5 h-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-blue-900 mb-2">Powered by ML Anomaly Detection & Industry Benchmarking</h4>
+                    <p className="text-sm text-blue-800">
+                      Our AI identifies cash flow leakage points by analyzing transaction patterns and comparing them to industry benchmarks. 
+                      The system uses machine learning to detect inefficiencies and prioritize them based on financial impact and ease of resolution.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -480,82 +501,19 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </div>
-          )}
-
-          {/* Analysis Tools Tab */}
-          {activeTab === 'tools' && (
-            <div>
-              <div className="flex items-center mb-6">
-                <Target className="w-5 h-5 text-green-600 mr-2" />
-                <h3 className="text-lg font-semibold text-gray-900">Advanced Analysis Tools</h3>
-              </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="border border-blue-200 rounded-lg p-6 bg-blue-50">
-                  <div className="flex items-center mb-4">
-                    <div className="p-3 bg-blue-100 rounded-lg mr-3">
-                      <Activity className="w-5 h-5 text-blue-600" />
-                    </div>
-                    <h4 className="text-lg font-semibold text-blue-900">ML Anomaly Detection</h4>
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-start">
+                  <div className="p-2 bg-blue-100 rounded-lg mr-3 mt-1">
+                    <Target className="w-5 h-5 text-blue-600" />
                   </div>
-                  <p className="text-sm text-blue-800 mb-4">
-                    Our machine learning algorithms analyze your cash flow patterns to identify anomalies and unusual transactions that may indicate problems or opportunities.
-                  </p>
-                  <div className="bg-white rounded-lg p-4 border border-blue-200 mb-4">
-                    <h5 className="font-medium text-blue-900 mb-2">Recent Anomalies Detected</h5>
-                    <ul className="text-sm space-y-2">
-                      <li className="flex items-start">
-                        <AlertTriangle className="w-4 h-4 text-yellow-600 mr-2 mt-0.5 flex-shrink-0" />
-                        <span>Unusual spike in operational expenses (Jan 15-20)</span>
-                      </li>
-                      <li className="flex items-start">
-                        <AlertTriangle className="w-4 h-4 text-red-600 mr-2 mt-0.5 flex-shrink-0" />
-                        <span>Recurring payment amount increased by 35% (Vendor: CloudTech)</span>
-                      </li>
-                    </ul>
+                  <div>
+                    <h4 className="font-semibold text-blue-900 mb-2">Powered by ML Anomaly Detection & Industry Benchmarking</h4>
+                    <p className="text-sm text-blue-800">
+                      These corrective actions are generated using our AI's analysis of your cash flow patterns and industry benchmarks. 
+                      The system prioritizes actions based on financial impact, implementation difficulty, and alignment with industry best practices.
+                    </p>
                   </div>
-                  <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                    Run Anomaly Detection
-                  </button>
-                </div>
-
-                <div className="border border-green-200 rounded-lg p-6 bg-green-50">
-                  <div className="flex items-center mb-4">
-                    <div className="p-3 bg-green-100 rounded-lg mr-3">
-                      <BarChart3 className="w-5 h-5 text-green-600" />
-                    </div>
-                    <h4 className="text-lg font-semibold text-green-900">Industry Benchmarking</h4>
-                  </div>
-                  <p className="text-sm text-green-800 mb-4">
-                    Compare your cash flow metrics against industry standards and similar businesses to identify areas for improvement and competitive advantages.
-                  </p>
-                  <div className="bg-white rounded-lg p-4 border border-green-200 mb-4">
-                    <h5 className="font-medium text-green-900 mb-2">Your Performance vs. Industry</h5>
-                    <div className="space-y-3">
-                      <div>
-                        <div className="flex justify-between text-sm mb-1">
-                          <span>Cash Conversion Cycle</span>
-                          <span className="font-medium text-green-700">Better than 75% of peers</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div className="bg-green-600 h-2 rounded-full" style={{ width: '75%' }}></div>
-                        </div>
-                      </div>
-                      <div>
-                        <div className="flex justify-between text-sm mb-1">
-                          <span>Operating Cash Flow Ratio</span>
-                          <span className="font-medium text-green-700">Better than 62% of peers</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div className="bg-green-600 h-2 rounded-full" style={{ width: '62%' }}></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <button className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                    View Full Benchmark Report
-                  </button>
                 </div>
               </div>
             </div>
