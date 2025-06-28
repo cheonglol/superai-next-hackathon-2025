@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { toggleSidebar, setSidebarOpen } from "@/store/slices/uiSlice";
 import { logout } from "@/store/slices/authSlice";
 import { RightSidebar } from "@/components/layout/RightSidebar";
-import { routes } from "@/router";
+import { routes } from "@/router/index";
 
 interface MainLayoutProps {
   children: React.ReactNode;
