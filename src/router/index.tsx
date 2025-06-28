@@ -8,6 +8,7 @@ import { ReactElement } from "react";
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 import AuthProtectedRouteLogic from "./logic/AuthProtectedRouteLogic";
 import { BarChart3, Activity, TrendingUp, Shield, Zap } from "lucide-react";
+import CashFlowDiagnosticianPage from "@/pages/CashFlow/CashFlowDiagnosticianPage";
 
 const ROOT_PATH = "";
 
@@ -56,10 +57,7 @@ export const routes: ExtendedRouteObject[] = [
       path: `${ROOT_PATH}/cash-flow-diagnostician`,
       element: (
         <MainLayout>
-          <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Cash Flow Diagnostician</h1>
-            <p className="text-gray-600">Diagnose cash flow health and suggest corrective action.</p>
-          </div>
+          <CashFlowDiagnosticianPage />
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,
