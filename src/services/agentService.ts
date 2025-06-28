@@ -6,12 +6,15 @@ import type {
   ReceivablesAutopilot,
   CentralOrchestrator,
   AgentMessage,
-  CashFlowData,
-  CashFlowAnalysis,
   StressTestResult,
   LiquidityAlert,
   CollectionTask
 } from '@/types/agents';
+
+import type {
+  CashFlowData,
+  CashFlowAnalysis
+} from '@/types/cashflow';
 
 class AgentService {
   private agents: Map<string, Agent> = new Map();
