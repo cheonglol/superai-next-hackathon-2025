@@ -14,7 +14,96 @@ import {
 import { PageHeader } from "@/components/common/PageHeader";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
-import { apiService } from "@/services/apiService";
+// import { apiService } from "@/services/apiService"; // Commented out since API is not working
+
+// Hardcoded document data to replace API calls
+const HARDCODED_DOCUMENTS = [
+  // Restaurant Downtown documents
+  {
+    id: "doc1",
+    name: "Downtown Restaurant - P&L 2024.pdf",
+    size: "245 KB",
+    tags: ["restaurant-downtown", "income-statement", "2024", "financial"],
+    contentPreview: "Profit & Loss Statement for Downtown Restaurant showing revenue of $1.2M and net profit of $189K for 2024",
+    createdAt: "2024-12-15T10:30:00Z",
+  },
+  {
+    id: "doc2",
+    name: "Downtown Restaurant - P&L 2023.pdf",
+    size: "238 KB",
+    tags: ["restaurant-downtown", "income-statement", "2023", "financial"],
+    contentPreview: "Profit & Loss Statement for Downtown Restaurant showing revenue of $1.1M and net profit of $165K for 2023",
+    createdAt: "2024-11-20T14:15:00Z",
+  },
+  {
+    id: "doc3",
+    name: "Downtown Restaurant - Balance Sheet 2024.pdf",
+    size: "198 KB",
+    tags: ["restaurant-downtown", "balance-sheet", "2024", "financial"],
+    contentPreview: "Balance Sheet for Downtown Restaurant showing total assets of $2.1M and strong cash position",
+    createdAt: "2024-12-15T10:35:00Z",
+  },
+  {
+    id: "doc4",
+    name: "Downtown Restaurant - Balance Sheet 2023.pdf",
+    size: "195 KB",
+    tags: ["restaurant-downtown", "balance-sheet", "2023", "financial"],
+    contentPreview: "Balance Sheet for Downtown Restaurant showing total assets of $1.9M and healthy financial position",
+    createdAt: "2024-11-20T14:20:00Z",
+  },
+
+  // Restaurant Uptown documents
+  {
+    id: "doc5",
+    name: "Uptown Restaurant - P&L 2024.pdf",
+    size: "232 KB",
+    tags: ["restaurant-uptown", "income-statement", "2024", "financial"],
+    contentPreview: "Profit & Loss Statement for Uptown Restaurant showing revenue of $980K and net profit of $129K for 2024",
+    createdAt: "2024-12-10T09:45:00Z",
+  },
+  {
+    id: "doc6",
+    name: "Uptown Restaurant - P&L 2023.pdf",
+    size: "228 KB",
+    tags: ["restaurant-uptown", "income-statement", "2023", "financial"],
+    contentPreview: "Profit & Loss Statement for Uptown Restaurant showing revenue of $890K and net profit of $118K for 2023",
+    createdAt: "2024-11-15T11:30:00Z",
+  },
+  {
+    id: "doc7",
+    name: "Uptown Restaurant - Balance Sheet 2024.pdf",
+    size: "185 KB",
+    tags: ["restaurant-uptown", "balance-sheet", "2024", "financial"],
+    contentPreview: "Balance Sheet for Uptown Restaurant showing total assets of $1.7M and good liquidity ratios",
+    createdAt: "2024-12-10T09:50:00Z",
+  },
+  {
+    id: "doc8",
+    name: "Uptown Restaurant - Balance Sheet 2023.pdf",
+    size: "182 KB",
+    tags: ["restaurant-uptown", "balance-sheet", "2023", "financial"],
+    contentPreview: "Balance Sheet for Uptown Restaurant showing total assets of $1.5M and stable financial structure",
+    createdAt: "2024-11-15T11:35:00Z",
+  },
+
+  // Restaurant Mall documents
+  {
+    id: "doc9",
+    name: "Mall Restaurant - P&L 2024.pdf",
+    size: "201 KB",
+    tags: ["restaurant-mall", "income-statement", "2024", "financial"],
+    contentPreview: "Profit & Loss Statement for Mall Restaurant showing revenue of $720K and net profit of $66K for 2024",
+    createdAt: "2024-12-05T16:20:00Z",
+  },
+  {
+    id: "doc10",
+    name: "Mall Restaurant - Balance Sheet 2024.pdf",
+    size: "167 KB",
+    tags: ["restaurant-mall", "balance-sheet", "2024", "financial"],
+    contentPreview: "Balance Sheet for Mall Restaurant showing total assets of $1.1M and moderate debt levels",
+    createdAt: "2024-12-05T16:25:00Z",
+  },
+];
 
 const DataInputPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -163,17 +252,14 @@ const DataInputPage: React.FC = () => {
         })
       );
 
-      // Upload to the actual API endpoint
-      const documentType = type === "profitLoss" ? "profit_loss" : "balance_sheet";
-      const response = await apiService.uploadFinancialDocument(file, documentType, selectedBranchId);
+      // Simulate successful upload since API is not working
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
-      console.log("Upload successful:", response);
+      console.log("Upload simulated successfully for:", type);
       setUploadStatus((prev) => ({ ...prev, [type]: "success" }));
 
-      // Show success message or update UI as needed
-      if (response.success) {
-        console.log(`${documentType} uploaded successfully:`, response.message);
-      }
+      // Show success message
+      console.log(`${type} uploaded successfully (simulated)`);
     } catch (error) {
       console.error(`Error uploading ${type} document:`, error);
       setUploadStatus((prev) => ({ ...prev, [type]: "error" }));
@@ -202,31 +288,19 @@ const DataInputPage: React.FC = () => {
     }
   };
 
+  // Fetch documents (now uses hardcoded data)
   const fetchDocuments = async () => {
     try {
       setDocumentsLoading(true);
-      console.log("🔍 Fetching documents from API...");
+      console.log("🔍 Loading documents from hardcoded data...");
 
-      const response = await apiService.getFinancialDocuments();
-      console.log("📄 API Response:", response);
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
-      if (response && response.success && response.data && response.data.documents) {
-        console.log("✅ Documents found:", response.data.documents.length);
-        setDocuments(response.data.documents);
-      } else if (response && response.data && Array.isArray(response.data)) {
-        // Handle case where documents are directly in data array
-        console.log("✅ Documents found (direct array):", response.data.length);
-        setDocuments(response.data);
-      } else {
-        console.log("⚠️ No documents found in response or unexpected format");
-        console.log("Response structure:", JSON.stringify(response, null, 2));
-        setDocuments([]);
-      }
+      console.log("✅ Documents loaded:", HARDCODED_DOCUMENTS.length);
+      setDocuments(HARDCODED_DOCUMENTS);
     } catch (error) {
-      console.error("❌ Error fetching documents:", error);
-      if (error instanceof Error) {
-        console.error("Error message:", error.message);
-      }
+      console.error("❌ Error loading documents:", error);
       setDocuments([]);
     } finally {
       setDocumentsLoading(false);

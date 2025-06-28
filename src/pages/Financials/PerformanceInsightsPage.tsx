@@ -5,13 +5,252 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { fetchFinancialData } from "@/store/slices/financialsSlice";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
-import { apiService } from "@/services/apiService";
+// import { apiService } from "@/services/apiService"; // Commented out since API is not working
 import ProfitabilityInsights from "@/components/ProfitabilityInsights";
 import WorkingCapitalInsights from "@/components/WorkingCapitalInsights";
 import FundingInsights from "@/components/FundingInsights";
 import SensitivityAnalysis from "@/components/SensitivityAnalysis";
 import ValuationTool from "@/components/ValuationTool";
 import ProcessingScreen from "@/components/ProcessingScreen";
+
+// Hardcoded sample data to replace API calls
+const HARDCODED_BRANCH_DOCUMENTS = {
+  "restaurant-downtown": [
+    { name: "Downtown Restaurant - P&L 2024", tags: ["restaurant-downtown", "income-statement", "2024", "financial"] },
+    { name: "Downtown Restaurant - P&L 2023", tags: ["restaurant-downtown", "income-statement", "2023", "financial"] },
+    { name: "Downtown Restaurant - Balance Sheet 2024", tags: ["restaurant-downtown", "balance-sheet", "2024", "financial"] },
+    { name: "Downtown Restaurant - Balance Sheet 2023", tags: ["restaurant-downtown", "balance-sheet", "2023", "financial"] },
+  ],
+  "restaurant-uptown": [
+    { name: "Uptown Restaurant - P&L 2024", tags: ["restaurant-uptown", "income-statement", "2024", "financial"] },
+    { name: "Uptown Restaurant - P&L 2023", tags: ["restaurant-uptown", "income-statement", "2023", "financial"] },
+    { name: "Uptown Restaurant - Balance Sheet 2024", tags: ["restaurant-uptown", "balance-sheet", "2024", "financial"] },
+    { name: "Uptown Restaurant - Balance Sheet 2023", tags: ["restaurant-uptown", "balance-sheet", "2023", "financial"] },
+  ],
+  "restaurant-mall": [
+    { name: "Mall Restaurant - P&L 2024", tags: ["restaurant-mall", "income-statement", "2024", "financial"] },
+    { name: "Mall Restaurant - Balance Sheet 2024", tags: ["restaurant-mall", "balance-sheet", "2024", "financial"] },
+  ],
+};
+
+const HARDCODED_INSIGHTS_DATA = {
+  "restaurant-downtown": {
+    profitability: {
+      gross_margin: "68.5%",
+      operating_margin: "22.3%",
+      net_margin: "15.8%",
+      ebitda_margin: "25.1%",
+      return_on_assets: "12.4%",
+      return_on_equity: "18.7%",
+      industry_benchmarks: {
+        gross_margin_benchmark: "65-75%",
+        operating_margin_benchmark: "18-25%",
+        net_margin_benchmark: "12-18%",
+      },
+      insights: [
+        { type: "positive", message: "Excellent gross margin of 68.5% indicates strong pricing power and effective cost management", priority: "high" },
+        { type: "positive", message: "Operating margin of 22.3% is above industry average, showing good operational efficiency", priority: "high" },
+        { type: "positive", message: "ROE of 18.7% demonstrates efficient use of shareholder equity", priority: "medium" },
+        { type: "warning", message: "Monitor food costs closely as they represent the largest expense category", priority: "medium" },
+      ],
+    },
+    workingCapital: {
+      working_capital: 125000,
+      current_ratio: "2.4",
+      quick_ratio: "1.8",
+      cash_conversion_cycle: 12,
+      components: {
+        accounts_receivable_days: 8,
+        inventory_days: 15,
+        accounts_payable_days: 11,
+      },
+      optimization_opportunities: [
+        { area: "inventory", current_performance: "15 days inventory", target_improvement: "Reduce to 12 days", potential_cash_impact: 18000, priority: "high" },
+        { area: "payables", current_performance: "11-day payment terms", target_improvement: "Negotiate 15-day terms", potential_cash_impact: 12000, priority: "medium" },
+        { area: "receivables", current_performance: "8-day collection", target_improvement: "Maintain current efficiency", potential_cash_impact: 0, priority: "low" },
+      ],
+    },
+    funding: {
+      debt_to_equity_ratio: "0.45",
+      debt_to_assets_ratio: "28%",
+      interest_coverage_ratio: "8.2x",
+      debt_service_coverage_ratio: "3.1x",
+      equity_ratio: "72%",
+      funding_recommendations: [
+        { strategy: "maintain_current", description: "Strong interest coverage ratio of 8.2x indicates low financial risk", priority: "high" },
+        { strategy: "growth_funding", description: "Consider expansion financing given strong cash flows", priority: "medium" },
+        { strategy: "refinance", description: "Explore refinancing options to reduce interest costs", priority: "medium" },
+      ],
+    },
+    sensitivity: {
+      scenarios: [
+        { name: "1% Price Increase", revenueImpact: 12000, profitImpact: 12000, cashFlowImpact: 10200, difficulty: "Medium", timeframe: "1-3 months" },
+        { name: "1% Volume Increase", revenueImpact: 12000, profitImpact: 8400, cashFlowImpact: 7140, difficulty: "Hard", timeframe: "3-6 months" },
+        { name: "1% COGS Decrease", revenueImpact: 0, profitImpact: 3800, cashFlowImpact: 3230, difficulty: "Medium", timeframe: "1-2 months" },
+      ],
+    },
+    valuation: {
+      current_metrics: {
+        ebitda: 301200,
+      },
+      valuation_estimates: {
+        ebitda_valuation: 2409600,
+      },
+      valuation_factors: {
+        positive_factors: [
+          { factor: "Prime downtown location with high foot traffic", impact_level: "high" },
+          { factor: "Strong brand recognition and customer loyalty", impact_level: "high" },
+          { factor: "Consistent profitability and cash flow generation", impact_level: "high" },
+          { factor: "Experienced management team and operational systems", impact_level: "medium" },
+        ],
+      },
+    },
+  },
+  "restaurant-uptown": {
+    profitability: {
+      gross_margin: "72.1%",
+      operating_margin: "19.5%",
+      net_margin: "13.2%",
+      ebitda_margin: "23.8%",
+      return_on_assets: "11.8%",
+      return_on_equity: "16.9%",
+      industry_benchmarks: {
+        gross_margin_benchmark: "65-75%",
+        operating_margin_benchmark: "18-25%",
+        net_margin_benchmark: "12-18%",
+      },
+      insights: [
+        { type: "positive", message: "Outstanding gross margin of 72.1% reflects premium pricing strategy", priority: "high" },
+        { type: "positive", message: "Operating margin of 19.5% is solid despite higher rent costs", priority: "medium" },
+        { type: "warning", message: "Net margin could be improved through better cost control", priority: "medium" },
+        { type: "positive", message: "Strong customer base supports premium pricing", priority: "high" },
+      ],
+    },
+    workingCapital: {
+      working_capital: 98000,
+      current_ratio: "2.1",
+      quick_ratio: "1.6",
+      cash_conversion_cycle: 14,
+      components: {
+        accounts_receivable_days: 9,
+        inventory_days: 18,
+        accounts_payable_days: 13,
+      },
+      optimization_opportunities: [
+        { area: "inventory", current_performance: "18 days inventory", target_improvement: "Reduce to 15 days", potential_cash_impact: 15000, priority: "high" },
+        { area: "payables", current_performance: "13-day payment terms", target_improvement: "Negotiate 18-day terms", potential_cash_impact: 10000, priority: "medium" },
+        { area: "receivables", current_performance: "9-day collection", target_improvement: "Improve to 7 days", potential_cash_impact: 8000, priority: "medium" },
+      ],
+    },
+    funding: {
+      debt_to_equity_ratio: "0.52",
+      debt_to_assets_ratio: "34%",
+      interest_coverage_ratio: "6.8x",
+      debt_service_coverage_ratio: "2.7x",
+      equity_ratio: "66%",
+      funding_recommendations: [
+        { strategy: "maintain_current", description: "Good interest coverage ratio of 6.8x provides adequate safety margin", priority: "high" },
+        { strategy: "debt_reduction", description: "Consider reducing debt to improve financial flexibility", priority: "medium" },
+        { strategy: "maintain_current", description: "Current capital structure is appropriate for operations", priority: "low" },
+      ],
+    },
+    sensitivity: {
+      scenarios: [
+        { name: "1% Price Increase", revenueImpact: 9800, profitImpact: 9800, cashFlowImpact: 8330, difficulty: "Medium", timeframe: "1-3 months" },
+        { name: "1% Volume Increase", revenueImpact: 9800, profitImpact: 6860, cashFlowImpact: 5831, difficulty: "Hard", timeframe: "3-6 months" },
+        { name: "1% COGS Decrease", revenueImpact: 0, profitImpact: 2730, cashFlowImpact: 2321, difficulty: "Medium", timeframe: "1-2 months" },
+      ],
+    },
+    valuation: {
+      current_metrics: {
+        ebitda: 233240,
+      },
+      valuation_estimates: {
+        ebitda_valuation: 1865920,
+      },
+      valuation_factors: {
+        positive_factors: [
+          { factor: "Upscale location with affluent customer base", impact_level: "high" },
+          { factor: "Premium brand positioning and pricing power", impact_level: "high" },
+          { factor: "Strong operational metrics and profitability", impact_level: "medium" },
+          { factor: "Growth potential in upscale market segment", impact_level: "medium" },
+        ],
+      },
+    },
+  },
+  "restaurant-mall": {
+    profitability: {
+      gross_margin: "62.3%",
+      operating_margin: "14.8%",
+      net_margin: "9.2%",
+      ebitda_margin: "18.5%",
+      return_on_assets: "8.9%",
+      return_on_equity: "13.4%",
+      industry_benchmarks: {
+        gross_margin_benchmark: "65-75%",
+        operating_margin_benchmark: "18-25%",
+        net_margin_benchmark: "12-18%",
+      },
+      insights: [
+        { type: "warning", message: "Gross margin of 62.3% is below industry benchmark, review pricing strategy", priority: "high" },
+        { type: "warning", message: "Operating margin of 14.8% needs improvement through cost optimization", priority: "high" },
+        { type: "warning", message: "Net margin of 9.2% is below industry average, focus on profitability", priority: "medium" },
+        { type: "positive", message: "Location provides steady foot traffic despite challenges", priority: "medium" },
+      ],
+    },
+    workingCapital: {
+      working_capital: 67000,
+      current_ratio: "1.8",
+      quick_ratio: "1.3",
+      cash_conversion_cycle: 18,
+      components: {
+        accounts_receivable_days: 12,
+        inventory_days: 22,
+        accounts_payable_days: 16,
+      },
+      optimization_opportunities: [
+        { area: "inventory", current_performance: "22 days inventory", target_improvement: "Reduce to 18 days", potential_cash_impact: 12000, priority: "high" },
+        { area: "receivables", current_performance: "12-day collection", target_improvement: "Improve to 9 days", potential_cash_impact: 8500, priority: "high" },
+        { area: "payables", current_performance: "16-day payment terms", target_improvement: "Negotiate 20-day terms", potential_cash_impact: 6000, priority: "medium" },
+      ],
+    },
+    funding: {
+      debt_to_equity_ratio: "0.68",
+      debt_to_assets_ratio: "40%",
+      interest_coverage_ratio: "4.2x",
+      debt_service_coverage_ratio: "1.9x",
+      equity_ratio: "60%",
+      funding_recommendations: [
+        { strategy: "debt_reduction", description: "Interest coverage of 4.2x suggests need for debt reduction", priority: "high" },
+        { strategy: "improve_operations", description: "Focus on operational improvements before additional financing", priority: "high" },
+        { strategy: "monitor_closely", description: "Monitor debt service coverage closely", priority: "medium" },
+      ],
+    },
+    sensitivity: {
+      scenarios: [
+        { name: "1% Price Increase", revenueImpact: 7200, profitImpact: 7200, cashFlowImpact: 6120, difficulty: "Hard", timeframe: "2-4 months" },
+        { name: "1% Volume Increase", revenueImpact: 7200, profitImpact: 5040, cashFlowImpact: 4284, difficulty: "Hard", timeframe: "4-8 months" },
+        { name: "1% COGS Decrease", revenueImpact: 0, profitImpact: 2720, cashFlowImpact: 2312, difficulty: "Medium", timeframe: "1-2 months" },
+      ],
+    },
+    valuation: {
+      current_metrics: {
+        ebitda: 133200,
+      },
+      valuation_estimates: {
+        ebitda_valuation: 799200,
+      },
+      valuation_factors: {
+        positive_factors: [
+          { factor: "Stable mall location with consistent traffic", impact_level: "medium" },
+          { factor: "Established customer base and brand presence", impact_level: "medium" },
+          { factor: "Opportunity for operational improvements", impact_level: "medium" },
+          { factor: "Lower rent costs compared to street-front locations", impact_level: "low" },
+        ],
+      },
+    },
+  },
+};
 
 const PerformanceInsightsPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -57,7 +296,7 @@ const PerformanceInsightsPage: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [dataError, setDataError] = useState<string | null>(null);
 
-  // Helper function to safely parse API responses
+  // Helper function to safely parse API responses (kept for compatibility)
   const parseApiResponse = (response: unknown, type: string) => {
     try {
       let textResponse = "";
@@ -131,15 +370,7 @@ const PerformanceInsightsPage: React.FC = () => {
     { id: "valuation", label: "Valuation Tool", icon: Target },
   ];
 
-  // const processingSteps = [
-  //   { id: 0, label: "Processing Insights", description: "Analyzing financial documents and extracting key metrics", icon: FileText },
-  //   { id: 1, label: "Working Capital Insights", description: "Calculating working capital metrics and cash flow patterns", icon: Activity },
-  //   { id: 2, label: "Funding Insights", description: "Evaluating debt structure and financing requirements", icon: TrendingUp },
-  //   { id: 3, label: "Sensitivity Analysis", description: "Running scenario analysis and impact assessments", icon: Calculator },
-  //   { id: 4, label: "Valuation Tool", description: "Computing company valuation and market metrics", icon: Target },
-  // ];
-
-  // Helper function to load individual insight with retry
+  // Helper function to load individual insight with retry (now uses hardcoded data)
   const loadIndividualInsight = async (insightType: string, loadFunction: () => Promise<unknown>, retries = 2): Promise<unknown> => {
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
@@ -163,64 +394,48 @@ const PerformanceInsightsPage: React.FC = () => {
     return null;
   };
 
-  // Load all insights data from API
+  // Load all insights data from hardcoded data (replacing API calls)
   const loadInsightsData = async (branchKey: string) => {
     try {
       setDataLoading(true);
       setDataError(null);
 
-      // Get document names and branch tags for the selected branch
-      const documentNames = await apiService.getDocumentNamesForBranch(branchKey);
-      const branchTags = apiService.getBranchTags(branchKey);
-
       console.log("Loading insights for branch:", branchKey);
-      console.log("Document names:", documentNames);
-      console.log("Branch tags:", branchTags);
 
-      if (documentNames.length === 0) {
-        throw new Error("No documents found for this branch. Please upload financial documents first.");
+      // Use hardcoded data instead of API calls
+      const branchData = HARDCODED_INSIGHTS_DATA[branchKey as keyof typeof HARDCODED_INSIGHTS_DATA];
+
+      if (!branchData) {
+        throw new Error("No insights data found for this branch.");
       }
 
-      // Call API endpoints sequentially with retry logic and update processing steps
+      // Simulate processing steps with delays
       setProcessingStep(1); // Step 1: Processing Insights
-      const profitabilityResponse = await loadIndividualInsight("profitability", () => apiService.getProfitabilityInsights(documentNames, branchTags));
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       setProcessingStep(2); // Step 2: Working Capital Insights
-      const workingCapitalResponse = await loadIndividualInsight("working capital", () => apiService.getWorkingCapitalInsights(documentNames, branchTags));
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       setProcessingStep(3); // Step 3: Funding Insights
-      const fundingResponse = await loadIndividualInsight("funding", () => apiService.getFundingInsights(documentNames, branchTags));
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       setProcessingStep(4); // Step 4: Sensitivity Analysis
-      const sensitivityResponse = await loadIndividualInsight("sensitivity analysis", () => apiService.getSensitivityAnalysis(documentNames, branchTags));
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
       setProcessingStep(5); // Step 5: Valuation Tool
-      const valuationResponse = await loadIndividualInsight("valuation", () => apiService.getValuationTool(documentNames, branchTags));
+      await new Promise((resolve) => setTimeout(resolve, 800));
 
-      // Parse responses (they should return JSON strings)
+      // Set the hardcoded data
       const parsedData = {
-        profitability: parseApiResponse(profitabilityResponse, "profitability"),
-        workingCapital: parseApiResponse(workingCapitalResponse, "workingCapital"),
-        funding: parseApiResponse(fundingResponse, "funding"),
-        sensitivity: parseApiResponse(sensitivityResponse, "sensitivity"),
-        valuation: parseApiResponse(valuationResponse, "valuation"),
+        profitability: branchData.profitability,
+        workingCapital: branchData.workingCapital,
+        funding: branchData.funding,
+        sensitivity: branchData.sensitivity,
+        valuation: branchData.valuation,
       };
 
-      console.log(
-        "📊 Financial insights loaded successfully:",
-        Object.keys(parsedData).filter((key) => parsedData[key as keyof typeof parsedData] !== null)
-      );
+      console.log("📊 Financial insights loaded successfully from hardcoded data");
       setInsightsData(parsedData);
-
-      // Check if any insights failed to load (for logging purposes)
-      const failedInsights = Object.entries(parsedData)
-        .filter(([, value]) => value === null)
-        .map(([key]) => key);
-
-      if (failedInsights.length > 0) {
-        const successCount = 5 - failedInsights.length;
-        console.warn(`${successCount}/5 insights loaded successfully. Failed insights: ${failedInsights.join(", ")}`);
-      }
     } catch (error) {
       console.error("Error loading insights data:", error);
       setDataError(error instanceof Error ? error.message : "Failed to load insights data. Please try again.");
@@ -235,7 +450,7 @@ const PerformanceInsightsPage: React.FC = () => {
     setIsProcessing(true);
     setProcessingStep(0);
 
-    // Start API loading - processing steps will be updated as APIs complete
+    // Start loading - processing steps will be updated as data loads
     loadInsightsData(branchKey);
   };
 
@@ -252,15 +467,15 @@ const PerformanceInsightsPage: React.FC = () => {
     return `${value.toFixed(1)}%`;
   };
 
-  // Fetch documents and group by branch
+  // Fetch documents and group by branch (now uses hardcoded data)
   const fetchDocuments = useCallback(async () => {
     try {
       setDocumentsLoading(true);
-      const response = await apiService.getFinancialDocuments();
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 500));
 
-      if (response && response.success && response.data && response.data.documents) {
-        groupDocumentsByBranch(response.data.documents);
-      }
+      // Use hardcoded data instead of API call
+      setBranchDocuments(HARDCODED_BRANCH_DOCUMENTS);
     } catch (error) {
       console.error("Error fetching documents:", error);
     } finally {
