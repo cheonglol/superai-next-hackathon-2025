@@ -577,21 +577,14 @@ const CashFlowDiagnosticianPage: React.FC = () => {
           {/* Your 1% Fix Tab */}
           {activeTab === 'onepercent' && (
             <div>
-              <div className="flex items-center mb-6">
-                <Percent className="w-5 h-5 text-green-600 mr-2" />
-                <h3 className="text-lg font-semibold text-gray-900">Your 1% Fix</h3>
-              </div>
-              
               <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                 <div className="flex items-start">
                   <div className="p-2 bg-green-100 rounded-full mr-3 mt-1">
                     <Percent className="w-4 h-4 text-green-600" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-green-800 mb-1">The Power of 1% Improvements</h4>
                     <p className="text-sm text-green-700">
-                      Small, incremental changes that are easy to implement but compound over time. 
-                      Each 1% improvement requires minimal effort but collectively creates significant impact on your cash flow and operating profit.
+                      Small, incremental changes that are easy to implement but compound over time. Each 1% or 1-day improvement may seem minor on its own, but together, they create a powerful ripple effect—freeing up cash, lifting profits, and strengthening your business's financial foundation.
                     </p>
                   </div>
                 </div>
