@@ -1,4 +1,3 @@
-import { RightSidebar } from "@/components/layout/RightSidebar";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { logout } from "@/store/slices/authSlice";
 import { setSidebarOpen, toggleSidebar } from "@/store/slices/uiSlice";
@@ -131,12 +130,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       {/* Mobile overlay */}
       {sidebarOpen && <div className="fixed inset-0 z-30 bg-black bg-opacity-50 lg:hidden" onClick={() => dispatch(setSidebarOpen(false))} />}
 
-      {/* Main content area */}
-      <div className="flex-1 flex">
+      {/* Main content area - full width without right sidebar */}
+      <div className="flex-1">
         <main className="flex-1 min-h-screen bg-gray-100">{children}</main>
-
-        {/* Right Sidebar */}
-        <RightSidebar />
       </div>
     </div>
   );
