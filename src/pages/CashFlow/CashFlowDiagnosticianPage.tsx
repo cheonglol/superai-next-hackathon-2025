@@ -135,57 +135,62 @@ const CashFlowDiagnosticianPage: React.FC = () => {
     }
   ];
 
-  // 1% Fix suggestions
+  // 1% Fix suggestions based on the provided image
   const onePercentFixes = [
     {
-      category: 'Revenue',
-      fix: 'Increase prices by 1% on premium products',
-      impact: '$1,950/month',
-      effort: 'minimal',
-      timeframe: 'immediate',
-      details: 'Small price increase on premium products that have inelastic demand'
+      category: 'Price Increase',
+      value: '1 %',
+      cashFlowImpact: 51690,
+      profitImpact: 66120,
+      details: 'Small price increase across all products and services'
     },
     {
-      category: 'Expenses',
-      fix: 'Reduce office supply expenses by 1%',
-      impact: '$250/month',
-      effort: 'minimal',
-      timeframe: 'immediate',
-      details: 'Implement digital documentation to reduce paper and printing costs'
+      category: 'Volume Increase',
+      value: '1 %',
+      cashFlowImpact: -4855,
+      profitImpact: 19175,
+      details: 'Increase sales volume through targeted marketing campaigns'
     },
     {
-      category: 'Receivables',
-      fix: 'Collect 1% of receivables 1 day faster',
-      impact: '$450/month',
-      effort: 'minimal',
-      timeframe: '1 week',
-      details: 'Send payment reminders 1 day earlier to top 20% of customers'
+      category: 'COGS Reduction',
+      value: '1 %',
+      cashFlowImpact: 56545,
+      profitImpact: 46945,
+      details: 'Negotiate better terms with suppliers or find alternative sources'
     },
     {
-      category: 'Inventory',
-      fix: 'Reduce safety stock by 1% for fast-moving items',
-      impact: '$350/month',
-      effort: 'minimal',
-      timeframe: '1 week',
-      details: 'Slightly reduce buffer inventory for items with predictable demand'
+      category: 'Overheads Reduction',
+      value: '1 %',
+      cashFlowImpact: 12162,
+      profitImpact: 12162,
+      details: 'Reduce overhead expenses through operational efficiency'
     },
     {
-      category: 'Payables',
-      fix: 'Extend payment terms by 1 day for non-critical vendors',
-      impact: '$400/month',
-      effort: 'minimal',
-      timeframe: 'immediate',
-      details: 'Small adjustment to payment timing for vendors without early payment discounts'
+      category: 'Reduction in Accounts Receivable Days',
+      value: '1 days',
+      cashFlowImpact: 18115,
+      profitImpact: 0,
+      details: 'Improve collection processes to receive payments faster'
     },
     {
-      category: 'Operations',
-      fix: 'Reduce energy consumption by 1%',
-      impact: '$180/month',
-      effort: 'minimal',
-      timeframe: 'immediate',
-      details: 'Adjust thermostat settings by 1 degree during non-peak hours'
+      category: 'Reduction in Inventory Days',
+      value: '1 days',
+      cashFlowImpact: 12862,
+      profitImpact: 0,
+      details: 'Optimize inventory management to reduce holding costs'
+    },
+    {
+      category: 'Increase in Accounts Payable Days',
+      value: '1 days',
+      cashFlowImpact: 12862,
+      profitImpact: 0,
+      details: 'Extend payment terms with suppliers without affecting relationships'
     }
   ];
+
+  // Calculate totals for 1% Fix
+  const totalCashFlowImpact = onePercentFixes.reduce((sum, fix) => sum + fix.cashFlowImpact, 0);
+  const totalProfitImpact = onePercentFixes.reduce((sum, fix) => sum + fix.profitImpact, 0);
 
   // Corrective actions
   const correctiveActions = [
@@ -307,6 +312,11 @@ const CashFlowDiagnosticianPage: React.FC = () => {
       case 'low': return 'text-green-600';
       default: return 'text-gray-600';
     }
+  };
+
+  const getImpactColor = (impact: number) => {
+    if (impact < 0) return 'text-red-600';
+    return 'text-green-600';
   };
 
   if (loading) {
@@ -517,10 +527,10 @@ const CashFlowDiagnosticianPage: React.FC = () => {
             <div>
               <div className="flex items-center mb-6">
                 <Percent className="w-5 h-5 text-green-600 mr-2" />
-                <h3 className="text-lg font-semibold text-gray-900">1% Fix Solutions</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Your Power of One</h3>
               </div>
               
-              <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                 <div className="flex items-start">
                   <div className="p-2 bg-green-100 rounded-full mr-3 mt-1">
                     <Percent className="w-4 h-4 text-green-600" />
@@ -529,55 +539,95 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     <h4 className="font-medium text-green-800 mb-1">The Power of 1% Improvements</h4>
                     <p className="text-sm text-green-700">
                       Small, incremental changes that are easy to implement but compound over time. 
-                      Each 1% fix requires minimal effort but collectively creates significant impact.
+                      Each 1% improvement requires minimal effort but collectively creates significant impact on your cash flow and operating profit.
                     </p>
                   </div>
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {onePercentFixes.map((fix, index) => (
-                  <div key={index} className="border border-green-200 rounded-lg p-4 bg-green-50 hover:shadow-sm transition-all">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center">
-                        <div className="p-2 bg-green-100 rounded-full mr-2">
-                          <Percent className="w-4 h-4 text-green-600" />
-                        </div>
-                        <span className="font-medium text-green-800">{fix.category}</span>
-                      </div>
-                      <span className="font-bold text-green-700">{fix.impact}</span>
-                    </div>
-                    <h4 className="font-semibold text-gray-900 mb-2">{fix.fix}</h4>
-                    <p className="text-sm text-gray-700 mb-3">{fix.details}</p>
-                    <div className="flex justify-between items-center text-sm">
-                      <div>
-                        <span className="text-gray-600">Effort: </span>
-                        <span className="font-medium text-green-700">{fix.effort}</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">Timeframe: </span>
-                        <span className="font-medium text-green-700">{fix.timeframe}</span>
-                      </div>
-                      <button className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors flex items-center text-xs">
-                        Implement <ArrowRight className="w-3 h-3 ml-1" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+              {/* Table Header */}
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Your Power of One
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Value
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Impact on Cash Flow
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Impact on Operating Profit
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {onePercentFixes.map((fix, index) => (
+                      <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {fix.category}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                          {fix.value}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium">
+                          <span className={getImpactColor(fix.cashFlowImpact)}>
+                            {formatCurrency(fix.cashFlowImpact)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium">
+                          <span className={getImpactColor(fix.profitImpact)}>
+                            {formatCurrency(fix.profitImpact)}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
+                          <button className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors flex items-center mx-auto">
+                            Implement <ArrowRight className="w-3 h-3 ml-1" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    {/* Total Row */}
+                    <tr className="bg-green-50 font-bold">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        Your Power of One Impact
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                        
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-green-700">
+                        {formatCurrency(totalCashFlowImpact)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-green-700">
+                        {formatCurrency(totalProfitImpact)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
+                        
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
               
               <div className="mt-6 p-4 border border-green-200 rounded-lg bg-white">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
-                    <h4 className="font-medium text-gray-900">Total Monthly Impact</h4>
+                    <h4 className="font-medium text-gray-900">Annual Impact</h4>
                   </div>
                   <div className="text-xl font-bold text-green-600">
-                    {formatCurrency(onePercentFixes.reduce((sum, fix) => sum + parseInt(fix.impact.replace(/[^0-9]/g, '')), 0))}
+                    {formatCurrency(totalCashFlowImpact * 12)}
                   </div>
                 </div>
                 <p className="text-sm text-gray-600 mt-2">
-                  Combined annual impact: {formatCurrency(onePercentFixes.reduce((sum, fix) => sum + parseInt(fix.impact.replace(/[^0-9]/g, '')), 0) * 12)}
+                  Implementing these 1% improvements could add {formatCurrency(totalCashFlowImpact * 12)} to your annual cash flow
+                  and {formatCurrency(totalProfitImpact * 12)} to your annual operating profit.
                 </p>
               </div>
             </div>
