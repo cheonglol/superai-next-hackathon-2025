@@ -478,7 +478,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
               }`}
             >
               <Percent className="w-4 h-4 mr-2 inline" />
-              Your Power of One
+              1% Fix
             </button>
             <button
               onClick={() => setActiveTab('actions')}
@@ -579,7 +579,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
             <div>
               <div className="flex items-center mb-6">
                 <Percent className="w-5 h-5 text-green-600 mr-2" />
-                <h3 className="text-lg font-semibold text-gray-900">Your Power of One</h3>
+                <h3 className="text-lg font-semibold text-gray-900">1% Fix</h3>
               </div>
               
               <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -665,22 +665,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     </tr>
                   </tbody>
                 </table>
-              </div>
-              
-              <div className="mt-6 p-4 border border-green-200 rounded-lg bg-white">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
-                    <h4 className="font-medium text-gray-900">Annual Impact</h4>
-                  </div>
-                  <div className="text-xl font-bold text-green-600">
-                    {formatCurrency(totalCashFlowImpact * 12)}
-                  </div>
-                </div>
-                <p className="text-sm text-gray-600 mt-2">
-                  Implementing these 1% improvements could add {formatCurrency(totalCashFlowImpact * 12)} to your annual cash flow
-                  and {formatCurrency(totalProfitImpact * 12)} to your annual operating profit.
-                </p>
               </div>
             </div>
           )}
