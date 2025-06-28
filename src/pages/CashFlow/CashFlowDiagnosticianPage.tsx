@@ -11,7 +11,8 @@ import {
   Zap,
   BarChart3,
   ArrowRight,
-  RefreshCw
+  RefreshCw,
+  Percent
 } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
 import { agentService } from '@/services/agentService';
@@ -21,7 +22,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
   const [analysis, setAnalysis] = useState<CashFlowAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<string>('');
-  const [activeTab, setActiveTab] = useState<'metrics' | 'leakage' | 'actions'>('metrics');
+  const [activeTab, setActiveTab] = useState<'metrics' | 'leakage' | 'onepercent' | 'actions'>('metrics');
   const [startDate, setStartDate] = useState<string>('2025-01-01');
   const [endDate, setEndDate] = useState<string>('2025-01-31');
 
@@ -131,6 +132,58 @@ const CashFlowDiagnosticianPage: React.FC = () => {
       impact: '$1,200/month', 
       severity: 'low',
       details: 'Multiple overlapping SaaS tools with low utilization rates'
+    }
+  ];
+
+  // 1% Fix suggestions
+  const onePercentFixes = [
+    {
+      category: 'Revenue',
+      fix: 'Increase prices by 1% on premium products',
+      impact: '$1,950/month',
+      effort: 'minimal',
+      timeframe: 'immediate',
+      details: 'Small price increase on premium products that have inelastic demand'
+    },
+    {
+      category: 'Expenses',
+      fix: 'Reduce office supply expenses by 1%',
+      impact: '$250/month',
+      effort: 'minimal',
+      timeframe: 'immediate',
+      details: 'Implement digital documentation to reduce paper and printing costs'
+    },
+    {
+      category: 'Receivables',
+      fix: 'Collect 1% of receivables 1 day faster',
+      impact: '$450/month',
+      effort: 'minimal',
+      timeframe: '1 week',
+      details: 'Send payment reminders 1 day earlier to top 20% of customers'
+    },
+    {
+      category: 'Inventory',
+      fix: 'Reduce safety stock by 1% for fast-moving items',
+      impact: '$350/month',
+      effort: 'minimal',
+      timeframe: '1 week',
+      details: 'Slightly reduce buffer inventory for items with predictable demand'
+    },
+    {
+      category: 'Payables',
+      fix: 'Extend payment terms by 1 day for non-critical vendors',
+      impact: '$400/month',
+      effort: 'minimal',
+      timeframe: 'immediate',
+      details: 'Small adjustment to payment timing for vendors without early payment discounts'
+    },
+    {
+      category: 'Operations',
+      fix: 'Reduce energy consumption by 1%',
+      impact: '$180/month',
+      effort: 'minimal',
+      timeframe: 'immediate',
+      details: 'Adjust thermostat settings by 1 degree during non-peak hours'
     }
   ];
 
@@ -357,6 +410,15 @@ const CashFlowDiagnosticianPage: React.FC = () => {
               Leakage Points
             </button>
             <button
+              onClick={() => setActiveTab('onepercent')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                activeTab === 'onepercent' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              <Percent className="w-4 h-4 mr-2 inline" />
+              1% Fix
+            </button>
+            <button
               onClick={() => setActiveTab('actions')}
               className={`px-4 py-2 rounded-lg font-medium transition-colors ${
                 activeTab === 'actions' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -446,6 +508,77 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     <p className="text-sm">{point.details}</p>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* 1% Fix Tab */}
+          {activeTab === 'onepercent' && (
+            <div>
+              <div className="flex items-center mb-6">
+                <Percent className="w-5 h-5 text-green-600 mr-2" />
+                <h3 className="text-lg font-semibold text-gray-900">1% Fix Solutions</h3>
+              </div>
+              
+              <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-start">
+                  <div className="p-2 bg-green-100 rounded-full mr-3 mt-1">
+                    <Percent className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-green-800 mb-1">The Power of 1% Improvements</h4>
+                    <p className="text-sm text-green-700">
+                      Small, incremental changes that are easy to implement but compound over time. 
+                      Each 1% fix requires minimal effort but collectively creates significant impact.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {onePercentFixes.map((fix, index) => (
+                  <div key={index} className="border border-green-200 rounded-lg p-4 bg-green-50 hover:shadow-sm transition-all">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center">
+                        <div className="p-2 bg-green-100 rounded-full mr-2">
+                          <Percent className="w-4 h-4 text-green-600" />
+                        </div>
+                        <span className="font-medium text-green-800">{fix.category}</span>
+                      </div>
+                      <span className="font-bold text-green-700">{fix.impact}</span>
+                    </div>
+                    <h4 className="font-semibold text-gray-900 mb-2">{fix.fix}</h4>
+                    <p className="text-sm text-gray-700 mb-3">{fix.details}</p>
+                    <div className="flex justify-between items-center text-sm">
+                      <div>
+                        <span className="text-gray-600">Effort: </span>
+                        <span className="font-medium text-green-700">{fix.effort}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-600">Timeframe: </span>
+                        <span className="font-medium text-green-700">{fix.timeframe}</span>
+                      </div>
+                      <button className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors flex items-center text-xs">
+                        Implement <ArrowRight className="w-3 h-3 ml-1" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-6 p-4 border border-green-200 rounded-lg bg-white">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-green-600 mr-2" />
+                    <h4 className="font-medium text-gray-900">Total Monthly Impact</h4>
+                  </div>
+                  <div className="text-xl font-bold text-green-600">
+                    {formatCurrency(onePercentFixes.reduce((sum, fix) => sum + parseInt(fix.impact.replace(/[^0-9]/g, '')), 0))}
+                  </div>
+                </div>
+                <p className="text-sm text-gray-600 mt-2">
+                  Combined annual impact: {formatCurrency(onePercentFixes.reduce((sum, fix) => sum + parseInt(fix.impact.replace(/[^0-9]/g, '')), 0) * 12)}
+                </p>
               </div>
             </div>
           )}
