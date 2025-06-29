@@ -8,13 +8,7 @@ import {
   DollarSign,
   Calendar,
   Target,
-  Zap,
-  BarChart3,
   ArrowRight,
-  RefreshCw,
-  Settings,
-  ExternalLink,
-  Plus,
 } from "lucide-react";
 
 interface LiquidityGuardianProps {
@@ -101,7 +95,18 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
     description?: string;
   }
 
+  // Type for projection data
+  interface ProjectionDataItem {
+    day: number;
+    date: string;
+    balance: number;
+    isAlert: boolean;
+    bufferDifference: number;
+    runningCash: number;
+  }
+
   // Example deterministic cash flow events (replace with Redux/CSV data in future)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const cashFlowEvents: CashFlowEvent[] = [
     { date: new Date(), amount: +1200, description: "Customer payment" },
     { date: new Date(Date.now() + 2 * 86400000), amount: -8000, description: "Vendor payment" },
@@ -111,10 +116,10 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
   ];
 
   // --- Robust projection calculation ---
-  const projectionData = useMemo(() => {
-    const arr = [];
-    let currentBalance = data.totalLiquidity;
-    const startDate = new Date();
+  const projectionData = useMemo<ProjectionDataItem[]>(() => {
+      const arr: ProjectionDataItem[] = [];
+      let currentBalance = data.totalLiquidity;
+      const startDate = new Date();
     for (let i = 0; i < timeHorizon; i++) {
       const dayDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + i);
       // Aggregate all events for this day
@@ -134,10 +139,10 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
         isAlert: !!alertForDay,
         bufferDifference: currentBalance - safetyBuffer,
         runningCash: currentBalance,
-      });
-    }
-    // Fallback: if arr is empty, add a flat line
-    if (arr.length === 0) {
+      } as ProjectionDataItem);
+        }
+        // Fallback: if arr is empty, add a flat line
+        if (arr.length === 0) {
       arr.push({
         day: 1,
         date: startDate.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
@@ -145,7 +150,7 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
         isAlert: false,
         bufferDifference: data.totalLiquidity - safetyBuffer,
         runningCash: data.totalLiquidity,
-      });
+      } as ProjectionDataItem);
     }
     return arr;
   }, [cashFlowEvents, data.totalLiquidity, data.alerts, safetyBuffer, timeHorizon]);

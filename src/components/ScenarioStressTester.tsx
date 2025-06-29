@@ -183,10 +183,19 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
     };
   };
 
+  // Define the type for projection items
+  type ProjectionItem = {
+    month: number;
+    cashFlow: number;
+    oneTimeCost: number;
+    runningCash: number;
+    status: string;
+  };
+
   // Generate cash flow projection
-  const generateProjection = () => {
+  const generateProjection = (): ProjectionItem[] => {
     const impact = calculateScenarioImpact();
-    const projection = [];
+    const projection: ProjectionItem[] = [];
     let runningCash = financialData.currentCashFlow * 3; // Starting with 3 months of cash reserves
     
     for (let month = 1; month <= timeHorizon; month++) {
