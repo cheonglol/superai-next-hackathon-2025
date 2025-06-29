@@ -148,28 +148,28 @@ const CashFlowDiagnosticianPage: React.FC = () => {
   // One Percent Fix data with exact values from the image
   const onePercentFixData = [
     {
-      category: 'Price Increase %',
+      category: 'Price Increase',
       value: '1 %',
       cashFlowImpact: 51690,
       profitImpact: 66120,
       details: 'Small price increase across all products and services'
     },
     {
-      category: 'Volume Increase %',
+      category: 'Volume Increase',
       value: '1 %',
       cashFlowImpact: -4855,
       profitImpact: 19175,
       details: 'Increase sales volume through targeted marketing campaigns'
     },
     {
-      category: 'COGS Reduction %',
+      category: 'COGS Reduction',
       value: '1 %',
       cashFlowImpact: 56545,
       profitImpact: 46945,
       details: 'Negotiate better terms with suppliers or find alternative sources'
     },
     {
-      category: 'Overheads Reduction %',
+      category: 'Operating Expenses Reduction',
       value: '1 %',
       cashFlowImpact: 12162,
       profitImpact: 12162,
@@ -593,7 +593,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     {/* Margin Movers rows */}
                     <tr>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        Price Increase %
+                        Price Increase
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
                         1 %
@@ -607,7 +607,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     </tr>
                     <tr className="bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        Volume Increase %
+                        Volume Increase
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
                         1 %
@@ -621,7 +621,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     </tr>
                     <tr>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        COGS Reduction %
+                        COGS Reduction
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
                         1 %
@@ -635,7 +635,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     </tr>
                     <tr className="bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        Overheads Reduction %
+                        Operating Expenses Reduction
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
                         1 %
@@ -688,6 +688,11 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-gray-900">
                         
                       </td>
+                    </tr>
+                    
+                    {/* Empty row for spacing */}
+                    <tr className="h-6">
+                      <td colSpan={4}></td>
                     </tr>
                     
                     {/* Margin Movers Impact row */}
