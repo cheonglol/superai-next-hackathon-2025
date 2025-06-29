@@ -90,8 +90,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <div className="flex items-center px-6 py-8 border-b border-charcoal-600">
             <BarChart3 className="w-8 h-8 text-caribbean_current-400 mr-3" />
             <div>
-              <h1 className="text-xl font-bold text-white">Agentic AI</h1>
-              <p className="text-sm text-charcoal-200">SME Financial Platform</p>
+              <h1 className="text-xl font-bold text-white">ScaleUp.AI</h1>
+              {/* <p className="text-sm text-charcoal-200">SME Financial Platform</p> */}
             </div>
           </div>
           
@@ -169,7 +169,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </div>
               </div>
             )}
-            <p className="text-xs text-charcoal-300">© 2025 Agentic AI Platform</p>
+            <p className="text-xs text-charcoal-300">© 2025 ScaleUp.AI Platform</p>
           </div>
         </div>
       </div>

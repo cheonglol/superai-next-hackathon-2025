@@ -931,9 +931,9 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     <p className="text-sm mb-2">{action.details}</p>
                     <div className="flex justify-between items-center">
                       <span className="text-xs">Difficulty: <span className={getDifficultyColor(action.difficulty)}>{action.difficulty.charAt(0).toUpperCase() + action.difficulty.slice(1)}</span></span>
-                      <button className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors flex items-center">
+                      {/* <button className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors flex items-center">
                         Implement <ArrowRight className="w-3 h-3 ml-1" />
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                 ))}

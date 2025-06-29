@@ -317,72 +317,6 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               </div>
             </div>
             
-            {/* Safety Buffer Selector */}
-            <div className="mb-6">
-              <h4 className="font-medium text-gray-900 mb-2">Safety Buffer</h4>
-              <p className="text-xs text-gray-600 mb-2">
-                Buffer = {safetyBufferMonths} month{safetyBufferMonths > 1 ? 's' : ''} of expenses + loan payments
-              </p>
-              <div className="flex items-center mb-2">
-                <input
-                  type="range"
-                  min="1"
-                  max="6"
-                  step="1"
-                  value={safetyBufferMonths}
-                  onChange={(e) => updateSafetyBufferMonths(parseInt(e.target.value))}
-                  className="flex-1 mr-3"
-                />
-                <span className="text-sm font-bold text-gray-900">{safetyBufferMonths} month{safetyBufferMonths > 1 ? 's' : ''}</span>
-              </div>
-              <div className="text-sm font-medium text-gray-900">
-                {formatCurrency(safetyBuffer)}
-              </div>
-            </div>
-            
-            {/* Resilience Score */}
-            <div className="mb-6">
-              <h4 className="font-medium text-gray-900 mb-2">Resilience Score</h4>
-              <div className="bg-gray-100 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-600">Current</span>
-                  <span className="text-lg font-bold text-gray-900">{currentResilienceScore}/100</span>
-                </div>
-                <div className="w-full bg-gray-300 rounded-full h-2.5">
-                  <div 
-                    className={`h-2.5 rounded-full ${
-                      currentResilienceScore > 75 ? 'bg-green-500' : 
-                      currentResilienceScore > 50 ? 'bg-yellow-500' : 
-                      'bg-red-500'
-                    }`} 
-                    style={{ width: `${currentResilienceScore}%` }}
-                  ></div>
-                </div>
-                
-                <div className="flex items-center justify-between mt-4 mb-2">
-                  <span className="text-sm text-gray-600">Projected</span>
-                  <span className={`text-lg font-bold ${
-                    projectedResilienceScore > 75 ? 'text-green-600' : 
-                    projectedResilienceScore > 50 ? 'text-yellow-600' : 
-                    'text-red-600'
-                  }`}>
-                    {projectedResilienceScore}/100
-                  </span>
-                </div>
-                <div className="w-full bg-gray-300 rounded-full h-2.5">
-                  <div 
-                    className={`h-2.5 rounded-full ${
-                      projectedResilienceScore > 75 ? 'bg-green-500' : 
-                      projectedResilienceScore > 50 ? 'bg-yellow-500' : 
-                      'bg-red-500'
-                    }`} 
-                    style={{ width: `${projectedResilienceScore}%` }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-            
-            {/* Run Simulation Button */}
             <button
               onClick={() => {
                 // This would trigger a more complex simulation in a real app
@@ -568,7 +502,7 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
         
         {/* Right Column - Contingency Planner */}
         <div className="lg:col-span-3 space-y-6 flex flex-col">
-          <div className="bg-white rounded-lg p-6 border border-gray-200 flex-grow">
+          <div className="bg-white rounded-lg p-6 border border-gray-200 flex-grow h-fit">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <Target className="w-5 h-5 text-purple-600 mr-2" />
               Contingency Planner
