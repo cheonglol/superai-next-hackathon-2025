@@ -690,10 +690,10 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                       </td>
                     </tr>
                     
-                    {/* Your Power of One Impact row */}
+                    {/* Your 1% Fix Impact row */}
                     <tr className="bg-green-50 font-bold">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        Your Power of One Impact
+                        Your 1% Fix Impact
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
                         
@@ -704,6 +704,11 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-green-700">
                         144,402
                       </td>
+                    </tr>
+                    
+                    {/* Empty row for spacing */}
+                    <tr className="h-6">
+                      <td colSpan={4}></td>
                     </tr>
                     
                     {/* Your adjusted position row */}
