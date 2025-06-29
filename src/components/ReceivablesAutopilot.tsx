@@ -472,28 +472,6 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
             ))}
           </div>
         </div>
-        
-        {/* Customer Health Scores */}
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <h4 className="text-sm font-medium text-gray-700 mb-3">Customer Health Scores</h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {data.customerHealthScores.map((customer, index) => (
-              <div key={index} className="bg-gray-50 p-3 rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium text-gray-900">{customer.customer}</span>
-                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    customer.score > 70 ? 'bg-green-100 text-green-800' :
-                    customer.score > 50 ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
-                    Score: {customer.score}
-                  </div>
-                </div>
-                <p className="text-xs text-gray-600">{customer.insight}</p>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
       
       {/* Collections Escalation Hub - Only show for critical invoices */}
