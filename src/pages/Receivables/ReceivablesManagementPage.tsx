@@ -717,10 +717,12 @@ const ReceivablesManagementPage: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
-                <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No invoice selected</h3>
-                <p className="text-gray-600">Select an invoice from the list to view details</p>
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 h-full flex items-center justify-center">
+                <div className="text-center p-6">
+                  <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No invoice selected</h3>
+                  <p className="text-gray-600">Select an invoice from the list to view details</p>
+                </div>
               </div>
             )}
           </div>
