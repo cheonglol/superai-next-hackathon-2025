@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Brain, Users, TrendingUp, Shield, Zap, Activity } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Brain, Users, TrendingUp, Shield, Zap, Activity, Calculator } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
 import { AgentDashboard } from '@/components/agents/AgentDashboard';
 import { CashFlowAgent } from '@/components/agents/CashFlowAgent';

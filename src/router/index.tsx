@@ -9,6 +9,7 @@ import { createBrowserRouter, RouteObject } from "react-router-dom";
 import AuthProtectedRouteLogic from "./logic/AuthProtectedRouteLogic";
 import { BarChart3, Activity, TrendingUp, Shield, Zap, Calculator } from "lucide-react";
 import CashFlowDiagnosticianPage from "@/pages/CashFlow/CashFlowDiagnosticianPage";
+import ScenarioStressTesterPage from "@/pages/CashFlow/ScenarioStressTrackerPage";
 
 const ROOT_PATH = "";
 
@@ -72,10 +73,7 @@ export const routes: ExtendedRouteObject[] = [
       path: `${ROOT_PATH}/scenario-stress-tester`,
       element: (
         <MainLayout>
-          <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Scenario Stress Tester</h1>
-            <p className="text-gray-600">Models "what-if" scenarios (e.g., rent increase, hiring, equipment purchase), projects 6-month cash flow under new obligations, and calculates affordability thresholds ("Max sustainable rent: $2,800/mo").</p>
-          </div>
+          <ScenarioStressTesterPage />
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,

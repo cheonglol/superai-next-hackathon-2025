@@ -6,7 +6,7 @@ import ScenarioStressTester from "@/components/ScenarioStressTester";
 const ScenarioStressTesterPage: React.FC = () => {
   // Mock financial data for analysis
   const mockFinancialData = {
-    currentMonthlyCashFlow: 15000,
+    currentCashFlow: 15000,
     monthlyRevenue: 85000,
     monthlyExpenses: 70000,
     cashReserves: 45000,
@@ -32,7 +32,7 @@ const ScenarioStressTesterPage: React.FC = () => {
         <PageHeader
           title="Scenario Stress Tester"
           description="Model what-if scenarios and project cash flow under different conditions"
-          icon={<TrendingUp className="w-8 h-8 text-oxford_blue-600" />}
+          icon={<Calculator className="w-8 h-8 text-oxford_blue-600" />}
         />
 
         {/* Capabilities Overview */}

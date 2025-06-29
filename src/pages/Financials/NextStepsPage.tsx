@@ -10,7 +10,7 @@ import ScenarioStressTester from "@/components/ScenarioStressTester";
 const NextStepsPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { data, loading, error, filters } = useAppSelector((state) => state.financials);
-  const [viewMode, setViewMode] = useState<"priority" | "timeline">("priority");
+  const [selectedTimeframe, setSelectedTimeframe] = useState("Last 30 Days");
   const [activeTab, setActiveTab] = useState<"diagnostician" | "stress-tester">("diagnostician");
   const [sortBy, setSortBy] = useState<"impact" | "timeframe" | "difficulty">("impact");
 
