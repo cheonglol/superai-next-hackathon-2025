@@ -542,7 +542,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                   <thead className="bg-gray-50">
                     <tr>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Your Current Position
+                        
                       </th>
                       <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                         
@@ -572,10 +572,15 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                       </td>
                     </tr>
                     
-                    {/* Power of One header row */}
+                    {/* Empty row for spacing */}
+                    <tr className="h-6">
+                      <td colSpan={4}></td>
+                    </tr>
+                    
+                    {/* Impact header row */}
                     <tr className="bg-gray-50">
                       <td colSpan={2} className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        Your Power of One
+                        
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-gray-900">
                         Impact on<br />Cash Flow
