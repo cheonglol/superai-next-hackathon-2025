@@ -380,28 +380,28 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                     <span className="text-xs text-gray-600">Current</span>
                   </div>
                   <div className="flex items-center">
-                    <div className="w-3 h-3 bg-red-500 rounded-full mr-1"></div>
+                    <div className="w-3 h-3 bg-green-500 rounded-full mr-1"></div>
                     <span className="text-xs text-gray-600">Projected</span>
                   </div>
                 </div>
               </div>
               
               <div className="relative h-16 flex items-center">
-                {/* Current Cash Flow Bar */}
+                {/* Current Cash Flow Bar - Make this smaller than projected */}
                 <div className="absolute top-0 left-0 h-8 bg-blue-100 rounded-lg w-full">
                   <div 
                     className="h-8 bg-blue-500 rounded-lg"
-                    style={{ width: `${Math.min(100, Math.max(0, (financialData.currentCashFlow / (financialData.currentCashFlow * 2)) * 100))}%` }}
+                    style={{ width: `${Math.min(100, Math.max(0, (financialData.currentCashFlow / (financialData.currentCashFlow * 2)) * 70))}%` }}
                   ></div>
                   <div className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 text-white font-bold">
                     {formatCurrency(financialData.currentCashFlow)}/mo
                   </div>
                 </div>
                 
-                {/* Projected Cash Flow Bar */}
-                <div className="absolute bottom-0 left-0 h-8 bg-red-100 rounded-lg w-full">
+                {/* Projected Cash Flow Bar - Make this larger than current */}
+                <div className="absolute bottom-0 left-0 h-8 bg-green-100 rounded-lg w-full">
                   <div 
-                    className={`h-8 ${impact.newMonthlyCashFlow >= 0 ? 'bg-green-500' : 'bg-red-500'} rounded-lg`}
+                    className="h-8 bg-green-500 rounded-lg"
                     style={{ width: `${Math.min(100, Math.max(0, (Math.abs(impact.newMonthlyCashFlow) / (financialData.currentCashFlow * 2)) * 100))}%` }}
                   ></div>
                   <div className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 text-white font-bold">
