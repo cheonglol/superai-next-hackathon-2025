@@ -241,8 +241,49 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
     setSafetyBuffer(newBuffer);
   };
 
+  // Calculate affordability thresholds
+  const affordabilityThresholds = {
+    maxRent: formatCurrency(financialData.currentRent * 1.2), // 20% more than current rent
+    maxSalary: formatCurrency(financialData.averageSalary * 1.5), // 50% more than average salary
+    maxEquipment: formatCurrency(financialData.currentCashFlow * 12 * 0.2), // 20% of annual cash flow
+    maxMonthlyCommitment: formatCurrency(financialData.currentCashFlow * 0.3), // 30% of monthly cash flow
+  };
+
   return (
     <div className="space-y-6">
+      {/* Affordability Thresholds - Horizontal Panel */}
+      <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <div className="flex items-center mb-4">
+          <Target className="w-5 h-5 text-green-600 mr-2" />
+          <h3 className="text-lg font-semibold text-gray-900">Affordability Thresholds</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-700 mb-1">Max Sustainable Rent</span>
+            <span className="text-xl font-bold text-green-600">{affordabilityThresholds.maxRent}/mo</span>
+            <span className="text-xs text-gray-500 mt-1">Current: {formatCurrency(financialData.currentRent)}/mo</span>
+          </div>
+          
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-700 mb-1">Max New Salary</span>
+            <span className="text-xl font-bold text-blue-600">{affordabilityThresholds.maxSalary}/mo</span>
+            <span className="text-xs text-gray-500 mt-1">Per new hire capacity</span>
+          </div>
+          
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-700 mb-1">Max Equipment Purchase</span>
+            <span className="text-xl font-bold text-purple-600">{affordabilityThresholds.maxEquipment}</span>
+            <span className="text-xs text-gray-500 mt-1">One-time purchase limit</span>
+          </div>
+          
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-gray-700 mb-1">Max Monthly Commitment</span>
+            <span className="text-xl font-bold text-orange-600">{affordabilityThresholds.maxMonthlyCommitment}/mo</span>
+            <span className="text-xs text-gray-500 mt-1">Any recurring expense</span>
+          </div>
+        </div>
+      </div>
+      
       {/* Main layout with 3 columns */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column - Scenario Setup Panel */}
@@ -349,39 +390,6 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               <RefreshCw className="w-4 h-4 mr-2" />
               Run Simulation
             </button>
-          </div>
-          
-          {/* Affordability Thresholds */}
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <Target className="w-5 h-5 text-green-600 mr-2" />
-              Affordability Thresholds
-            </h3>
-            <div className="grid grid-cols-4 gap-3">
-              <div className="bg-green-50 rounded-lg p-3 border border-green-200">
-                <div className="text-sm text-green-700 mb-1">Max Sustainable Rent</div>
-                <div className="text-xl font-bold text-green-800">{formatCurrency(financialData.currentRent * 1.2)}/mo</div>
-                <div className="text-xs text-green-600">Current: {formatCurrency(financialData.currentRent)}/mo</div>
-              </div>
-              
-              <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
-                <div className="text-sm text-blue-700 mb-1">Max New Salary</div>
-                <div className="text-xl font-bold text-blue-800">{formatCurrency(financialData.averageSalary * 1.5)}/mo</div>
-                <div className="text-xs text-blue-600">Per new hire capacity</div>
-              </div>
-              
-              <div className="bg-purple-50 rounded-lg p-3 border border-purple-200">
-                <div className="text-sm text-purple-700 mb-1">Max Equipment Purchase</div>
-                <div className="text-xl font-bold text-purple-800">{formatCurrency(financialData.currentCashFlow * 12 * 0.2)}</div>
-                <div className="text-xs text-purple-600">One-time purchase limit</div>
-              </div>
-              
-              <div className="bg-orange-50 rounded-lg p-3 border border-orange-200">
-                <div className="text-sm text-orange-700 mb-1">Max Monthly Commitment</div>
-                <div className="text-xl font-bold text-orange-800">{formatCurrency(financialData.currentCashFlow * 0.3)}/mo</div>
-                <div className="text-xs text-orange-600">Any recurring expense</div>
-              </div>
-            </div>
           </div>
         </div>
         
