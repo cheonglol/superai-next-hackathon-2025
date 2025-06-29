@@ -433,43 +433,65 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
             <p className="text-gray-600">No invoices match your current filter criteria</p>
           </div>
         )}
+      </div>
+      
+      {/* AI Insights Section - Now in a separate box */}
+      <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-xl font-semibold text-gray-900 flex items-center">
+            <Target className="w-5 h-5 text-purple-600 mr-2" />
+            AI Insights
+          </h3>
+        </div>
         
-        {/* AI Insights Section - Moved under Active Receivables */}
-        <div className="mt-6 pt-6 border-t border-gray-200">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900 flex items-center">
-              <Target className="w-5 h-5 text-purple-600 mr-2" />
-              AI Insights
-            </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Trend Alerts */}
+          <div>
+            <h4 className="text-sm font-medium text-gray-700 mb-3">Trend Alerts</h4>
+            {data.trendAlerts.map((alert, index) => (
+              <div key={index} className="flex items-start mb-3 last:mb-0 bg-gray-50 p-3 rounded-lg">
+                <TrendingUp className="w-4 h-4 text-red-600 mt-0.5 mr-2" />
+                <div>
+                  <div className="text-sm font-medium text-gray-900">{alert.trend}</div>
+                  <div className="text-xs text-gray-600">{alert.value}</div>
+                </div>
+              </div>
+            ))}
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Trend Alerts */}
-            <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-3">Trend Alerts</h4>
-              {data.trendAlerts.map((alert, index) => (
-                <div key={index} className="flex items-start mb-3 last:mb-0 bg-gray-50 p-3 rounded-lg">
-                  <TrendingUp className="w-4 h-4 text-red-600 mt-0.5 mr-2" />
-                  <div>
-                    <div className="text-sm font-medium text-gray-900">{alert.trend}</div>
-                    <div className="text-xs text-gray-600">{alert.value}</div>
+          {/* Optimization Tips */}
+          <div>
+            <h4 className="text-sm font-medium text-gray-700 mb-3">Optimization Tips</h4>
+            {data.optimizationTips.map((tip, index) => (
+              <div key={index} className="flex items-start mb-3 last:mb-0 bg-gray-50 p-3 rounded-lg">
+                <div className="p-1 bg-blue-100 rounded-full mr-2">
+                  <Zap className="w-3 h-3 text-blue-600" />
+                </div>
+                <p className="text-sm text-gray-700">{tip.tip}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        {/* Customer Health Scores */}
+        <div className="mt-6 pt-6 border-t border-gray-200">
+          <h4 className="text-sm font-medium text-gray-700 mb-3">Customer Health Scores</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {data.customerHealthScores.map((customer, index) => (
+              <div key={index} className="bg-gray-50 p-3 rounded-lg">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="font-medium text-gray-900">{customer.customer}</span>
+                  <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    customer.score > 70 ? 'bg-green-100 text-green-800' :
+                    customer.score > 50 ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-red-100 text-red-800'
+                  }`}>
+                    Score: {customer.score}
                   </div>
                 </div>
-              ))}
-            </div>
-            
-            {/* Optimization Tips */}
-            <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-3">Optimization Tips</h4>
-              {data.optimizationTips.map((tip, index) => (
-                <div key={index} className="flex items-start mb-3 last:mb-0 bg-gray-50 p-3 rounded-lg">
-                  <div className="p-1 bg-blue-100 rounded-full mr-2">
-                    <Zap className="w-3 h-3 text-blue-600" />
-                  </div>
-                  <p className="text-sm text-gray-700">{tip.tip}</p>
-                </div>
-              ))}
-            </div>
+                <p className="text-xs text-gray-600">{customer.insight}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
