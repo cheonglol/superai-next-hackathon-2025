@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TrendingUp, Target, Zap, ArrowUpDown, ChevronDown } from "lucide-react";
+import { TrendingUp, Target, Zap, ArrowUpDown, ChevronDown, Calculator, TrendingDown } from "lucide-react";
 
 interface SensitivityAnalysisData {
   scenarios?: Array<{

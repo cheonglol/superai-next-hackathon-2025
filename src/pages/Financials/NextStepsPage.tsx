@@ -5,6 +5,7 @@ import { useAppDispatch, useAppSelector } from "@/store";
 import { fetchFinancialData } from "@/store/slices/financialsSlice";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { ErrorMessage } from "@/components/common/ErrorMessage";
+import ScenarioStressTester from "@/components/ScenarioStressTester";
 
 const NextStepsPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -518,163 +519,17 @@ const NextStepsPage: React.FC = () => {
         )}
 
         {activeTab === "stress-tester" && (
-          <>
-            {/* Scenario Configuration */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-              <div className="flex items-center mb-6">
-                <Calculator className="w-6 h-6 text-oxford_blue-600 mr-3" />
-                <div>
-                  <h2 className="text-xl font-semibold text-gray-900">What-If Scenario Modeling</h2>
-                  <p className="text-sm text-gray-600">Model potential changes and see their impact on your 6-month cash flow projection</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {scenarios.map((scenario) => (
-                  <div key={scenario.id} className={`border-2 rounded-lg p-4 transition-all ${scenario.active ? 'border-oxford_blue-500 bg-oxford_blue-50' : 'border-gray-200 hover:border-gray-300'}`}>
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1">
-                        <div className="flex items-center mb-2">
-                          <input
-                            type="checkbox"
-                            checked={scenario.active}
-                            onChange={() => toggleScenario(scenario.id)}
-                            className="mr-3 h-4 w-4 text-oxford_blue-600 focus:ring-oxford_blue-500 border-gray-300 rounded"
-                          />
-                          <h3 className="font-semibold text-gray-900">{scenario.name}</h3>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-3">{scenario.description}</p>
-                        
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">Current:</span>
-                            <span className="font-medium">{formatCurrency(scenario.currentValue)}</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="text-gray-600">New:</span>
-                            <span className="font-medium">{formatCurrency(scenario.newValue)}</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="text-right ml-4">
-                        <div className={`text-lg font-bold ${scenario.monthlyImpact >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                          {scenario.monthlyImpact >= 0 ? '+' : ''}{formatCurrency(scenario.monthlyImpact)}
-                        </div>
-                        <div className="text-xs text-gray-500">per month</div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Impact Summary */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Scenario Impact Summary</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-600 mb-1">Current Monthly Cash Flow</div>
-                  <div className="text-2xl font-bold text-gray-900">{formatCurrency(mockFinancialData.currentMonthlyCashFlow)}</div>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-600 mb-1">Total Scenario Impact</div>
-                  <div className={`text-2xl font-bold ${scenarioImpact.totalImpact >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {scenarioImpact.totalImpact >= 0 ? '+' : ''}{formatCurrency(scenarioImpact.totalImpact)}
-                  </div>
-                </div>
-                
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="text-sm text-gray-600 mb-1">Projected Monthly Cash Flow</div>
-                  <div className={`text-2xl font-bold ${scenarioImpact.newCashFlow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {formatCurrency(scenarioImpact.newCashFlow)}
-                  </div>
-                </div>
-              </div>
-
-              {/* Affordability Threshold */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex items-center mb-2">
-                  <Target className="w-5 h-5 text-blue-600 mr-2" />
-                  <h4 className="font-semibold text-blue-900">Affordability Analysis</h4>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <div className="text-sm text-blue-700 mb-1">Max Sustainable Rent Increase:</div>
-                    <div className="text-lg font-bold text-blue-900">{formatCurrency(2800)}/month</div>
-                    <div className="text-xs text-blue-600">Based on 6-month cash buffer</div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-blue-700 mb-1">Max Additional Staff Cost:</div>
-                    <div className="text-lg font-bold text-blue-900">{formatCurrency(4200)}/month</div>
-                    <div className="text-xs text-blue-600">Without other changes</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* 6-Month Projection */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">6-Month Cash Flow Projection</h3>
-              
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="text-left py-3 px-4 font-medium text-gray-900">Period</th>
-                      <th className="text-center py-3 px-4 font-medium text-gray-900">Monthly Cash Flow</th>
-                      <th className="text-center py-3 px-4 font-medium text-gray-900">Cumulative Cash</th>
-                      <th className="text-center py-3 px-4 font-medium text-gray-900">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100">
-                    <tr className="bg-gray-50">
-                      <td className="py-3 px-4 font-medium text-gray-900">Current</td>
-                      <td className="py-3 px-4 text-center">{formatCurrency(mockFinancialData.currentMonthlyCashFlow)}</td>
-                      <td className="py-3 px-4 text-center">{formatCurrency(mockFinancialData.cashReserves)}</td>
-                      <td className="py-3 px-4 text-center">
-                        <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">Healthy</span>
-                      </td>
-                    </tr>
-                    {projection.map((month, index) => (
-                      <tr key={index}>
-                        <td className="py-3 px-4 font-medium text-gray-900">{month.month}</td>
-                        <td className={`py-3 px-4 text-center font-semibold ${month.cashFlow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                          {formatCurrency(month.cashFlow)}
-                        </td>
-                        <td className={`py-3 px-4 text-center font-semibold ${month.cumulativeCash >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                          {formatCurrency(month.cumulativeCash)}
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                            month.status === 'healthy' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                          }`}>
-                            {month.status === 'healthy' ? 'Healthy' : 'Critical'}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {scenarioImpact.newCashFlow < 0 && (
-                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <div className="flex items-center">
-                    <AlertTriangle className="w-5 h-5 text-red-600 mr-2" />
-                    <div>
-                      <h4 className="font-semibold text-red-800">Cash Flow Warning</h4>
-                      <p className="text-sm text-red-700 mt-1">
-                        The selected scenarios would result in negative cash flow. Consider adjusting the scenarios or implementing cost reduction measures.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </>
+          <ScenarioStressTester 
+            mockFinancialData={{
+              currentCashFlow: 15000,
+              monthlyRevenue: 85000,
+              monthlyExpenses: 70000,
+              currentRent: 8000,
+              currentStaff: 12,
+              averageSalary: 3500,
+            }}
+            formatCurrency={formatCurrency}
+          />
         )}
 
         {/* Summary Footer */}
