@@ -452,7 +452,7 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               </div>
             </div>
             
-            {/* Cash Flow Projection Graph */}
+            {/* 6-Month Cash Flow Projection Graph */}
             <div className="mb-6">
               <h4 className="font-medium text-gray-900 mb-3 flex items-center">
                 <Calendar className="w-4 h-4 mr-2" />
@@ -488,12 +488,12 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                     </div>
                   </div>
                   
-                  {/* Cash flow line */}
+                  {/* Cash flow line - DOTTED LINE for projected cash balance */}
                   <svg className="absolute inset-0 w-full h-full overflow-visible">
                     {/* Area under the line */}
                     <defs>
                       <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="rgba(59, 130, 246, 0.3)" />
+                        <stop offset="0%" stopColor="rgba(59, 130, 246, 0.2)" />
                         <stop offset="100%" stopColor="rgba(59, 130, 246, 0)" />
                       </linearGradient>
                     </defs>
@@ -510,7 +510,7 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                       fill="url(#areaGradient)"
                     />
                     
-                    {/* Line */}
+                    {/* Dotted Line for projected cash balance */}
                     <path 
                       d={`
                         M0,${100 - (projection[0].runningCash / Math.max(...projection.map(p => p.runningCash))) * 100}
@@ -520,9 +520,10 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                       `}
                       fill="none"
                       stroke="#3b82f6"
-                      strokeWidth="2"
+                      strokeWidth="2.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"
+                      strokeDasharray="6,4"
                     />
                     
                     {/* Data points */}
@@ -595,8 +596,8 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               {/* Legend */}
               <div className="flex justify-between items-center text-xs text-gray-600 mt-2">
                 <div className="flex items-center">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full mr-1"></div>
-                  <span>Cash Balance</span>
+                  <div className="w-8 h-1 bg-blue-500 border-0 border-blue-500 border-dashed mr-1"></div>
+                  <span>Projected Cash Balance</span>
                 </div>
                 <div className="flex items-center">
                   <div className="w-3 h-3 bg-yellow-400 rounded-full mr-1"></div>
