@@ -108,13 +108,6 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
   
   const [safetyBuffer, setSafetyBuffer] = useState(calculateDefaultSafetyBuffer());
 
-  // Resilience score calculation
-  const calculateResilienceScore = (cashFlow: number, reserves: number) => {
-    // Simple formula: higher is better, max 100
-    const score = Math.min(100, Math.max(0, 50 + (cashFlow / 1000) + (reserves / 10000)));
-    return Math.round(score);
-  };
-
   // Toggle scenario active state
   const toggleScenario = (id: string) => {
     setScenarios(prev => 
@@ -213,25 +206,6 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
 
   const projection = generateProjection();
   const impact = calculateScenarioImpact();
-  
-  // Calculate resilience scores
-  const currentResilienceScore = calculateResilienceScore(
-    financialData.currentCashFlow, 
-    financialData.currentCashFlow * 3 // Starting cash reserves
-  );
-  
-  const projectedResilienceScore = calculateResilienceScore(
-    impact.newMonthlyCashFlow,
-    projection[projection.length - 1].runningCash
-  );
-
-  // Calculate affordability thresholds
-  const affordabilityThresholds = {
-    maxRent: formatCurrency(financialData.currentRent * 1.2), // 20% more than current rent
-    maxSalary: formatCurrency(financialData.averageSalary * 1.5), // 50% more than average salary
-    maxEquipment: formatCurrency(financialData.currentCashFlow * 12 * 0.2), // 20% of annual cash flow
-    maxMonthlyCommitment: formatCurrency(financialData.currentCashFlow * 0.3), // 30% of monthly cash flow
-  };
   
   // Update safety buffer when months change
   const updateSafetyBufferMonths = (months: number) => {
@@ -340,48 +314,6 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               </div>
             </div>
             
-            {/* Resilience Score */}
-            <div className="mb-6">
-              <h4 className="font-medium text-gray-900 mb-2">Resilience Score</h4>
-              <div className="bg-gray-100 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-600">Current</span>
-                  <span className="text-lg font-bold text-gray-900">{currentResilienceScore}/100</span>
-                </div>
-                <div className="w-full bg-gray-300 rounded-full h-2.5">
-                  <div 
-                    className={`h-2.5 rounded-full ${
-                      currentResilienceScore > 75 ? 'bg-green-500' : 
-                      currentResilienceScore > 50 ? 'bg-yellow-500' : 
-                      'bg-red-500'
-                    }`} 
-                    style={{ width: `${currentResilienceScore}%` }}
-                  ></div>
-                </div>
-                
-                <div className="flex items-center justify-between mt-4 mb-2">
-                  <span className="text-sm text-gray-600">Projected</span>
-                  <span className={`text-lg font-bold ${
-                    projectedResilienceScore > 75 ? 'text-green-600' : 
-                    projectedResilienceScore > 50 ? 'text-yellow-600' : 
-                    'text-red-600'
-                  }`}>
-                    {projectedResilienceScore}/100
-                  </span>
-                </div>
-                <div className="w-full bg-gray-300 rounded-full h-2.5">
-                  <div 
-                    className={`h-2.5 rounded-full ${
-                      projectedResilienceScore > 75 ? 'bg-green-500' : 
-                      projectedResilienceScore > 50 ? 'bg-yellow-500' : 
-                      'bg-red-500'
-                    }`} 
-                    style={{ width: `${projectedResilienceScore}%` }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-            
             {/* Run Simulation Button */}
             <button
               onClick={() => {
@@ -405,25 +337,25 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
             <div className="grid grid-cols-4 gap-3">
               <div className="bg-green-50 rounded-lg p-3 border border-green-200">
                 <div className="text-sm text-green-700 mb-1">Max Sustainable Rent</div>
-                <div className="text-xl font-bold text-green-800">{affordabilityThresholds.maxRent}/mo</div>
+                <div className="text-xl font-bold text-green-800">{formatCurrency(financialData.currentRent * 1.2)}/mo</div>
                 <div className="text-xs text-green-600">Current: {formatCurrency(financialData.currentRent)}/mo</div>
               </div>
               
               <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
                 <div className="text-sm text-blue-700 mb-1">Max New Salary</div>
-                <div className="text-xl font-bold text-blue-800">{affordabilityThresholds.maxSalary}/mo</div>
+                <div className="text-xl font-bold text-blue-800">{formatCurrency(financialData.averageSalary * 1.5)}/mo</div>
                 <div className="text-xs text-blue-600">Per new hire capacity</div>
               </div>
               
               <div className="bg-purple-50 rounded-lg p-3 border border-purple-200">
                 <div className="text-sm text-purple-700 mb-1">Max Equipment Purchase</div>
-                <div className="text-xl font-bold text-purple-800">{affordabilityThresholds.maxEquipment}</div>
+                <div className="text-xl font-bold text-purple-800">{formatCurrency(financialData.currentCashFlow * 12 * 0.2)}</div>
                 <div className="text-xs text-purple-600">One-time purchase limit</div>
               </div>
               
               <div className="bg-orange-50 rounded-lg p-3 border border-orange-200">
                 <div className="text-sm text-orange-700 mb-1">Max Monthly Commitment</div>
-                <div className="text-xl font-bold text-orange-800">{affordabilityThresholds.maxMonthlyCommitment}/mo</div>
+                <div className="text-xl font-bold text-orange-800">{formatCurrency(financialData.currentCashFlow * 0.3)}/mo</div>
                 <div className="text-xs text-orange-600">Any recurring expense</div>
               </div>
             </div>
@@ -586,15 +518,11 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                 <div className="text-sm text-gray-600 mb-1">Risk Level</div>
                 <div className={`text-xl font-bold ${
-                  projectedResilienceScore > 75 ? 'text-green-600' : 
-                  projectedResilienceScore > 50 ? 'text-yellow-600' : 
-                  'text-red-600'
+                  projection.some(month => month.runningCash < safetyBuffer) ? 'text-red-600' : 'text-green-600'
                 }`}>
-                  {projectedResilienceScore > 75 ? 'Low' : 
-                   projectedResilienceScore > 50 ? 'Medium' : 
-                   'High'}
+                  {projection.some(month => month.runningCash < safetyBuffer) ? 'High' : 'Low'}
                 </div>
-                <div className="text-xs text-gray-500">Based on resilience score</div>
+                <div className="text-xs text-gray-500">Based on safety buffer</div>
               </div>
             </div>
             
@@ -648,7 +576,7 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                     <span className="text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full">High Impact</span>
                   </div>
                 </div>
-                <p className="text-xs text-green-700 mb-2">Saves $1,200 | Resilience Boost: +18 points</p>
+                <p className="text-xs text-green-700 mb-2">Saves $1,200/month | Resilience Boost: +18 points</p>
                 <button className="text-xs flex items-center text-green-700 hover:text-green-800">
                   Apply to simulation <ArrowRight className="w-3 h-3 ml-1" />
                 </button>
@@ -689,8 +617,8 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                 <span className="text-sm font-medium text-gray-900">$2,000 saved</span>
               </div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">Projected Resilience</span>
-                <span className="text-sm font-medium text-green-600">68/100</span>
+                <span className="text-sm text-gray-600">Projected Survival</span>
+                <span className="text-sm font-medium text-green-600">6+ months</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2.5">
                 <div className="bg-green-500 h-2.5 rounded-full" style={{ width: '68%' }}></div>
@@ -720,8 +648,8 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
             
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Average Resilience</span>
-                <span className="text-sm font-medium text-gray-900">62/100</span>
+                <span className="text-sm text-gray-600">Average Survival</span>
+                <span className="text-sm font-medium text-gray-900">6.2 months</span>
               </div>
               
               <div className="flex items-center justify-between">
