@@ -264,6 +264,28 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
 
   return (
     <div className="space-y-6">
+      {/* Key Metrics Bar */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl shadow-lg text-white p-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="flex flex-col">
+            <span className="text-blue-100 text-sm mb-1">Total Outstanding</span>
+            <span className="text-2xl font-bold">{formatCurrency(data.totalOutstanding)}</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-blue-100 text-sm mb-1">Overdue (>30d)</span>
+            <span className="text-2xl font-bold">{formatCurrency(data.overdueAmount)}</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-blue-100 text-sm mb-1">Avg. Days Late</span>
+            <span className="text-2xl font-bold">{data.avgDaysLate}</span>
+          </div>
+          <div className="flex flex-col">
+            <span className="text-blue-100 text-sm mb-1">Collections Risk</span>
+            <span className="text-2xl font-bold">{data.collectionsRisk}%</span>
+          </div>
+        </div>
+      </div>
+      
       {/* Active Receivables Monitor */}
       <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-6">
