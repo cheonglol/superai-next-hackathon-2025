@@ -625,7 +625,6 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                       <th className="text-center py-2 px-3 font-medium text-gray-900">Cash Flow</th>
                       <th className="text-center py-2 px-3 font-medium text-gray-900">One-time Costs</th>
                       <th className="text-center py-2 px-3 font-medium text-gray-900">Running Cash</th>
-                      <th className="text-center py-2 px-3 font-medium text-gray-900">Seasonal Factor</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
@@ -651,11 +650,6 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                         <td className="py-2 px-3 text-center font-bold">
                           <span className={month.runningCash >= 0 ? 'text-green-600' : 'text-red-600'}>
                             {formatCurrency(month.runningCash)}
-                          </span>
-                        </td>
-                        <td className="py-2 px-3 text-center">
-                          <span className={month.seasonalFactor > 1 ? 'text-green-600' : month.seasonalFactor < 0.9 ? 'text-red-600' : 'text-gray-600'}>
-                            {month.seasonalFactor.toFixed(2)}x
                           </span>
                         </td>
                       </tr>
