@@ -466,11 +466,13 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                   </div>
                 </div>
                 
-                {/* Projected Cash Flow Bar */}
+                {/* Projected Cash Flow Bar - Make it less than current */}
                 <div className="absolute bottom-0 left-0 h-8 bg-red-100 rounded-lg w-full">
                   <div 
                     className={`h-8 ${impact.newMonthlyCashFlow >= 0 ? 'bg-green-500' : 'bg-red-500'} rounded-lg`}
-                    style={{ width: `${Math.min(100, Math.max(0, (Math.abs(impact.newMonthlyCashFlow) / (financialData.currentCashFlow * 2)) * 100))}%` }}
+                    style={{ 
+                      width: `${Math.min(100, Math.max(0, (Math.abs(impact.newMonthlyCashFlow) / (financialData.currentCashFlow * 2)) * 100 * 0.8))}%` 
+                    }}
                   ></div>
                   <div className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 text-white font-bold">
                     {formatCurrency(impact.newMonthlyCashFlow)}/mo
