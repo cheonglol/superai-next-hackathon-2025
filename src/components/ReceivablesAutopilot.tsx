@@ -272,7 +272,7 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
             <span className="text-2xl font-bold">{formatCurrency(data.totalOutstanding)}</span>
           </div>
           <div className="flex flex-col">
-            <span className="text-blue-100 text-sm mb-1">Overdue (>30d)</span>
+            <span className="text-blue-100 text-sm mb-1">Overdue ({">"}30d)</span>
             <span className="text-2xl font-bold">{formatCurrency(data.overdueAmount)}</span>
           </div>
           <div className="flex flex-col">
