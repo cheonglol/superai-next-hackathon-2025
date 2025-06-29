@@ -90,29 +90,29 @@ const CashFlowDiagnosticianPage: React.FC = () => {
   // Cash flow metrics
   const cashFlowMetrics = [
     // Operating Cash Flow
-    { name: 'Net Operating Cash Flow', value: '$100,000', category: 'operating' },
-    { name: 'Operating Cash Flow Margin (%)', value: '15.5%', category: 'operating' },
-    { name: 'Cash Conversion Cycle (CCC)', value: '32 days', category: 'operating' },
-    { name: 'Cash Flow per Day', value: '$2,500/day', category: 'operating' },
+    { name: 'Net Operating Cash Flow', value: '$100,000', category: 'operating', description: 'Cash generated from business operations (from the Cash Flow Statement).' },
+    { name: 'Operating Cash Flow Margin (%)', value: '15.5%', category: 'operating', description: 'Operating Cash Flow ÷ Revenue Indicates what % of sales turns into cash.' },
+    { name: 'Cash Conversion Cycle (CCC)', value: '32 days', category: 'operating', description: 'DSO + DIO - DPO Measures how long cash is tied up in operations.' },
+    { name: 'Cash Flow per Day', value: '$2,500/day', category: 'operating', description: 'Operating Cash Flow ÷ 365 Helps assess daily cash burn or gain.' },
     
     // Working Capital Efficiency
-    { name: 'Days Sales Outstanding (DSO)', value: '38 days', category: 'working_capital' },
-    { name: 'Days Inventory Outstanding (DIO)', value: '85 days', category: 'working_capital' },
-    { name: 'Days Payable Outstanding (DPO)', value: '28 days', category: 'working_capital' },
-    { name: 'Working Capital Ratio', value: '1.75', category: 'working_capital' },
+    { name: 'Days Sales Outstanding (DSO)', value: '38 days', category: 'working_capital', description: '(Accounts Receivable ÷ Revenue) × 365 Tracks how fast customers pay you.' },
+    { name: 'Days Inventory Outstanding (DIO)', value: '85 days', category: 'working_capital', description: '(Inventory ÷ COGS) × 365 Shows how long stock is sitting before it\'s sold.' },
+    { name: 'Days Payable Outstanding (DPO)', value: '28 days', category: 'working_capital', description: '(Accounts Payable ÷ COGS) × 365 Indicates how long you\'re taking to pay suppliers.' },
+    { name: 'Working Capital Ratio', value: '1.75', category: 'working_capital', description: 'Current Assets ÷ Current Liabilities Measures short-term liquidity (1.2–2.0 is generally healthy).' },
     
     // Liquidity & Buffer
-    { name: 'Cash Reserve Ratio', value: '3.2 months', category: 'liquidity' },
-    { name: 'Burn Rate', value: '$2,500/day', category: 'liquidity' },
-    { name: 'Runway', value: '76 days', category: 'liquidity' },
+    { name: 'Cash Reserve Ratio', value: '3.2 months', category: 'liquidity', description: 'Cash on Hand ÷ Monthly Operating Expenses Shows how many months you can survive without revenue.' },
+    { name: 'Burn Rate', value: '$2,500/day', category: 'liquidity', description: 'Monthly Operating Cash Outflows Important for early-stage or struggling businesses.' },
+    { name: 'Runway', value: '76 days', category: 'liquidity', description: 'Cash on Hand ÷ Burn Rate Tells how long before the business runs out of money.' },
     
     // Revenue & Cost Impact
-    { name: 'Gross Profit to Cash Conversion', value: '0.85', category: 'impact' },
-    { name: 'Profit vs Cash Flow Gap', value: '$12,500', category: 'impact' },
-    { name: 'Cost of Sales to Cash Outflow', value: '0.92', category: 'impact' },
+    { name: 'Gross Profit to Cash Conversion', value: '0.85', category: 'impact', description: 'Operating Cash Flow ÷ Gross Profit Assesses how well gross profit turns into real cash.' },
+    { name: 'Profit vs Cash Flow Gap', value: '$12,500', category: 'impact', description: 'Net Profit – Operating Cash Flow Identifies differences due to timing, accruals, etc.' },
+    { name: 'Cost of Sales to Cash Outflow', value: '0.92', category: 'impact', description: 'COGS ÷ Cash Paid to Suppliers Tracks overpayment or mismatch between cost and cash.' },
     
     // Financing & Debt-Related
-    { name: 'Debt Service Coverage Ratio (DSCR)', value: '1.35', category: 'financing' }
+    { name: 'Debt Service Coverage Ratio (DSCR)', value: '1.35', category: 'financing', description: 'Net Operating Income ÷ Debt Repayments Shows ability to service debt (ideal > 1.25x).' }
   ];
 
   // Leakage points
@@ -482,7 +482,8 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-medium text-blue-800">{metric.name}</span>
                         </div>
-                        <div className="text-xl font-bold text-gray-900">{metric.value}</div>
+                        <div className="text-xl font-bold text-gray-900 mb-2">{metric.value}</div>
+                        <div className="text-xs text-blue-700">{metric.description}</div>
                       </div>
                     ))}
                   </div>
@@ -500,7 +501,8 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-medium text-green-800">{metric.name}</span>
                         </div>
-                        <div className="text-xl font-bold text-gray-900">{metric.value}</div>
+                        <div className="text-xl font-bold text-gray-900 mb-2">{metric.value}</div>
+                        <div className="text-xs text-green-700">{metric.description}</div>
                       </div>
                     ))}
                   </div>
@@ -518,7 +520,8 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-medium text-purple-800">{metric.name}</span>
                         </div>
-                        <div className="text-xl font-bold text-gray-900">{metric.value}</div>
+                        <div className="text-xl font-bold text-gray-900 mb-2">{metric.value}</div>
+                        <div className="text-xs text-purple-700">{metric.description}</div>
                       </div>
                     ))}
                   </div>
@@ -536,7 +539,8 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-medium text-amber-800">{metric.name}</span>
                         </div>
-                        <div className="text-xl font-bold text-gray-900">{metric.value}</div>
+                        <div className="text-xl font-bold text-gray-900 mb-2">{metric.value}</div>
+                        <div className="text-xs text-amber-700">{metric.description}</div>
                       </div>
                     ))}
                   </div>
@@ -554,7 +558,8 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                         <div className="flex items-center justify-between mb-2">
                           <span className="font-medium text-indigo-800">{metric.name}</span>
                         </div>
-                        <div className="text-xl font-bold text-gray-900">{metric.value}</div>
+                        <div className="text-xl font-bold text-gray-900 mb-2">{metric.value}</div>
+                        <div className="text-xs text-indigo-700">{metric.description}</div>
                       </div>
                     ))}
                   </div>
@@ -830,7 +835,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
             <div>
               <div className="flex items-center mb-6">
                 <Zap className="w-5 h-5 text-purple-600 mr-2" />
-                <h3 className="text-lg font-semibold text-gray-900">Prioritized Corrective Actions</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Corrective Actions</h3>
               </div>
               
               <div className="space-y-4">
