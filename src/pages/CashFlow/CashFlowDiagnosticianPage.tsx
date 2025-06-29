@@ -150,29 +150,29 @@ const CashFlowDiagnosticianPage: React.FC = () => {
   // Cash flow metrics with real calculated values
   const cashFlowMetrics = [
     // Operating Cash Flow
-    { name: 'Net Operating Cash Flow', value: `${formatCurrency(calculatedMetrics.netOperatingCashFlow)}`, category: 'operating', description: 'Cash generated from business operations (from the Cash Flow Statement).' },
-    { name: 'Operating Cash Flow Margin (%)', value: `${calculatedMetrics.operatingCashFlowMargin.toFixed(1)}%`, category: 'operating', description: 'Operating Cash Flow ÷ Revenue Indicates what % of sales turns into cash.' },
-    { name: 'Cash Conversion Cycle (CCC)', value: `${Math.round(calculatedMetrics.cashConversionCycle)} days`, category: 'operating', description: 'DSO + DIO - DPO Measures how long cash is tied up in operations.' },
-    { name: 'Cash Flow per Day', value: `${formatCurrency(calculatedMetrics.cashFlowPerDay)}/day`, category: 'operating', description: 'Operating Cash Flow ÷ 365 Helps assess daily cash burn or gain.' },
+    { name: 'Net Operating Cash Flow', value: `${formatCurrency(calculatedMetrics.netOperatingCashFlow)}`, category: 'operating', description: 'Cash generated from business operations.' },
+    { name: 'Operating Cash Flow Margin (%)', value: `${calculatedMetrics.operatingCashFlowMargin.toFixed(1)}%`, category: 'operating', description: '% of sales that turns into cash.' },
+    { name: 'Cash Conversion Cycle (CCC)', value: `${Math.round(calculatedMetrics.cashConversionCycle)} days`, category: 'operating', description: 'How long cash is tied up in operations.' },
+    { name: 'Cash Flow per Day', value: `${formatCurrency(calculatedMetrics.cashFlowPerDay)}/day`, category: 'operating', description: 'Assess daily cash burn or gain.' },
     
     // Working Capital Efficiency
-    { name: 'Days Sales Outstanding (DSO)', value: `${Math.round(calculatedMetrics.dso)} days`, category: 'working_capital', description: '(Accounts Receivable ÷ Revenue) × 365 Tracks how fast customers pay you.' },
-    { name: 'Days Inventory Outstanding (DIO)', value: `${Math.round(calculatedMetrics.dio)} days`, category: 'working_capital', description: '(Inventory ÷ COGS) × 365 Shows how long stock is sitting before it\'s sold.' },
-    { name: 'Days Payable Outstanding (DPO)', value: `${Math.round(calculatedMetrics.dpo)} days`, category: 'working_capital', description: '(Accounts Payable ÷ COGS) × 365 Indicates how long you\'re taking to pay suppliers.' },
-    { name: 'Working Capital Ratio', value: `${calculatedMetrics.workingCapitalRatio.toFixed(2)}`, category: 'working_capital', description: 'Current Assets ÷ Current Liabilities Measures short-term liquidity (1.2–2.0 is generally healthy).' },
+    { name: 'Days Sales Outstanding (DSO)', value: `${Math.round(calculatedMetrics.dso)} days`, category: 'working_capital', description: 'How fast customers pay you.' },
+    { name: 'Days Inventory Outstanding (DIO)', value: `${Math.round(calculatedMetrics.dio)} days`, category: 'working_capital', description: 'How long stock is sitting before it\'s sold.' },
+    { name: 'Days Payable Outstanding (DPO)', value: `${Math.round(calculatedMetrics.dpo)} days`, category: 'working_capital', description: 'How long you\'re taking to pay suppliers.' },
+    { name: 'Working Capital Ratio', value: `${calculatedMetrics.workingCapitalRatio.toFixed(2)}`, category: 'working_capital', description: 'Short-term liquidity (1.2–2.0 is generally healthy).' },
     
     // Liquidity & Buffer
-    { name: 'Cash Reserve Ratio', value: `${calculatedMetrics.cashReserveRatio.toFixed(1)} months`, category: 'liquidity', description: 'Cash on Hand ÷ Monthly Operating Expenses Shows how many months you can survive without revenue.' },
-    { name: 'Burn Rate', value: `${formatCurrency(calculatedMetrics.burnRate)}/day`, category: 'liquidity', description: 'Monthly Operating Cash Outflows Important for early-stage or struggling businesses.' },
-    { name: 'Runway', value: `${Math.round(calculatedMetrics.runway)} days`, category: 'liquidity', description: 'Cash on Hand ÷ Burn Rate Tells how long before the business runs out of money.' },
+    { name: 'Cash Reserve Ratio', value: `${calculatedMetrics.cashReserveRatio.toFixed(1)} months`, category: 'liquidity', description: 'Number of months you can survive without revenue.' },
+    { name: 'Burn Rate', value: `${formatCurrency(calculatedMetrics.burnRate)}/day`, category: 'liquidity', description: 'Monthly Operating Cash Outflows.' },
+    { name: 'Runway', value: `${Math.round(calculatedMetrics.runway)} days`, category: 'liquidity', description: 'How long before the business runs out of money.' },
     
     // Revenue & Cost Impact
-    { name: 'Gross Profit to Cash Conversion', value: `${calculatedMetrics.grossProfitToCashConversion.toFixed(2)}`, category: 'impact', description: 'Operating Cash Flow ÷ Gross Profit Assesses how well gross profit turns into real cash.' },
-    { name: 'Profit vs Cash Flow Gap', value: `${formatCurrency(calculatedMetrics.profitCashFlowGap)}`, category: 'impact', description: 'Net Profit – Operating Cash Flow Identifies differences due to timing, accruals, etc.' },
-    { name: 'Cost of Sales to Cash Outflow', value: `${calculatedMetrics.costOfSalesToCashOutflow.toFixed(2)}`, category: 'impact', description: 'COGS ÷ Cash Paid to Suppliers Tracks overpayment or mismatch between cost and cash.' },
+    { name: 'Gross Profit to Cash Conversion', value: `${calculatedMetrics.grossProfitToCashConversion.toFixed(2)}`, category: 'impact', description: 'How well gross profit turns into real cash.' },
+    { name: 'Profit vs Cash Flow Gap', value: `${formatCurrency(calculatedMetrics.profitCashFlowGap)}`, category: 'impact', description: 'Differences due to timing & accruals.' },
+    { name: 'Cost of Sales to Cash Outflow', value: `${calculatedMetrics.costOfSalesToCashOutflow.toFixed(2)}`, category: 'impact', description: 'Tracks overpayment or mismatch between cost and cash.' },
     
     // Financing & Debt-Related
-    { name: 'Debt Service Coverage Ratio (DSCR)', value: `${calculatedMetrics.dscr.toFixed(2)}`, category: 'financing', description: 'Net Operating Income ÷ Debt Repayments Shows ability to service debt (ideal > 1.25x).' }
+    { name: 'Debt Service Coverage Ratio (DSCR)', value: `${calculatedMetrics.dscr.toFixed(2)}`, category: 'financing', description: 'Ability to service debt (ideal > 1.25x).' }
   ];
 
   // Mock cash flow data
