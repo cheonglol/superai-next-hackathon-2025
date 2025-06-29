@@ -1,5 +1,5 @@
-import React from "react";
-import { TrendingUp, Target, Zap } from "lucide-react";
+import React, { useState } from "react";
+import { TrendingUp, Target, Zap, ArrowUpDown } from "lucide-react";
 
 interface SensitivityAnalysisData {
   scenarios?: Array<{
@@ -29,6 +29,8 @@ interface SensitivityAnalysisProps {
 }
 
 const SensitivityAnalysis: React.FC<SensitivityAnalysisProps> = ({ mockFinancialData, formatCurrency }) => {
+  const [sortBy, setSortBy] = useState<"cashFlow" | "profit">("cashFlow");
+
   // Provide default values if mockFinancialData is undefined
   const financialData = mockFinancialData || {
     revenue: 0,
@@ -102,19 +104,28 @@ const SensitivityAnalysis: React.FC<SensitivityAnalysisProps> = ({ mockFinancial
     },
   };
 
-  // Get top 3 opportunities by profit impact
-  const topProfitOpportunities = [
-    { name: "1% Price Increase", ...sensitivityAnalysis.priceIncrease1Percent },
-    { name: "1% COGS Decrease", ...sensitivityAnalysis.cogsDecrease1Percent },
-    { name: "1% Operating Expenses Decrease", ...sensitivityAnalysis.opexDecrease1Percent },
-  ].sort((a, b) => b.profitImpact - a.profitImpact);
+  // Get opportunities sorted by the selected metric
+  const getOpportunities = () => {
+    const opportunities = [
+      { name: "1% Price Increase", ...sensitivityAnalysis.priceIncrease1Percent },
+      { name: "1% COGS Decrease", ...sensitivityAnalysis.cogsDecrease1Percent },
+      { name: "1% Operating Expenses Decrease", ...sensitivityAnalysis.opexDecrease1Percent },
+      { name: "1% Volume Increase", ...sensitivityAnalysis.volumeIncrease1Percent },
+      { name: "1 Day Accounts Receivable Decrease", ...sensitivityAnalysis.arDecrease1Day },
+      { name: "1 Day Inventory Decrease", ...sensitivityAnalysis.inventoryDecrease1Day },
+      { name: "1 Day Accounts Payable Increase", ...sensitivityAnalysis.apIncrease1Day },
+    ];
 
-  // Get top 3 opportunities by cash flow impact
-  const topCashFlowOpportunities = [
-    { name: "1% Price Increase", ...sensitivityAnalysis.priceIncrease1Percent },
-    { name: "1% COGS Decrease", ...sensitivityAnalysis.cogsDecrease1Percent },
-    { name: "1% Operating Expenses Decrease", ...sensitivityAnalysis.opexDecrease1Percent },
-  ].sort((a, b) => b.cashFlowImpact - a.cashFlowImpact);
+    if (sortBy === "cashFlow") {
+      return opportunities.sort((a, b) => b.cashFlowImpact - a.cashFlowImpact);
+    } else {
+      return opportunities.sort((a, b) => b.profitImpact - a.profitImpact);
+    }
+  };
+
+  const sortedOpportunities = getOpportunities();
+  const topProfitOpportunities = [...sortedOpportunities].sort((a, b) => b.profitImpact - a.profitImpact).slice(0, 3);
+  const topCashFlowOpportunities = [...sortedOpportunities].sort((a, b) => b.cashFlowImpact - a.cashFlowImpact).slice(0, 3);
 
   return (
     <div className="space-y-6">
@@ -256,6 +267,64 @@ const SensitivityAnalysis: React.FC<SensitivityAnalysisProps> = ({ mockFinancial
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* Implementation Priority Matrix */}
+      <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center">
+            <Target className="w-5 h-5 text-purple-600 mr-2" />
+            <h3 className="text-lg font-semibold text-gray-900">Corrective Actions</h3>
+          </div>
+          <button 
+            onClick={() => setSortBy(sortBy === "cashFlow" ? "profit" : "cashFlow")}
+            className="flex items-center px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm transition-colors"
+          >
+            <ArrowUpDown className="w-4 h-4 mr-1" />
+            Sort by {sortBy === "cashFlow" ? "Profit Impact" : "Cash Flow Impact"}
+          </button>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-200">
+                <th className="text-left py-3 px-4 font-medium text-gray-900">Action</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-900">Cash Flow Impact</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-900">Profit Impact</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-900">Difficulty</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-900">Timeframe</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {sortedOpportunities.map((opportunity, index) => (
+                <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                  <td className="py-3 px-4 font-medium text-gray-900">{opportunity.name}</td>
+                  <td className="py-3 px-4 text-center">
+                    <span className={`font-semibold ${opportunity.cashFlowImpact >= 0 ? "text-green-600" : "text-red-600"}`}>
+                      {opportunity.cashFlowImpact >= 0 ? "+" : ""}{formatCurrency(opportunity.cashFlowImpact)}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 text-center">
+                    <span className={`font-semibold ${opportunity.profitImpact >= 0 ? "text-green-600" : "text-red-600"}`}>
+                      {opportunity.profitImpact > 0 ? "+" : ""}{formatCurrency(opportunity.profitImpact)}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 text-center">
+                    <span className={`px-2 py-1 text-xs rounded-full ${
+                      opportunity.difficulty === "Easy" ? "bg-green-100 text-green-800" :
+                      opportunity.difficulty === "Medium" ? "bg-yellow-100 text-yellow-800" :
+                      "bg-red-100 text-red-800"
+                    }`}>
+                      {opportunity.difficulty}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 text-center text-sm text-gray-600">{opportunity.timeframe}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 
