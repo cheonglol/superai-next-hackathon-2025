@@ -12,7 +12,9 @@ import {
   BarChart3,
   ArrowRight,
   RefreshCw,
-  Percent
+  Percent,
+  ArrowUpDown,
+  ChevronDown
 } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
 import { agentService } from '@/services/agentService';
@@ -24,6 +26,8 @@ const CashFlowDiagnosticianPage: React.FC = () => {
   const [lastUpdate, setLastUpdate] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'metrics' | 'leakage' | 'onepercent' | 'actions'>('metrics');
   const [fyEndingDate, setFyEndingDate] = useState<string>('2024-12-31');
+  const [sortBy, setSortBy] = useState<"impact" | "timeframe" | "difficulty">("impact");
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
 
   // Financial data for calculations
   const financialData = {
@@ -241,6 +245,103 @@ const CashFlowDiagnosticianPage: React.FC = () => {
       details: 'Audit and eliminate redundant software subscriptions across departments'
     }
   ];
+
+  // Enhanced Sensitivity Analysis with different impacts
+  const sensitivityAnalysis = {
+    priceIncrease1Percent: {
+      revenueImpact: financialData.revenue * 0.01,
+      profitImpact: financialData.revenue * 0.01, // 100% flows to profit (highest impact)
+      cashFlowImpact: financialData.revenue * 0.01 * 0.85, // 85% after taxes
+      priority: 1,
+      difficulty: "Medium",
+      timeframe: "1-3 months",
+    },
+    volumeIncrease1Percent: {
+      revenueImpact: financialData.revenue * 0.01,
+      profitImpact: financialData.revenue * 0.01 - financialData.cogs * 0.01, // Revenue minus variable costs
+      cashFlowImpact: (financialData.revenue * 0.01 - financialData.cogs * 0.01) * 0.85,
+      priority: 4,
+      difficulty: "Hard",
+      timeframe: "3-6 months",
+    },
+    cogsDecrease1Percent: {
+      revenueImpact: 0,
+      profitImpact: financialData.cogs * 0.01, // Direct cost savings
+      cashFlowImpact: financialData.cogs * 0.01 * 0.85,
+      priority: 2,
+      difficulty: "Medium",
+      timeframe: "1-2 months",
+    },
+    opexDecrease1Percent: {
+      revenueImpact: 0,
+      profitImpact: financialData.overheads * 0.01, // Direct expense reduction
+      cashFlowImpact: financialData.overheads * 0.01 * 0.85,
+      priority: 3,
+      difficulty: "Easy",
+      timeframe: "Immediate",
+    },
+    arDecrease1Day: {
+      revenueImpact: 0,
+      profitImpact: 0, // No profit impact, only cash flow
+      cashFlowImpact: financialData.accountsReceivable / financialData.accountsReceivable,
+      priority: 6,
+      difficulty: "Medium",
+      timeframe: "1-2 months",
+    },
+    inventoryDecrease1Day: {
+      revenueImpact: 0,
+      profitImpact: 0, // No profit impact, only cash flow
+      cashFlowImpact: financialData.inventory / financialData.inventoryDays,
+      priority: 5,
+      difficulty: "Medium",
+      timeframe: "2-4 months",
+    },
+    apIncrease1Day: {
+      revenueImpact: 0,
+      profitImpact: 0, // No profit impact, only cash flow
+      cashFlowImpact: financialData.accountsPayable / financialData.accountsPayableDays,
+      priority: 7,
+      difficulty: "Easy",
+      timeframe: "Immediate",
+    },
+  };
+
+  // Get opportunities sorted by the selected metric
+  const getOpportunities = () => {
+    const opportunities = [
+      { name: "1% Price Increase", ...sensitivityAnalysis.priceIncrease1Percent },
+      { name: "1% COGS Decrease", ...sensitivityAnalysis.cogsDecrease1Percent },
+      { name: "1% Operating Expenses Decrease", ...sensitivityAnalysis.opexDecrease1Percent },
+      { name: "1% Volume Increase", ...sensitivityAnalysis.volumeIncrease1Percent },
+    ];
+
+    if (sortBy === "impact") {
+      return opportunities.sort((a, b) => b.cashFlowImpact - a.cashFlowImpact);
+    } else if (sortBy === "timeframe") {
+      // Sort by timeframe (Immediate first, then by months)
+      return opportunities.sort((a, b) => {
+        if (a.timeframe === "Immediate" && b.timeframe !== "Immediate") return -1;
+        if (a.timeframe !== "Immediate" && b.timeframe === "Immediate") return 1;
+        
+        // Extract numbers from timeframe strings
+        const aMonths = a.timeframe.match(/\d+/g);
+        const bMonths = b.timeframe.match(/\d+/g);
+        
+        if (!aMonths || !bMonths) return 0;
+        return parseInt(aMonths[0]) - parseInt(bMonths[0]);
+      });
+    } else if (sortBy === "difficulty") {
+      // Sort by difficulty (Easy first, then Medium, then Hard)
+      const difficultyOrder = { "Easy": 1, "Medium": 2, "Hard": 3 };
+      return opportunities.sort((a, b) => {
+        return difficultyOrder[a.difficulty as keyof typeof difficultyOrder] - difficultyOrder[b.difficulty as keyof typeof difficultyOrder];
+      });
+    }
+    
+    return opportunities;
+  };
+
+  const sortedOpportunities = getOpportunities();
 
   useEffect(() => {
     runAnalysis();
@@ -734,6 +835,159 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                   </tbody>
                 </table>
               </div>
+
+              {/* Corrective Actions */}
+              <div className="mt-8">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    <Target className="w-5 h-5 text-purple-600 mr-2" />
+                    <h3 className="text-lg font-semibold text-gray-900">Corrective Actions</h3>
+                  </div>
+                  <div className="relative">
+                    <button 
+                      onClick={() => setShowSortDropdown(!showSortDropdown)}
+                      className="flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+                    >
+                      <ArrowUpDown className="w-4 h-4 mr-2" />
+                      Sort by: {sortBy === "impact" ? "Cash Flow Impact" : 
+                                sortBy === "timeframe" ? "Timeframe" : "Difficulty"}
+                      <ChevronDown className="w-4 h-4 ml-2" />
+                    </button>
+                    
+                    {showSortDropdown && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                        <ul className="py-1">
+                          <li>
+                            <button
+                              onClick={() => {
+                                setSortBy("impact");
+                                setShowSortDropdown(false);
+                              }}
+                              className={`block px-4 py-2 text-sm w-full text-left ${
+                                sortBy === "impact" ? "bg-blue-50 text-blue-700" : "text-gray-700 hover:bg-gray-100"
+                              }`}
+                            >
+                              Cash Flow Impact
+                            </button>
+                          </li>
+                          <li>
+                            <button
+                              onClick={() => {
+                                setSortBy("timeframe");
+                                setShowSortDropdown(false);
+                              }}
+                              className={`block px-4 py-2 text-sm w-full text-left ${
+                                sortBy === "timeframe" ? "bg-green-50 text-green-700" : "text-gray-700 hover:bg-gray-100"
+                              }`}
+                            >
+                              Timeframe
+                            </button>
+                          </li>
+                          <li>
+                            <button
+                              onClick={() => {
+                                setSortBy("difficulty");
+                                setShowSortDropdown(false);
+                              }}
+                              className={`block px-4 py-2 text-sm w-full text-left ${
+                                sortBy === "difficulty" ? "bg-purple-50 text-purple-700" : "text-gray-700 hover:bg-gray-100"
+                              }`}
+                            >
+                              Difficulty
+                            </button>
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-gray-200">
+                        <th className="text-left py-3 px-4 font-medium text-gray-900">Action</th>
+                        <th className="text-center py-3 px-4 font-medium text-gray-900">Cash Flow Impact</th>
+                        <th className="text-center py-3 px-4 font-medium text-gray-900">Profit Impact</th>
+                        <th className="text-center py-3 px-4 font-medium text-gray-900">Difficulty</th>
+                        <th className="text-center py-3 px-4 font-medium text-gray-900">Timeframe</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {sortedOpportunities.map((opportunity, index) => (
+                        <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                          <td className="py-3 px-4 font-medium text-gray-900">{opportunity.name}</td>
+                          <td className="py-3 px-4 text-center">
+                            <span className={`font-semibold ${opportunity.cashFlowImpact >= 0 ? "text-green-600" : "text-red-600"}`}>
+                              {opportunity.cashFlowImpact >= 0 ? "+" : ""}{formatCurrency(opportunity.cashFlowImpact)}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            <span className={`font-semibold ${opportunity.profitImpact >= 0 ? "text-green-600" : "text-red-600"}`}>
+                              {opportunity.profitImpact > 0 ? "+" : ""}{formatCurrency(opportunity.profitImpact)}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-center">
+                            <span className={`px-2 py-1 text-xs rounded-full ${
+                              opportunity.difficulty === "Easy" ? "bg-green-100 text-green-800" :
+                              opportunity.difficulty === "Medium" ? "bg-yellow-100 text-yellow-800" :
+                              "bg-red-100 text-red-800"
+                            }`}>
+                              {opportunity.difficulty}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-center text-sm text-gray-600">{opportunity.timeframe}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Implementation Priority Matrix */}
+              <div className="mt-8">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                  <Target className="w-5 h-5 text-purple-600 mr-2" />
+                  Implementation Priority Matrix
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-lg border border-green-200">
+                    <div className="flex items-center mb-3">
+                      <div className="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-2">1</div>
+                      <h4 className="font-semibold text-green-800">Immediate Actions</h4>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-sm text-green-700">• Review and optimize pricing strategy</div>
+                      <div className="text-sm text-green-700">• Reduce operating expenses</div>
+                      <div className="text-sm text-green-700">• Negotiate payment terms</div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-4 rounded-lg border border-yellow-200">
+                    <div className="flex items-center mb-3">
+                      <div className="w-6 h-6 bg-yellow-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-2">2</div>
+                      <h4 className="font-semibold text-yellow-800">Short-term (1-3 months)</h4>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-sm text-yellow-700">• Optimize supplier relationships</div>
+                      <div className="text-sm text-yellow-700">• Improve collection processes</div>
+                      <div className="text-sm text-yellow-700">• Streamline inventory management</div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-200">
+                    <div className="flex items-center mb-3">
+                      <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs font-bold mr-2">3</div>
+                      <h4 className="font-semibold text-blue-800">Long-term (3+ months)</h4>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-sm text-blue-700">• Develop growth strategies</div>
+                      <div className="text-sm text-blue-700">• Invest in operational efficiency</div>
+                      <div className="text-sm text-blue-700">• Explore new revenue streams</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
@@ -774,9 +1028,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     <p className="text-sm mb-2">{action.details}</p>
                     <div className="flex justify-between items-center">
                       <span className="text-xs">Difficulty: <span className={getDifficultyColor(action.difficulty)}>{action.difficulty.charAt(0).toUpperCase() + action.difficulty.slice(1)}</span></span>
-                      <button className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors flex items-center">
-                        Implement <ArrowRight className="w-3 h-3 ml-1" />
-                      </button>
                     </div>
                   </div>
                 ))}
