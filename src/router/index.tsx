@@ -11,6 +11,7 @@ import { BarChart3, Activity, TrendingUp, Shield, Zap, Calculator } from "lucide
 import CashFlowDiagnosticianPage from "@/pages/CashFlow/CashFlowDiagnosticianPage";
 import ScenarioStressTesterPage from "@/pages/CashFlow/ScenarioStressTrackerPage";
 import LiquidityGuardianPage from "@/pages/CashFlow/LiquidityGuardianPage";
+import ReceivablesAutopilotPage from "@/pages/CashFlow/ReceivablesAutopilotPage";
 
 const ROOT_PATH = "";
 
@@ -104,10 +105,7 @@ export const routes: ExtendedRouteObject[] = [
       path: `${ROOT_PATH}/receivables-autopilot`,
       element: (
         <MainLayout>
-          <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Receivables Autopilot</h1>
-            <p className="text-gray-600">Payment reminders & follow ups that detects overdue invoices and autonomously sends polite follow-up messages or escalates reminders to customers.</p>
-          </div>
+          <ReceivablesAutopilotPage />
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,

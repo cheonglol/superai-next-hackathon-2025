@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Brain, Users, TrendingUp, Shield, Zap, Activity, Calculator } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
 import { AgentDashboard } from '@/components/agents/AgentDashboard';
 import { CashFlowAgent } from '@/components/agents/CashFlowAgent';
 import ScenarioStressTester from '@/components/ScenarioStressTester';
 import LiquidityGuardian from '@/components/LiquidityGuardian';
+import ReceivablesAutopilot from '@/components/ReceivablesAutopilot';
 
 const AgenticDashboardPage: React.FC = () => {
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
@@ -81,13 +82,66 @@ const AgenticDashboardPage: React.FC = () => {
         );
       case 'receivables-autopilot':
         return (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="text-center py-12">
-              <Zap className="w-16 h-16 text-purple-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Receivables Autopilot</h3>
-              <p className="text-gray-600">Automated receivables management coming soon...</p>
-            </div>
-          </div>
+          <ReceivablesAutopilot 
+            mockFinancialData={{
+              totalOutstanding: 42560,
+              overdueAmount: 18200,
+              avgDaysLate: 12,
+              collectionsRisk: 8,
+              invoices: [
+                {
+                  id: "INV-001",
+                  customer: "Ray's Hardware",
+                  amount: 2500,
+                  dueDate: "5 days ago",
+                  status: 'overdue',
+                  daysLate: 5,
+                  payProbability: 92
+                },
+                {
+                  id: "INV-002",
+                  customer: "Bloom Café",
+                  amount: 1200,
+                  dueDate: "Today",
+                  status: 'due-today',
+                  payProbability: 88,
+                  riskOfDelay: 35
+                },
+                {
+                  id: "INV-003",
+                  customer: "TechGadgets",
+                  amount: 4800,
+                  dueDate: "47 days ago",
+                  status: 'collections',
+                  daysLate: 47,
+                  payProbability: 68
+                }
+              ],
+              customerHealthScores: [
+                {
+                  customer: "Ray's Hardware",
+                  score: 76,
+                  insight: "Prompt payer, 5% delay risk next invoice"
+                },
+                {
+                  customer: "Bloom Café",
+                  score: 65,
+                  insight: "Increasing delay probability"
+                }
+              ],
+              trendAlerts: [
+                {
+                  trend: "Overdue invoices increased",
+                  value: "+22% vs. last month"
+                }
+              ],
+              optimizationTips: [
+                {
+                  tip: "Offer 2% discount for Bloom Café early payments"
+                }
+              ]
+            }}
+          />
         );
       default:
         return <AgentDashboard onAgentSelect={handleAgentSelect} />;
