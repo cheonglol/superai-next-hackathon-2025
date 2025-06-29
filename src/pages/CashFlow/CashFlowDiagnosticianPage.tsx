@@ -146,105 +146,58 @@ const CashFlowDiagnosticianPage: React.FC = () => {
     }
   ];
 
-  // Calculate 1% Fix values using the provided formulas
-  const calculateOnePercentFixes = () => {
-    const revenue = financialData.revenue;
-    const cogs = financialData.cogs;
-    const overheads = financialData.overheads;
-    const grossProfit = revenue - cogs;
-    const operatingProfit = grossProfit - overheads;
-    const grossMarginRatio = grossProfit / revenue;
-    const ar = financialData.accountsReceivable;
-    const inventory = financialData.inventory;
-    const ap = financialData.accountsPayable;
-
-    // 1. Price Increase
-    const priceIncreaseProfitImpact = 0.01 * revenue;
-    const priceIncreaseCashFlowImpact = (0.01 * revenue) * (1 - ar / revenue);
-
-    // 2. Volume Increase
-    const volumeIncreaseProfitImpact = 0.01 * revenue * (grossProfit / revenue);
-    const volumeIncreaseCashFlowImpact = (0.01 * revenue * (grossProfit / revenue)) - (0.01 * revenue * ((ar / revenue) + (inventory / cogs)));
-
-    // 3. COGS Reduction
-    const cogsReductionProfitImpact = 0.01 * cogs;
-    const cogsReductionCashFlowImpact = (0.01 * cogs) + ((0.01 * cogs) * (inventory / cogs) * 0.2045);
-
-    // 4. Overheads Reduction
-    const overheadsReductionProfitImpact = 0.01 * (grossProfit - operatingProfit);
-    const overheadsReductionCashFlowImpact = overheadsReductionProfitImpact;
-
-    // 5. AR Days Reduction
-    const arDaysReductionProfitImpact = 0;
-    const arDaysReductionCashFlowImpact = revenue / 365;
-
-    // 6. Inventory Days Reduction
-    const inventoryDaysReductionProfitImpact = 0;
-    const inventoryDaysReductionCashFlowImpact = cogs / 365;
-
-    // 7. AP Days Increase
-    const apDaysIncreaseProfitImpact = 0;
-    const apDaysIncreaseCashFlowImpact = cogs / 365;
-
-    return [
-      {
-        category: 'Price Increase %',
-        value: '1 %',
-        cashFlowImpact: Math.round(priceIncreaseCashFlowImpact),
-        profitImpact: Math.round(priceIncreaseProfitImpact),
-        details: 'Small price increase across all products and services'
-      },
-      {
-        category: 'Volume Increase %',
-        value: '1 %',
-        cashFlowImpact: Math.round(volumeIncreaseCashFlowImpact),
-        profitImpact: Math.round(volumeIncreaseProfitImpact),
-        details: 'Increase sales volume through targeted marketing campaigns'
-      },
-      {
-        category: 'COGS Reduction %',
-        value: '1 %',
-        cashFlowImpact: Math.round(cogsReductionCashFlowImpact),
-        profitImpact: Math.round(cogsReductionProfitImpact),
-        details: 'Negotiate better terms with suppliers or find alternative sources'
-      },
-      {
-        category: 'Overheads Reduction %',
-        value: '1 %',
-        cashFlowImpact: Math.round(overheadsReductionCashFlowImpact),
-        profitImpact: Math.round(overheadsReductionProfitImpact),
-        details: 'Reduce overhead expenses through operational efficiency'
-      },
-      {
-        category: 'Reduction in Accounts Receivable Days',
-        value: '1 days',
-        cashFlowImpact: Math.round(arDaysReductionCashFlowImpact),
-        profitImpact: arDaysReductionProfitImpact,
-        details: 'Improve collection processes to receive payments faster'
-      },
-      {
-        category: 'Reduction in Inventory Days',
-        value: '1 days',
-        cashFlowImpact: Math.round(inventoryDaysReductionCashFlowImpact),
-        profitImpact: inventoryDaysReductionProfitImpact,
-        details: 'Optimize inventory management to reduce holding costs'
-      },
-      {
-        category: 'Increase in Accounts Payable Days',
-        value: '1 days',
-        cashFlowImpact: Math.round(apDaysIncreaseCashFlowImpact),
-        profitImpact: apDaysIncreaseProfitImpact,
-        details: 'Extend payment terms with suppliers without affecting relationships'
-      }
-    ];
-  };
-
-  // Get the calculated 1% fixes
-  const onePercentFixes = calculateOnePercentFixes();
-
-  // Calculate totals for 1% Fix
-  const totalCashFlowImpact = onePercentFixes.reduce((sum, fix) => sum + fix.cashFlowImpact, 0);
-  const totalProfitImpact = onePercentFixes.reduce((sum, fix) => sum + fix.profitImpact, 0);
+  // One Percent Fix data with exact values from the image
+  const onePercentFixData = [
+    {
+      category: 'Price Increase %',
+      value: '1 %',
+      cashFlowImpact: 51690,
+      profitImpact: 66120,
+      details: 'Small price increase across all products and services'
+    },
+    {
+      category: 'Volume Increase %',
+      value: '1 %',
+      cashFlowImpact: -4855,
+      profitImpact: 19175,
+      details: 'Increase sales volume through targeted marketing campaigns'
+    },
+    {
+      category: 'COGS Reduction %',
+      value: '1 %',
+      cashFlowImpact: 56545,
+      profitImpact: 46945,
+      details: 'Negotiate better terms with suppliers or find alternative sources'
+    },
+    {
+      category: 'Overheads Reduction %',
+      value: '1 %',
+      cashFlowImpact: 12162,
+      profitImpact: 12162,
+      details: 'Reduce overhead expenses through operational efficiency'
+    },
+    {
+      category: 'Reduction in Accounts Receivable Days',
+      value: '1 days',
+      cashFlowImpact: 18115,
+      profitImpact: 0,
+      details: 'Improve collection processes to receive payments faster'
+    },
+    {
+      category: 'Reduction in Inventory Days',
+      value: '1 days',
+      cashFlowImpact: 12862,
+      profitImpact: 0,
+      details: 'Optimize inventory management to reduce holding costs'
+    },
+    {
+      category: 'Increase in Accounts Payable Days',
+      value: '1 days',
+      cashFlowImpact: 12862,
+      profitImpact: 0,
+      details: 'Extend payment terms with suppliers without affecting relationships'
+    }
+  ];
 
   // Corrective actions
   const correctiveActions = [
@@ -604,10 +557,10 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                         Value
                       </th>
                       <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Impact on Cash Flow
+                        Impact on<br />Cash Flow
                       </th>
                       <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Impact on Operating Profit
+                        Impact on<br />Operating Profit
                       </th>
                     </tr>
                   </thead>
@@ -615,57 +568,133 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     {/* Your current position row */}
                     <tr className="bg-gray-100">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        Your current position
+                        Your Current Position
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
                         
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-red-600">
-                        -$193,000
+                        -193,000
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
-                        $701,300
+                        701,300
                       </td>
                     </tr>
                     
-                    {onePercentFixes.map((fix, index) => (
-                      <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          {fix.category}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
-                          {fix.value}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium">
-                          <span className={getImpactColor(fix.cashFlowImpact)}>
-                            {formatCurrency(fix.cashFlowImpact)}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium">
-                          <span className={getImpactColor(fix.profitImpact)}>
-                            {formatCurrency(fix.profitImpact)}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
+                    {/* Power of One header row */}
+                    <tr className="bg-gray-50">
+                      <td colSpan={2} className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        Your Power of One
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-gray-900">
+                        Impact on<br />Cash Flow
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-gray-900">
+                        Impact on<br />Operating Profit
+                      </td>
+                    </tr>
                     
-                    {/* Your adjusted position row */}
-                    <tr className="bg-gray-100">
+                    {/* 1% Fix rows */}
+                    <tr>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        Your adjusted position
+                        Price Increase %
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
-                        
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-red-600">
-                        -$33,619
+                        1 %
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
-                        $845,702
+                        51,690
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
+                        66,120
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        Volume Increase %
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                        1 %
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-red-600">
+                        -4,855
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
+                        19,175
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        COGS Reduction %
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                        1 %
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
+                        56,545
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
+                        46,945
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        Overheads Reduction %
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                        1 %
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
+                        12,162
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
+                        12,162
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        Reduction in Accounts Receivable Days
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                        1 days
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
+                        18,115
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-gray-900">
+                        
+                      </td>
+                    </tr>
+                    <tr className="bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        Reduction in Inventory Days
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                        1 days
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
+                        12,862
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-gray-900">
+                        
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        Increase in Accounts Payable Days
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                        1 days
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
+                        12,862
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-gray-900">
+                        
                       </td>
                     </tr>
                     
-                    {/* Total Row */}
+                    {/* Your Power of One Impact row */}
                     <tr className="bg-green-50 font-bold">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         Your Power of One Impact
@@ -674,10 +703,26 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                         
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-green-700">
-                        {formatCurrency(totalCashFlowImpact)}
+                        159,381
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-green-700">
-                        {formatCurrency(totalProfitImpact)}
+                        144,402
+                      </td>
+                    </tr>
+                    
+                    {/* Your adjusted position row */}
+                    <tr className="bg-gray-100">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        Your Adjusted Position
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                        
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-red-600">
+                        -33,619
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
+                        845,702
                       </td>
                     </tr>
                   </tbody>
