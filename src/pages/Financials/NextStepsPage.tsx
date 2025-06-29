@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { TrendingUp, BarChart3, DollarSign, Target, AlertTriangle, Clock, Users, Zap, Activity, CreditCard, CheckCircle, ArrowRight, ChevronDown, Calculator, TrendingDown } from "lucide-react";
+import { TrendingUp, BarChart3, DollarSign, Target, AlertTriangle, Clock, Users, Zap, Activity, CreditCard, CheckCircle, ArrowRight, ChevronDown, Calculator } from "lucide-react";
 import { PageHeader } from "@/components/common/PageHeader";
 import { useAppDispatch, useAppSelector } from "@/store";
 import { fetchFinancialData } from "@/store/slices/financialsSlice";
@@ -13,50 +13,6 @@ const NextStepsPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<"priority" | "timeline">("priority");
   const [activeTab, setActiveTab] = useState<"diagnostician" | "stress-tester">("diagnostician");
   const [sortBy, setSortBy] = useState<"impact" | "timeframe" | "difficulty">("impact");
-
-  // Scenario Stress Tester state
-  const [scenarios, setScenarios] = useState([
-    {
-      id: 1,
-      name: "Rent Increase",
-      type: "expense",
-      currentValue: 2500,
-      newValue: 3200,
-      monthlyImpact: -700,
-      description: "Landlord proposing 28% rent increase",
-      active: false,
-    },
-    {
-      id: 2,
-      name: "New Staff Hire",
-      type: "expense",
-      currentValue: 0,
-      newValue: 3500,
-      monthlyImpact: -3500,
-      description: "Hiring additional chef",
-      active: false,
-    },
-    {
-      id: 3,
-      name: "Equipment Purchase",
-      type: "expense",
-      currentValue: 0,
-      newValue: 15000,
-      monthlyImpact: -625,
-      description: "New commercial oven (24-month financing)",
-      active: false,
-    },
-    {
-      id: 4,
-      name: "Menu Price Increase",
-      type: "revenue",
-      currentValue: 85000,
-      newValue: 91800,
-      monthlyImpact: 6800,
-      description: "8% across-the-board price increase",
-      active: false,
-    },
-  ]);
 
   // Fetch data on component mount
   useEffect(() => {
@@ -78,54 +34,15 @@ const NextStepsPage: React.FC = () => {
 
   // Mock financial data for analysis
   const mockFinancialData = {
-    currentMonthlyCashFlow: 15000,
+    currentCashFlow: 15000,
     monthlyRevenue: 85000,
     monthlyExpenses: 70000,
     cashReserves: 45000,
     fixedCosts: 45000,
     variableCosts: 25000,
-  };
-
-  // Calculate scenario impact
-  const calculateScenarioImpact = () => {
-    const activeScenarios = scenarios.filter(s => s.active);
-    const totalImpact = activeScenarios.reduce((sum, scenario) => sum + scenario.monthlyImpact, 0);
-    const newCashFlow = mockFinancialData.currentMonthlyCashFlow + totalImpact;
-    
-    return {
-      totalImpact,
-      newCashFlow,
-      activeScenarios,
-      affordabilityThreshold: mockFinancialData.currentMonthlyCashFlow + mockFinancialData.cashReserves / 6, // 6-month buffer
-    };
-  };
-
-  const scenarioImpact = calculateScenarioImpact();
-
-  // Generate 6-month projection
-  const generateProjection = () => {
-    const projection = [];
-    let runningCash = mockFinancialData.cashReserves;
-    
-    for (let month = 1; month <= 6; month++) {
-      runningCash += scenarioImpact.newCashFlow;
-      projection.push({
-        month: `Month ${month}`,
-        cashFlow: scenarioImpact.newCashFlow,
-        cumulativeCash: runningCash,
-        status: runningCash > 0 ? 'healthy' : 'critical'
-      });
-    }
-    
-    return projection;
-  };
-
-  const projection = generateProjection();
-
-  const toggleScenario = (id: number) => {
-    setScenarios(prev => prev.map(scenario => 
-      scenario.id === id ? { ...scenario, active: !scenario.active } : scenario
-    ));
+    currentRent: 8000,
+    currentStaff: 12,
+    averageSalary: 3500,
   };
 
   // Priority Areas Overview
@@ -134,8 +51,8 @@ const NextStepsPage: React.FC = () => {
       id: "cashFlow",
       title: "Cash Flow Crisis?",
       icon: DollarSign,
-      status: mockFinancialData.cashReserves / (mockFinancialData.monthlyExpenses - mockFinancialData.currentMonthlyCashFlow) > 6 ? "green" : 
-              mockFinancialData.cashReserves / (mockFinancialData.monthlyExpenses - mockFinancialData.currentMonthlyCashFlow) > 3 ? "amber" : "red",
+      status: mockFinancialData.cashReserves / (mockFinancialData.monthlyExpenses - mockFinancialData.currentCashFlow) > 6 ? "green" : 
+              mockFinancialData.cashReserves / (mockFinancialData.monthlyExpenses - mockFinancialData.currentCashFlow) > 3 ? "amber" : "red",
       metrics: [
         {
           label: "Cash Burn Rate",
@@ -458,7 +375,7 @@ const NextStepsPage: React.FC = () => {
                 <div className="flex items-center">
                   <Zap className="w-6 h-6 text-green-600 mr-3" />
                   <div>
-                    <h2 className="text-xl font-semibold text-gray-900">Prioritised Corrective Actions</h2>
+                    <h2 className="text-xl font-semibold text-gray-900">Quick Wins</h2>
                     <p className="text-sm text-gray-600">Immediate actions with high impact and low effort</p>
                   </div>
                 </div>
@@ -520,14 +437,7 @@ const NextStepsPage: React.FC = () => {
 
         {activeTab === "stress-tester" && (
           <ScenarioStressTester 
-            mockFinancialData={{
-              currentCashFlow: 15000,
-              monthlyRevenue: 85000,
-              monthlyExpenses: 70000,
-              currentRent: 8000,
-              currentStaff: 12,
-              averageSalary: 3500,
-            }}
+            mockFinancialData={mockFinancialData}
             formatCurrency={formatCurrency}
           />
         )}
