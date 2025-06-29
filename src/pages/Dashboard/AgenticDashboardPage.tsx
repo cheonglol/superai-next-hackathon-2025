@@ -4,6 +4,7 @@ import { PageHeader } from '@/components/common/PageHeader';
 import { AgentDashboard } from '@/components/agents/AgentDashboard';
 import { CashFlowAgent } from '@/components/agents/CashFlowAgent';
 import ScenarioStressTester from '@/components/ScenarioStressTester';
+import LiquidityGuardian from '@/components/LiquidityGuardian';
 
 const AgenticDashboardPage: React.FC = () => {
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
@@ -45,13 +46,38 @@ const AgenticDashboardPage: React.FC = () => {
         );
       case 'liquidity-sentinel':
         return (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="text-center py-12">
-              <Activity className="w-16 h-16 text-green-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Liquidity Sentinel</h3>
-              <p className="text-gray-600">Real-time liquidity monitoring coming soon...</p>
-            </div>
-          </div>
+          <LiquidityGuardian 
+            mockFinancialData={{
+              totalLiquidity: 48920,
+              safetyBuffer: 15000,
+              bankBalances: [
+                { name: "Bank of A", balance: 28400, change: 1.5, trend: 'up' },
+                { name: "NeoBank B", balance: 15700, change: -0.8, trend: 'down' },
+                { name: "Credit Union", balance: 4820, change: 0, trend: 'stable' }
+              ],
+              todayNetChange: 1200,
+              alerts: [
+                { 
+                  date: "July 3", 
+                  projectedBalance: 12400, 
+                  bufferDifference: -2600, 
+                  reason: "Vendor payment", 
+                  likelihood: 89 
+                },
+                { 
+                  date: "July 5", 
+                  projectedBalance: 14100, 
+                  bufferDifference: -900, 
+                  reason: "Payroll processing day", 
+                  likelihood: 76 
+                }
+              ],
+              predictionConfidence: 97.3,
+              predictionVariance: 2.1,
+              lastUpdated: "Today 08:45",
+              dataSources: ["Xero", "Bank feeds"]
+            }}
+          />
         );
       case 'receivables-autopilot':
         return (

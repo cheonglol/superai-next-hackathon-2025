@@ -1,0 +1,580 @@
+import React, { useState, useEffect } from "react";
+import { 
+  Activity, 
+  TrendingUp, 
+  TrendingDown, 
+  AlertTriangle, 
+  CheckCircle,
+  DollarSign,
+  Calendar,
+  Target,
+  Zap,
+  BarChart3,
+  ArrowRight,
+  RefreshCw,
+  Settings,
+  ExternalLink,
+  Plus
+} from "lucide-react";
+
+interface LiquidityGuardianProps {
+  mockFinancialData?: {
+    totalLiquidity: number;
+    safetyBuffer: number;
+    bankBalances: {
+      name: string;
+      balance: number;
+      change: number;
+      trend: 'up' | 'down' | 'stable';
+    }[];
+    todayNetChange: number;
+    alerts: {
+      date: string;
+      projectedBalance: number;
+      bufferDifference: number;
+      reason: string;
+      likelihood: number;
+    }[];
+    predictionConfidence: number;
+    predictionVariance: number;
+    lastUpdated: string;
+    dataSources: string[];
+  };
+}
+
+const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData }) => {
+  const [isConnected, setIsConnected] = useState(true);
+  const [safetyBuffer, setSafetyBuffer] = useState(15000);
+  const [showBufferSettings, setShowBufferSettings] = useState(false);
+  const [timeHorizon, setTimeHorizon] = useState<7 | 14 | 30>(7);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Default data if not provided
+  const data = mockFinancialData || {
+    totalLiquidity: 48920,
+    safetyBuffer: 15000,
+    bankBalances: [
+      { name: "Bank of A", balance: 28400, change: 1.5, trend: 'up' as const },
+      { name: "NeoBank B", balance: 15700, change: -0.8, trend: 'down' as const },
+      { name: "Credit Union", balance: 4820, change: 0, trend: 'stable' as const }
+    ],
+    todayNetChange: 1200,
+    alerts: [
+      { 
+        date: "July 3", 
+        projectedBalance: 12400, 
+        bufferDifference: -2600, 
+        reason: "Vendor payment", 
+        likelihood: 89 
+      },
+      { 
+        date: "July 5", 
+        projectedBalance: 14100, 
+        bufferDifference: -900, 
+        reason: "Payroll processing day", 
+        likelihood: 76 
+      }
+    ],
+    predictionConfidence: 97.3,
+    predictionVariance: 2.1,
+    lastUpdated: "Today 08:45",
+    dataSources: ["Xero", "Bank feeds"]
+  };
+
+  // Generate 7/14/30 day projection data
+  const generateProjectionData = () => {
+    const projectionData = [];
+    let currentBalance = data.totalLiquidity;
+    
+    for (let i = 0; i < timeHorizon; i++) {
+      // Generate some random fluctuation
+      const dailyChange = Math.random() * 2000 - 1000;
+      
+      // Apply known alerts
+      const alertForDay = data.alerts.find(alert => {
+        const alertDay = parseInt(alert.date.split(" ")[1]);
+        return alertDay === i + 1;
+      });
+      
+      if (alertForDay) {
+        currentBalance = alertForDay.projectedBalance;
+      } else {
+        currentBalance += dailyChange;
+      }
+      
+      projectionData.push({
+        day: i + 1,
+        date: new Date(Date.now() + i * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        balance: currentBalance,
+        isAlert: alertForDay !== undefined,
+        bufferDifference: currentBalance - data.safetyBuffer
+      });
+    }
+    
+    return projectionData;
+  };
+
+  const projectionData = generateProjectionData();
+
+  // Simulate refresh data
+  const refreshData = () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+    }, 1500);
+  };
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  const getTrendIcon = (trend: 'up' | 'down' | 'stable', className: string = "w-4 h-4") => {
+    switch (trend) {
+      case 'up':
+        return <TrendingUp className={`${className} text-green-600`} />;
+      case 'down':
+        return <TrendingDown className={`${className} text-red-600`} />;
+      case 'stable':
+        return <Activity className={`${className} text-blue-600`} />;
+    }
+  };
+
+  const getRiskStatus = () => {
+    const alertsCount = data.alerts.length;
+    if (alertsCount === 0) return { text: "All Clear", color: "text-green-600", bg: "bg-green-100" };
+    if (alertsCount <= 2) return { text: `${alertsCount} Alerts`, color: "text-yellow-600", bg: "bg-yellow-100" };
+    return { text: `${alertsCount} Alerts`, color: "text-red-600", bg: "bg-red-100" };
+  };
+
+  const riskStatus = getRiskStatus();
+
+  return (
+    <div className="space-y-6">
+      {/* Header Bar */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div className="flex items-center">
+            <div className="p-3 bg-blue-100 rounded-lg mr-3">
+              <Activity className="w-6 h-6 text-blue-600" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">Liquidity Guardian</h2>
+              <p className="text-sm text-gray-600">Real-time cash flow monitoring and alerts</p>
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap gap-3">
+            <button 
+              onClick={() => setIsConnected(!isConnected)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center ${
+                isConnected ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+              }`}
+            >
+              {isConnected ? (
+                <>
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Connected
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Connect Accounts
+                </>
+              )}
+            </button>
+            
+            <button 
+              onClick={() => setShowBufferSettings(!showBufferSettings)}
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Safety Buffer
+            </button>
+            
+            <button 
+              onClick={refreshData}
+              disabled={isRefreshing}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center disabled:opacity-50"
+            >
+              <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+              Refresh Data
+            </button>
+          </div>
+        </div>
+        
+        {/* Safety Buffer Settings */}
+        {showBufferSettings && (
+          <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-medium text-gray-900">Safety Buffer Settings</h3>
+              <button 
+                onClick={() => setShowBufferSettings(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <AlertTriangle className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <div className="mb-4">
+              <label className="block text-sm text-gray-700 mb-1">Buffer Amount</label>
+              <div className="flex items-center">
+                <input
+                  type="range"
+                  min="5000"
+                  max="50000"
+                  step="1000"
+                  value={safetyBuffer}
+                  onChange={(e) => setSafetyBuffer(parseInt(e.target.value))}
+                  className="flex-1 mr-4"
+                />
+                <span className="text-lg font-bold text-gray-900">{formatCurrency(safetyBuffer)}</span>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                Adaptive Threshold: Automatically adjusts based on your transaction patterns
+              </p>
+            </div>
+            
+            <div className="flex justify-end">
+              <button 
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+              >
+                Save Settings
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+      
+      {/* Current Liquidity Snapshot */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center mb-2">
+            <DollarSign className="w-5 h-5 text-blue-600 mr-2" />
+            <h3 className="font-semibold text-gray-900">Total Liquidity</h3>
+          </div>
+          <div className="text-3xl font-bold text-gray-900 mb-1">{formatCurrency(data.totalLiquidity)}</div>
+          <div className="flex items-center text-sm text-green-600">
+            <TrendingUp className="w-4 h-4 mr-1" />
+            +3.2% vs yesterday
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center mb-2">
+            <Target className="w-5 h-5 text-blue-600 mr-2" />
+            <h3 className="font-semibold text-gray-900">Safety Buffer</h3>
+          </div>
+          <div className="text-3xl font-bold text-gray-900 mb-1">{formatCurrency(data.safetyBuffer)}</div>
+          <div className="text-sm text-gray-600">
+            Adaptive Threshold
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center mb-2">
+            <AlertTriangle className="w-5 h-5 text-yellow-600 mr-2" />
+            <h3 className="font-semibold text-gray-900">Next 7-Day Risk Status</h3>
+          </div>
+          <div className={`text-3xl font-bold ${riskStatus.color} mb-1 flex items-center`}>
+            <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full ${riskStatus.bg} mr-2`}>
+              {data.alerts.length > 0 ? '⚠️' : '✓'}
+            </span>
+            {riskStatus.text}
+          </div>
+          <div className="text-sm text-gray-600">
+            {data.alerts.length === 0 ? 'No liquidity issues detected' : `${data.alerts.length} potential shortfalls`}
+          </div>
+        </div>
+      </div>
+      
+      {/* Main Content - 3 Column Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Bank Balance Aggregator */}
+        <div className="lg:col-span-3">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-gray-900">Bank Balances</h3>
+              <button className="text-xs text-blue-600 hover:text-blue-800 flex items-center">
+                View All <ArrowRight className="w-3 h-3 ml-1" />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              {data.bankBalances.map((bank, index) => (
+                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div className="font-medium text-gray-900">{bank.name}</div>
+                  <div className="flex items-center">
+                    <div className="text-right mr-3">
+                      <div className="font-bold text-gray-900">{formatCurrency(bank.balance)}</div>
+                      <div className="flex items-center text-xs">
+                        {getTrendIcon(bank.trend, "w-3 h-3")}
+                        <span className={`ml-1 ${
+                          bank.trend === 'up' ? 'text-green-600' : 
+                          bank.trend === 'down' ? 'text-red-600' : 
+                          'text-blue-600'
+                        }`}>
+                          {bank.change === 0 ? 'steady' : `${bank.change > 0 ? '+' : ''}${bank.change}%`}
+                        </span>
+                      </div>
+                    </div>
+                    <button className="p-1 text-gray-400 hover:text-gray-600">
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+              
+              <div className="border-t border-gray-200 pt-4 mt-4">
+                <div className="flex items-center justify-between">
+                  <div className="font-medium text-gray-900">Today's Net</div>
+                  <div className={`font-bold ${data.todayNetChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {data.todayNetChange >= 0 ? '+' : ''}{formatCurrency(data.todayNetChange)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Cash Flow Projection Hub */}
+        <div className="lg:col-span-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-gray-900">Cash Flow Projection</h3>
+              <div className="flex space-x-2">
+                <button 
+                  onClick={() => setTimeHorizon(7)}
+                  className={`px-3 py-1 text-xs font-medium rounded-lg ${
+                    timeHorizon === 7 ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'
+                  }`}
+                >
+                  7-Day
+                </button>
+                <button 
+                  onClick={() => setTimeHorizon(14)}
+                  className={`px-3 py-1 text-xs font-medium rounded-lg ${
+                    timeHorizon === 14 ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'
+                  }`}
+                >
+                  14-Day
+                </button>
+                <button 
+                  onClick={() => setTimeHorizon(30)}
+                  className={`px-3 py-1 text-xs font-medium rounded-lg ${
+                    timeHorizon === 30 ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'
+                  }`}
+                >
+                  30-Day
+                </button>
+              </div>
+            </div>
+            
+            {/* Interactive Chart */}
+            <div className="h-64 relative mb-4">
+              {/* Chart Background */}
+              <div className="absolute inset-0 flex flex-col">
+                <div className="flex-1 border-b border-gray-200"></div>
+                <div className="flex-1 border-b border-gray-200"></div>
+                <div className="flex-1 border-b border-gray-200"></div>
+                <div className="flex-1"></div>
+              </div>
+              
+              {/* Safety Buffer Line */}
+              <div 
+                className="absolute left-0 right-0 border-t-2 border-dashed border-red-400"
+                style={{ top: `${100 - (data.safetyBuffer / 60000) * 100}%` }}
+              >
+                <div className="absolute -top-6 right-0 bg-red-50 px-2 py-1 rounded text-xs text-red-600 font-medium">
+                  Buffer: {formatCurrency(data.safetyBuffer)}
+                </div>
+              </div>
+              
+              {/* Projection Line */}
+              <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stopColor="rgba(59, 130, 246, 0.5)" />
+                    <stop offset="100%" stopColor="rgba(59, 130, 246, 0)" />
+                  </linearGradient>
+                </defs>
+                
+                {/* Area under the line */}
+                <path 
+                  d={`
+                    M0,${100 - (projectionData[0].balance / 60000) * 100}
+                    ${projectionData.map((point, i) => `L${(i / (projectionData.length - 1)) * 100},${100 - (point.balance / 60000) * 100}`).join(' ')}
+                    L100,${100 - (projectionData[projectionData.length - 1].balance / 60000) * 100}
+                    L100,100 L0,100 Z
+                  `}
+                  fill="url(#gradient)"
+                />
+                
+                {/* Line */}
+                <path 
+                  d={`
+                    M0,${100 - (projectionData[0].balance / 60000) * 100}
+                    ${projectionData.map((point, i) => `L${(i / (projectionData.length - 1)) * 100},${100 - (point.balance / 60000) * 100}`).join(' ')}
+                  `}
+                  fill="none"
+                  stroke="#3b82f6"
+                  strokeWidth="2"
+                />
+                
+                {/* Alert Points */}
+                {projectionData.map((point, i) => point.isAlert && (
+                  <circle 
+                    key={i}
+                    cx={`${(i / (projectionData.length - 1)) * 100}%`}
+                    cy={`${100 - (point.balance / 60000) * 100}%`}
+                    r="4"
+                    fill="#ef4444"
+                    stroke="#fff"
+                    strokeWidth="1"
+                  />
+                ))}
+              </svg>
+              
+              {/* Alert Markers */}
+              {projectionData.map((point, i) => point.isAlert && (
+                <div 
+                  key={i}
+                  className="absolute"
+                  style={{ 
+                    left: `${(i / (projectionData.length - 1)) * 100}%`, 
+                    top: `${100 - (point.balance / 60000) * 100}%`,
+                    transform: 'translate(-50%, -100%)'
+                  }}
+                >
+                  <div className="bg-red-100 border border-red-200 rounded px-2 py-1 text-xs text-red-700 font-medium mt-2">
+                    ❗ {point.date}
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* X-Axis Labels */}
+            <div className="flex justify-between text-xs text-gray-500 px-2">
+              {[0, Math.floor(timeHorizon / 4), Math.floor(timeHorizon / 2), Math.floor(3 * timeHorizon / 4), timeHorizon - 1].map((index) => (
+                <div key={index}>
+                  {projectionData[index]?.date}
+                </div>
+              ))}
+            </div>
+            
+            {/* Y-Axis Labels */}
+            <div className="flex justify-between mt-4">
+              <div className="text-xs text-gray-500">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mr-1"></div>
+                  <span>Projected Balance</span>
+                </div>
+              </div>
+              <div className="text-xs text-gray-500">
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-red-500 rounded-full mr-1"></div>
+                  <span>Safety Buffer</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Alert Console */}
+        <div className="lg:col-span-3">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-gray-900 flex items-center">
+                <AlertTriangle className="w-5 h-5 text-yellow-600 mr-2" />
+                Liquidity Alerts ({data.alerts.length})
+              </h3>
+            </div>
+            
+            {data.alerts.length > 0 ? (
+              <div className="space-y-4">
+                {data.alerts.map((alert, index) => (
+                  <div key={index} className="bg-red-50 rounded-lg p-4 border border-red-200">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center">
+                        <span className="text-red-600 mr-2">❗</span>
+                        <span className="font-medium text-red-800">{alert.date}</span>
+                      </div>
+                      <span className="text-xs bg-red-200 text-red-800 px-2 py-1 rounded-full">
+                        {alert.likelihood}% likelihood
+                      </span>
+                    </div>
+                    
+                    <div className="mb-2">
+                      <div className="text-sm text-red-700">
+                        Projected: {formatCurrency(alert.projectedBalance)}
+                      </div>
+                      <div className="text-sm text-red-700">
+                        ({formatCurrency(alert.bufferDifference)} below buffer)
+                      </div>
+                    </div>
+                    
+                    <div className="text-xs text-red-700 mb-3">
+                      <span className="font-medium">High impact:</span> {alert.reason}
+                    </div>
+                    
+                    <button className="w-full py-2 px-3 bg-white text-red-700 border border-red-300 rounded-lg text-sm font-medium hover:bg-red-50 transition-colors flex items-center justify-center">
+                      View Action Plan <ArrowRight className="w-3 h-3 ml-2" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-green-50 rounded-lg p-4 border border-green-200 text-center">
+                <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                <h4 className="font-medium text-green-800 mb-1">All Clear</h4>
+                <p className="text-sm text-green-700">No liquidity issues detected in the next {timeHorizon} days</p>
+              </div>
+            )}
+            
+            {/* Historical Alerts */}
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <button className="text-sm text-blue-600 hover:text-blue-800 flex items-center">
+                View historical alerts <ArrowRight className="w-3 h-3 ml-1" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Prediction Accuracy Module */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+          <div className="flex items-center mb-3 md:mb-0">
+            <Target className="w-5 h-5 text-blue-600 mr-2" />
+            <div>
+              <h3 className="font-semibold text-gray-900">Prediction Confidence: {data.predictionConfidence}%</h3>
+              <p className="text-sm text-gray-600">(±{data.predictionVariance}% avg variance)</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center text-sm text-gray-600">
+            <span className="mr-4">Model updated: {data.lastUpdated}</span>
+            <span>Sources: {data.dataSources.join(', ')}</span>
+          </div>
+        </div>
+        
+        <div className="mt-4 w-full bg-gray-200 rounded-full h-2.5">
+          <div 
+            className={`h-2.5 rounded-full ${
+              data.predictionConfidence > 95 ? 'bg-green-500' : 
+              data.predictionConfidence > 85 ? 'bg-yellow-500' : 
+              'bg-red-500'
+            }`}
+            style={{ width: `${data.predictionConfidence}%` }}
+          ></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LiquidityGuardian;

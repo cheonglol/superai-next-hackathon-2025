@@ -10,6 +10,7 @@ import AuthProtectedRouteLogic from "./logic/AuthProtectedRouteLogic";
 import { BarChart3, Activity, TrendingUp, Shield, Zap, Calculator } from "lucide-react";
 import CashFlowDiagnosticianPage from "@/pages/CashFlow/CashFlowDiagnosticianPage";
 import ScenarioStressTesterPage from "@/pages/CashFlow/ScenarioStressTrackerPage";
+import LiquidityGuardianPage from "@/pages/CashFlow/LiquidityGuardianPage";
 
 const ROOT_PATH = "";
 
@@ -88,10 +89,7 @@ export const routes: ExtendedRouteObject[] = [
       path: `${ROOT_PATH}/liquidity-guardian`,
       element: (
         <MainLayout>
-          <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Liquidity Guardian</h1>
-            <p className="text-gray-600">Daily liquidity monitoring by tracking inflows and outflows, alerting owners of potential shortfalls in real-time.</p>
-          </div>
+          <LiquidityGuardianPage />
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,
