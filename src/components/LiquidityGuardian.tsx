@@ -544,35 +544,6 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
           </div>
         </div>
       </div>
-      
-      {/* Prediction Accuracy Module */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center mb-3 md:mb-0">
-            <Target className="w-5 h-5 text-blue-600 mr-2" />
-            <div>
-              <h3 className="font-semibold text-gray-900">Prediction Confidence: {data.predictionConfidence}%</h3>
-              <p className="text-sm text-gray-600">(±{data.predictionVariance}% avg variance)</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center text-sm text-gray-600">
-            <span className="mr-4">Model updated: {data.lastUpdated}</span>
-            <span>Sources: {data.dataSources.join(', ')}</span>
-          </div>
-        </div>
-        
-        <div className="mt-4 w-full bg-gray-200 rounded-full h-2.5">
-          <div 
-            className={`h-2.5 rounded-full ${
-              data.predictionConfidence > 95 ? 'bg-green-500' : 
-              data.predictionConfidence > 85 ? 'bg-yellow-500' : 
-              'bg-red-500'
-            }`}
-            style={{ width: `${data.predictionConfidence}%` }}
-          ></div>
-        </div>
-      </div>
     </div>
   );
 };
