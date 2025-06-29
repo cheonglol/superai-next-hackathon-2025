@@ -3,6 +3,7 @@ import { Brain, Users, TrendingUp, Shield, Zap, Activity } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
 import { AgentDashboard } from '@/components/agents/AgentDashboard';
 import { CashFlowAgent } from '@/components/agents/CashFlowAgent';
+import ScenarioStressTester from '@/components/ScenarioStressTester';
 
 const AgenticDashboardPage: React.FC = () => {
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
@@ -15,19 +16,32 @@ const AgenticDashboardPage: React.FC = () => {
     setSelectedAgent(null);
   };
 
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
   const renderAgentView = () => {
     switch (selectedAgent) {
       case 'cashflow-diagnostician':
         return <CashFlowAgent />;
       case 'scenario-stress-tester':
         return (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="text-center py-12">
-              <Shield className="w-16 h-16 text-blue-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Scenario Stress Tester</h3>
-              <p className="text-gray-600">Advanced stress testing capabilities coming soon...</p>
-            </div>
-          </div>
+          <ScenarioStressTester 
+            mockFinancialData={{
+              currentCashFlow: 15000,
+              monthlyRevenue: 85000,
+              monthlyExpenses: 70000,
+              currentRent: 8000,
+              currentStaff: 12,
+              averageSalary: 3500,
+            }}
+            formatCurrency={formatCurrency}
+          />
         );
       case 'liquidity-sentinel':
         return (

@@ -9,6 +9,7 @@ import { createBrowserRouter, RouteObject } from "react-router-dom";
 import AuthProtectedRouteLogic from "./logic/AuthProtectedRouteLogic";
 import { BarChart3, Activity, TrendingUp, Shield, Zap } from "lucide-react";
 import CashFlowDiagnosticianPage from "@/pages/CashFlow/CashFlowDiagnosticianPage";
+import ScenarioStressTrackerPage from "@/pages/CashFlow/ScenarioStressTrackerPage";
 
 const ROOT_PATH = "";
 
@@ -72,10 +73,7 @@ export const routes: ExtendedRouteObject[] = [
       path: `${ROOT_PATH}/scenario-stress-tracker`,
       element: (
         <MainLayout>
-          <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Scenario Stress Tracker</h1>
-            <p className="text-gray-600">Scenario simulation that models "what if" scenarios (e.g. late payments, sales drops) and suggests actions like deferring expenses.</p>
-          </div>
+          <ScenarioStressTrackerPage />
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,
