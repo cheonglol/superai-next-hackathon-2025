@@ -175,6 +175,45 @@ const CashFlowDiagnosticianPage: React.FC = () => {
     { name: 'Debt Service Coverage Ratio (DSCR)', value: `${calculatedMetrics.dscr.toFixed(2)}`, category: 'financing', description: 'Ability to service debt (ideal > 1.25x).' }
   ];
 
+  // Leakage points based on actual metrics
+  const leakagePoints = [
+    { 
+      category: 'Receivables', 
+      issue: 'Extended collection period', 
+      impact: `${formatCurrency(financialData.accountsReceivable * 0.1)}/month`, 
+      severity: 'high',
+      details: `Current DSO is ${Math.round(calculatedMetrics.dso)} days, significantly above industry benchmark of 30 days, tying up cash in unpaid invoices`
+    },
+    { 
+      category: 'Inventory', 
+      issue: 'Excess inventory holding', 
+      impact: `${formatCurrency(financialData.inventory * 0.08)}/month`, 
+      severity: 'high',
+      details: `Inventory days of ${Math.round(calculatedMetrics.dio)} days indicates slow-moving inventory, increasing storage costs and tying up capital`
+    },
+    { 
+      category: 'Cash', 
+      issue: 'Zero cash reserves', 
+      impact: `${formatCurrency(financialData.monthlyExpenses * 0.05)}/month`, 
+      severity: 'critical',
+      details: 'No cash reserves creates high liquidity risk and potential emergency borrowing costs'
+    },
+    { 
+      category: 'Payables', 
+      issue: 'Suboptimal payment terms', 
+      impact: `${formatCurrency(financialData.accountsPayable * 0.05)}/month`, 
+      severity: 'medium',
+      details: `Current DPO of ${Math.round(calculatedMetrics.dpo)} days is below optimal level, missing opportunity to extend payment terms with suppliers`
+    },
+    { 
+      category: 'Debt', 
+      issue: 'High interest expense', 
+      impact: `${formatCurrency(financialData.interestPaid * 0.15)}/month`, 
+      severity: 'medium',
+      details: `Interest expense of ${formatCurrency(financialData.interestPaid)} annually represents a significant cash outflow that could be reduced through refinancing`
+    }
+  ];
+
   // Mock cash flow data
   const mockCashFlowData: CashFlowData = {
     id: 'cf-001',
@@ -225,45 +264,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
     dataQuality: 'high',
     confidence: 0.92
   };
-
-  // Leakage points
-  const leakagePoints = [
-    { 
-      category: 'Inventory', 
-      issue: 'Excess inventory holding', 
-      impact: '$12,500/month', 
-      severity: 'high',
-      details: 'Current inventory levels exceed optimal by 25%, resulting in increased storage costs and tied-up capital'
-    },
-    { 
-      category: 'Receivables', 
-      issue: 'Late-paying customers', 
-      impact: '$8,200/month', 
-      severity: 'medium',
-      details: 'Average collection period is 38 days vs. industry benchmark of 30 days'
-    },
-    { 
-      category: 'Pricing', 
-      issue: 'Suboptimal pricing strategy', 
-      impact: '$5,000/month', 
-      severity: 'medium',
-      details: 'Current pricing structure doesn\'t account for seasonal demand fluctuations'
-    },
-    { 
-      category: 'Operations', 
-      issue: 'Inefficient procurement process', 
-      impact: '$3,800/month', 
-      severity: 'low',
-      details: 'Manual procurement processes leading to missed early payment discounts'
-    },
-    { 
-      category: 'Expenses', 
-      issue: 'Unused software subscriptions', 
-      impact: '$1,200/month', 
-      severity: 'low',
-      details: 'Multiple overlapping SaaS tools with low utilization rates'
-    }
-  ];
 
   // One Percent Fix data with exact values from the image
   const onePercentFixData = [
@@ -322,43 +322,43 @@ const CashFlowDiagnosticianPage: React.FC = () => {
   const correctiveActions = [
     { 
       priority: 'high', 
-      action: 'Negotiate 45→30 day terms with Supplier X', 
-      impact: '$4,500/month', 
-      timeframe: '1-2 weeks',
+      action: 'Implement accounts receivable acceleration program', 
+      impact: `${formatCurrency(financialData.accountsReceivable * 0.2)}/quarter`, 
+      timeframe: '1-2 months',
       difficulty: 'medium',
-      details: 'Supplier X has indicated willingness to offer better terms in exchange for volume commitment'
+      details: 'Reduce DSO from 80 to 45 days through automated reminders, early payment incentives, and stricter credit terms'
     },
     { 
       priority: 'high', 
-      action: 'Implement just-in-time inventory for top 20% SKUs', 
-      impact: '$8,200/month', 
-      timeframe: '1 month',
+      action: 'Optimize inventory levels with just-in-time system', 
+      impact: `${formatCurrency(financialData.inventory * 0.25)}/quarter`, 
+      timeframe: '2-3 months',
       difficulty: 'high',
-      details: 'Reduce inventory holding costs by 15% through JIT implementation for fast-moving items'
+      details: 'Reduce inventory days from 120 to 60 days through demand forecasting, vendor-managed inventory, and ABC analysis'
     },
     { 
-      priority: 'medium', 
-      action: 'Automate accounts receivable follow-ups', 
-      impact: '$3,800/month', 
-      timeframe: '2 weeks',
-      difficulty: 'low',
-      details: 'Set up automated email reminders at 7, 3, and 1 days before payment due dates'
-    },
-    { 
-      priority: 'medium', 
-      action: 'Implement early payment discount (2/10 net 30)', 
-      impact: '$2,500/month', 
+      priority: 'critical', 
+      action: 'Establish minimum cash reserve policy', 
+      impact: 'Risk mitigation', 
       timeframe: 'Immediate',
-      difficulty: 'low',
-      details: 'Offer 2% discount for payments received within 10 days to accelerate cash collection'
+      difficulty: 'medium',
+      details: 'Implement policy to maintain cash reserves equal to at least 1 month of operating expenses'
     },
     { 
-      priority: 'low', 
-      action: 'Consolidate SaaS subscriptions', 
-      impact: '$1,200/month', 
-      timeframe: '1 month',
-      difficulty: 'low',
-      details: 'Audit and eliminate redundant software subscriptions across departments'
+      priority: 'medium', 
+      action: 'Renegotiate supplier payment terms', 
+      impact: `${formatCurrency(financialData.accountsPayable * 0.3)}/quarter`, 
+      timeframe: '1-3 months',
+      difficulty: 'medium',
+      details: 'Extend DPO from 45 to 60-90 days through supplier negotiations and payment schedule optimization'
+    },
+    { 
+      priority: 'medium', 
+      action: 'Refinance high-interest debt', 
+      impact: `${formatCurrency(financialData.interestPaid * 0.2)}/year`, 
+      timeframe: '2-4 months',
+      difficulty: 'medium',
+      details: 'Reduce interest expense by refinancing existing debt at lower rates, potentially saving 15-20% annually'
     }
   ];
 
@@ -404,6 +404,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
       case 'high': return 'text-red-600 bg-red-100 border-red-200';
       case 'medium': return 'text-yellow-600 bg-yellow-100 border-yellow-200';
       case 'low': return 'text-blue-600 bg-blue-100 border-blue-200';
+      case 'critical': return 'text-purple-600 bg-purple-100 border-purple-200';
       default: return 'text-gray-600 bg-gray-100 border-gray-200';
     }
   };
@@ -413,6 +414,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
       case 'high': return 'text-red-600 bg-red-100 border-red-200';
       case 'medium': return 'text-yellow-600 bg-yellow-100 border-yellow-200';
       case 'low': return 'text-green-600 bg-green-100 border-green-200';
+      case 'critical': return 'text-purple-600 bg-purple-100 border-purple-200';
       default: return 'text-gray-600 bg-gray-100 border-gray-200';
     }
   };
@@ -682,13 +684,14 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                         <div className={`p-2 rounded-full ${
                           point.severity === 'high' ? 'bg-red-200' : 
                           point.severity === 'medium' ? 'bg-yellow-200' : 
+                          point.severity === 'critical' ? 'bg-purple-200' :
                           'bg-blue-200'
                         }`}>
                           {point.category === 'Inventory' && <BarChart3 className="w-4 h-4" />}
                           {point.category === 'Receivables' && <DollarSign className="w-4 h-4" />}
-                          {point.category === 'Pricing' && <Target className="w-4 h-4" />}
-                          {point.category === 'Operations' && <Activity className="w-4 h-4" />}
-                          {point.category === 'Expenses' && <TrendingDown className="w-4 h-4" />}
+                          {point.category === 'Cash' && <DollarSign className="w-4 h-4" />}
+                          {point.category === 'Payables' && <Activity className="w-4 h-4" />}
+                          {point.category === 'Debt' && <TrendingDown className="w-4 h-4" />}
                         </div>
                         <span className="font-medium ml-2">{point.category}</span>
                       </div>
@@ -696,6 +699,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                           point.severity === 'high' ? 'bg-red-200 text-red-800' : 
                           point.severity === 'medium' ? 'bg-yellow-200 text-yellow-800' : 
+                          point.severity === 'critical' ? 'bg-purple-200 text-purple-800' :
                           'bg-blue-200 text-blue-800'
                         }`}>
                           {point.severity.charAt(0).toUpperCase() + point.severity.slice(1)} Severity
@@ -944,6 +948,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                         <div className={`p-2 rounded-full ${
                           action.priority === 'high' ? 'bg-red-200' : 
                           action.priority === 'medium' ? 'bg-yellow-200' : 
+                          action.priority === 'critical' ? 'bg-purple-200' :
                           'bg-green-200'
                         }`}>
                           {index + 1}
@@ -951,6 +956,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                         <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
                           action.priority === 'high' ? 'bg-red-200 text-red-800' : 
                           action.priority === 'medium' ? 'bg-yellow-200 text-yellow-800' : 
+                          action.priority === 'critical' ? 'bg-purple-200 text-purple-800' :
                           'bg-green-200 text-green-800'
                         }`}>
                           {action.priority.charAt(0).toUpperCase() + action.priority.slice(1)} Priority
