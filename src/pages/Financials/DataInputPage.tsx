@@ -68,7 +68,7 @@ const DataInputPage: React.FC = () => {
     }
 
     // Sum data from all enabled branches
-    const consolidatedPeriods = [];
+    const consolidatedPeriods: import("@/types/financials").PeriodData[] = [];
     const maxPeriods = Math.max(...inputData.branchData.map((b) => b.periods.length));
 
     for (let i = 0; i < maxPeriods; i++) {

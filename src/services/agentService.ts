@@ -471,17 +471,17 @@ class AgentService {
   }
 
   private generatePriorityActions(analysis: any, liquidity: any, receivables: any): string[] {
-    const actions = [];
+    const actions: string[] = [];
     
-    if (liquidity.length > 0) {
+    if (Array.isArray(liquidity) && liquidity.length > 0) {
       actions.push('Address liquidity concerns immediately');
     }
     
-    if (analysis.healthScore < 70) {
+    if (typeof analysis?.healthScore === 'number' && analysis.healthScore < 70) {
       actions.push('Improve cash flow management');
     }
     
-    if (receivables.length > 0) {
+    if (Array.isArray(receivables) && receivables.length > 0) {
       actions.push('Accelerate receivables collection');
     }
     

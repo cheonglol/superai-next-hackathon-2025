@@ -394,10 +394,10 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
                   </td>
                   <td className="py-3 px-4 text-center">
                     <div className="text-xs text-gray-700">
-                      {invoice.remindersSent === 0 ? (
+                      {typeof invoice.remindersSent !== 'number' || invoice.remindersSent === 0 ? (
                         "No reminders sent"
                       ) : (
-                        `${invoice.remindersSent} reminder${invoice.remindersSent > 1 ? 's' : ''} sent${invoice.responseReceived ? ', response received' : ', no response'}`
+                        `${invoice.remindersSent} reminder${invoice.remindersSent && invoice.remindersSent > 1 ? 's' : ''} sent${invoice.responseReceived ? ', response received' : ', no response'}`
                       )}
                     </div>
                   </td>
