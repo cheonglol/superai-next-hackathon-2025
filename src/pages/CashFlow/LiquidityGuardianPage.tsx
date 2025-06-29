@@ -9,9 +9,9 @@ const LiquidityGuardianPage: React.FC = () => {
     totalLiquidity: 48920,
     safetyBuffer: 15000,
     bankBalances: [
-      { name: "Bank of A", balance: 28400, change: 1.5, trend: 'up' as const },
-      { name: "NeoBank B", balance: 15700, change: -0.8, trend: 'down' as const },
-      { name: "Credit Union", balance: 4820, change: 0, trend: 'stable' as const }
+      { name: "DBS", balance: 28400, change: 1.5, trend: 'up' as const },
+      { name: "OCBC", balance: 15700, change: -0.8, trend: 'down' as const },
+      { name: "UOB", balance: 4820, change: 0, trend: 'stable' as const }
     ],
     todayNetChange: 1200,
     alerts: [

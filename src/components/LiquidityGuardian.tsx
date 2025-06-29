@@ -54,9 +54,9 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
     totalLiquidity: 48920,
     safetyBuffer: 15000,
     bankBalances: [
-      { name: "Bank of A", balance: 28400, change: 1.5, trend: 'up' as const },
-      { name: "NeoBank B", balance: 15700, change: -0.8, trend: 'down' as const },
-      { name: "Credit Union", balance: 4820, change: 0, trend: 'stable' as const }
+      { name: "DBS", balance: 28400, change: 1.5, trend: 'up' as const },
+      { name: "OCBC", balance: 15700, change: -0.8, trend: 'down' as const },
+      { name: "UOB", balance: 4820, change: 0, trend: 'stable' as const }
     ],
     todayNetChange: 1200,
     alerts: [
@@ -255,7 +255,7 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center mb-2">
             <DollarSign className="w-5 h-5 text-blue-600 mr-2" />
-            <h3 className="font-semibold text-gray-900">Total Liquidity</h3>
+            <h3 className="font-semibold text-gray-900">Total Cash</h3>
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">{formatCurrency(data.totalLiquidity)}</div>
           <div className="flex items-center text-sm text-green-600">
