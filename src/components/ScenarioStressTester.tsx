@@ -95,6 +95,18 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
 
   // Time horizon state
   const [timeHorizon, setTimeHorizon] = useState(6); // 6 months by default
+  
+  // Safety buffer state - default is 1 month of expenses + 1 month of loan installments
+  const [safetyBufferMonths, setSafetyBufferMonths] = useState(1);
+  
+  // Calculate the default safety buffer (1 month expenses + 1 month loan installments)
+  const calculateDefaultSafetyBuffer = () => {
+    // Estimate monthly loan installment (assuming 10% of expenses are loan payments)
+    const estimatedMonthlyLoanPayment = financialData.monthlyExpenses * 0.1;
+    return financialData.monthlyExpenses + estimatedMonthlyLoanPayment;
+  };
+  
+  const [safetyBuffer, setSafetyBuffer] = useState(calculateDefaultSafetyBuffer());
 
   // Resilience score calculation
   const calculateResilienceScore = (cashFlow: number, reserves: number) => {
@@ -192,7 +204,7 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
         cashFlow: monthCashFlow,
         oneTimeCost,
         runningCash,
-        status: runningCash > 0 ? 'healthy' : 'critical'
+        status: runningCash > safetyBuffer ? 'healthy' : 'critical'
       });
     }
     
@@ -219,6 +231,17 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
     maxSalary: formatCurrency(financialData.averageSalary * 1.5), // 50% more than average salary
     maxEquipment: formatCurrency(financialData.currentCashFlow * 12 * 0.2), // 20% of annual cash flow
     maxMonthlyCommitment: formatCurrency(financialData.currentCashFlow * 0.3), // 30% of monthly cash flow
+  };
+  
+  // Update safety buffer when months change
+  const updateSafetyBufferMonths = (months: number) => {
+    setSafetyBufferMonths(months);
+    
+    // Calculate new safety buffer based on months
+    // Safety buffer = X months of expenses + X months of loan installments
+    const estimatedMonthlyLoanPayment = financialData.monthlyExpenses * 0.1;
+    const newBuffer = (financialData.monthlyExpenses + estimatedMonthlyLoanPayment) * months;
+    setSafetyBuffer(newBuffer);
   };
 
   return (
@@ -291,6 +314,29 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                     {months} Months
                   </button>
                 ))}
+              </div>
+            </div>
+            
+            {/* Safety Buffer Selector */}
+            <div className="mb-6">
+              <h4 className="font-medium text-gray-900 mb-2">Safety Buffer</h4>
+              <p className="text-xs text-gray-600 mb-2">
+                Buffer = {safetyBufferMonths} month{safetyBufferMonths > 1 ? 's' : ''} of expenses + loan payments
+              </p>
+              <div className="flex items-center mb-2">
+                <input
+                  type="range"
+                  min="1"
+                  max="6"
+                  step="1"
+                  value={safetyBufferMonths}
+                  onChange={(e) => updateSafetyBufferMonths(parseInt(e.target.value))}
+                  className="flex-1 mr-3"
+                />
+                <span className="text-sm font-bold text-gray-900">{safetyBufferMonths} month{safetyBufferMonths > 1 ? 's' : ''}</span>
+              </div>
+              <div className="text-sm font-medium text-gray-900">
+                {formatCurrency(safetyBuffer)}
               </div>
             </div>
             
@@ -490,7 +536,7 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                     {projection.map((month, index) => (
                       <div 
                         key={index}
-                        className={`absolute h-full ${month.runningCash >= 0 ? 'bg-green-500' : 'bg-red-500'}`}
+                        className={`absolute h-full ${month.runningCash >= safetyBuffer ? 'bg-green-500' : 'bg-red-500'}`}
                         style={{ 
                           left: `${(index / timeHorizon) * 100}%`, 
                           width: `${(1 / timeHorizon) * 100}%`,
@@ -553,14 +599,14 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
             </div>
             
             {/* Risk Warnings */}
-            {projection.some(month => month.runningCash < 0) && (
+            {projection.some(month => month.runningCash < safetyBuffer) && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
                 <div className="flex items-start">
                   <AlertTriangle className="w-5 h-5 text-red-600 mr-2 mt-0.5" />
                   <div>
                     <h4 className="font-medium text-red-800">Cash Flow Risk Detected</h4>
                     <p className="text-sm text-red-700 mt-1">
-                      Your cash reserves are projected to go negative in month {projection.findIndex(month => month.runningCash < 0) + 1}.
+                      Your cash reserves are projected to fall below your safety buffer of {formatCurrency(safetyBuffer)} in month {projection.findIndex(month => month.runningCash < safetyBuffer) + 1}.
                       Consider reducing expenses or securing additional funding.
                     </p>
                   </div>
