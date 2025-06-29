@@ -3,7 +3,7 @@ import { TrendingUp, BarChart3, DollarSign, Target, AlertTriangle, Clock, Users,
 import { PageHeader } from "@/components/common/PageHeader";
 import ScenarioStressTester from "@/components/ScenarioStressTester";
 
-const ScenarioStressTrackerPage: React.FC = () => {
+const ScenarioStressTesterPage: React.FC = () => {
   // Mock financial data for analysis
   const mockFinancialData = {
     currentMonthlyCashFlow: 15000,
@@ -30,7 +30,7 @@ const ScenarioStressTrackerPage: React.FC = () => {
     <div className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-7xl mx-auto">
         <PageHeader
-          title="Scenario Stress Tracker"
+          title="Scenario Stress Tester"
           description="Model what-if scenarios and project cash flow under different conditions"
           icon={<TrendingUp className="w-8 h-8 text-oxford_blue-600" />}
         />
@@ -84,4 +84,4 @@ const ScenarioStressTrackerPage: React.FC = () => {
   );
 };
 
-export default ScenarioStressTrackerPage;
+export default ScenarioStressTesterPage;

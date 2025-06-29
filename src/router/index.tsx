@@ -9,7 +9,7 @@ import { createBrowserRouter, RouteObject } from "react-router-dom";
 import AuthProtectedRouteLogic from "./logic/AuthProtectedRouteLogic";
 import { BarChart3, Activity, TrendingUp, Shield, Zap } from "lucide-react";
 import CashFlowDiagnosticianPage from "@/pages/CashFlow/CashFlowDiagnosticianPage";
-import ScenarioStressTrackerPage from "@/pages/CashFlow/ScenarioStressTrackerPage";
+import ScenarioStressTesterPage from "@/pages/CashFlow/ScenarioStressTrackerPage";
 
 const ROOT_PATH = "";
 
@@ -66,14 +66,14 @@ export const routes: ExtendedRouteObject[] = [
     },
   },
   {
-    title: "Scenario Stress Tracker",
+    title: "Scenario Stress Tester",
     logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
     category: "AI Agents",
     routeObject: {
-      path: `${ROOT_PATH}/scenario-stress-tracker`,
+      path: `${ROOT_PATH}/scenario-stress-tester`,
       element: (
         <MainLayout>
-          <ScenarioStressTrackerPage />
+          <ScenarioStressTesterPage />
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,
