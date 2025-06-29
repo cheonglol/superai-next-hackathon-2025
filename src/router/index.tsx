@@ -7,9 +7,10 @@ import {
 import { ReactElement } from "react";
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 import AuthProtectedRouteLogic from "./logic/AuthProtectedRouteLogic";
-import { BarChart3, Activity, TrendingUp, Shield, Zap, DollarSign } from "lucide-react";
+import { BarChart3, Activity, TrendingUp, Shield, Calculator } from "lucide-react";
 import CashFlowDiagnosticianPage from "@/pages/CashFlow/CashFlowDiagnosticianPage";
-import ReceivablesManagementPage from "@/pages/Receivables/ReceivablesManagementPage";
+import ScenarioStressTesterPage from "@/pages/CashFlow/ScenarioStressTrackerPage";
+import LiquidityGuardianPage from "@/pages/CashFlow/LiquidityGuardianPage";
 
 const ROOT_PATH = "";
 
@@ -66,21 +67,18 @@ export const routes: ExtendedRouteObject[] = [
     },
   },
   {
-    title: "Scenario Stress Tracker",
+    title: "Scenario Stress Tester",
     logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
     category: "AI Agents",
     routeObject: {
-      path: `${ROOT_PATH}/scenario-stress-tracker`,
+      path: `${ROOT_PATH}/scenario-stress-tester`,
       element: (
         <MainLayout>
-          <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Scenario Stress Tracker</h1>
-            <p className="text-gray-600">Scenario simulation that models "what if" scenarios (e.g. late payments, sales drops) and suggests actions like deferring expenses.</p>
-          </div>
+          <ScenarioStressTesterPage />
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,
-      icon: TrendingUp,
+      icon: Calculator,
     },
   },
   {
@@ -91,29 +89,11 @@ export const routes: ExtendedRouteObject[] = [
       path: `${ROOT_PATH}/liquidity-guardian`,
       element: (
         <MainLayout>
-          <div className="p-6">
-            <h1 className="text-2xl font-bold mb-4">Liquidity Guardian</h1>
-            <p className="text-gray-600">Daily liquidity monitoring by tracking inflows and outflows, alerting owners of potential shortfalls in real-time.</p>
-          </div>
+          <LiquidityGuardianPage />
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,
       icon: Shield,
-    },
-  },
-  {
-    title: "Receivables Autopilot",
-    logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
-    category: "AI Agents",
-    routeObject: {
-      path: `${ROOT_PATH}/receivables-autopilot`,
-      element: (
-        <MainLayout>
-          <ReceivablesManagementPage />
-        </MainLayout>
-      ),
-      errorElement: <ErrorBoundaryPage />,
-      icon: Zap,
     },
   },
 ];
