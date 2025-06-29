@@ -29,7 +29,7 @@ interface SensitivityAnalysisProps {
 }
 
 const SensitivityAnalysis: React.FC<SensitivityAnalysisProps> = ({ mockFinancialData, formatCurrency }) => {
-  const [sortBy, setSortBy] = useState<"cashFlow" | "profit">("cashFlow");
+  const [sortBy, setSortBy] = useState<"cashFlow" | "profit" | "timeframe" | "difficulty">("cashFlow");
 
   // Provide default values if mockFinancialData is undefined
   const financialData = mockFinancialData || {
@@ -118,9 +118,30 @@ const SensitivityAnalysis: React.FC<SensitivityAnalysisProps> = ({ mockFinancial
 
     if (sortBy === "cashFlow") {
       return opportunities.sort((a, b) => b.cashFlowImpact - a.cashFlowImpact);
-    } else {
+    } else if (sortBy === "profit") {
       return opportunities.sort((a, b) => b.profitImpact - a.profitImpact);
+    } else if (sortBy === "timeframe") {
+      // Sort by timeframe (Immediate first, then by months)
+      return opportunities.sort((a, b) => {
+        if (a.timeframe === "Immediate" && b.timeframe !== "Immediate") return -1;
+        if (a.timeframe !== "Immediate" && b.timeframe === "Immediate") return 1;
+        
+        // Extract numbers from timeframe strings
+        const aMonths = a.timeframe.match(/\d+/g);
+        const bMonths = b.timeframe.match(/\d+/g);
+        
+        if (!aMonths || !bMonths) return 0;
+        return parseInt(aMonths[0]) - parseInt(bMonths[0]);
+      });
+    } else if (sortBy === "difficulty") {
+      // Sort by difficulty (Easy first, then Medium, then Hard)
+      const difficultyOrder = { "Easy": 1, "Medium": 2, "Hard": 3 };
+      return opportunities.sort((a, b) => {
+        return difficultyOrder[a.difficulty as keyof typeof difficultyOrder] - difficultyOrder[b.difficulty as keyof typeof difficultyOrder];
+      });
     }
+    
+    return opportunities;
   };
 
   const sortedOpportunities = getOpportunities();
@@ -270,20 +291,51 @@ const SensitivityAnalysis: React.FC<SensitivityAnalysisProps> = ({ mockFinancial
         </div>
       </div>
 
-      {/* Implementation Priority Matrix */}
+      {/* Corrective Actions */}
       <div className="bg-white rounded-lg p-6 border border-gray-200">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
             <Target className="w-5 h-5 text-purple-600 mr-2" />
             <h3 className="text-lg font-semibold text-gray-900">Corrective Actions</h3>
           </div>
-          <button 
-            onClick={() => setSortBy(sortBy === "cashFlow" ? "profit" : "cashFlow")}
-            className="flex items-center px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm transition-colors"
-          >
-            <ArrowUpDown className="w-4 h-4 mr-1" />
-            Sort by {sortBy === "cashFlow" ? "Profit Impact" : "Cash Flow Impact"}
-          </button>
+          <div className="flex items-center">
+            <button 
+              onClick={() => setSortBy("cashFlow")}
+              className={`flex items-center px-3 py-1 rounded-lg text-sm transition-colors mr-2 ${
+                sortBy === "cashFlow" ? "bg-blue-600 text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+              }`}
+            >
+              <ArrowUpDown className="w-4 h-4 mr-1" />
+              Cash Flow
+            </button>
+            <button 
+              onClick={() => setSortBy("profit")}
+              className={`flex items-center px-3 py-1 rounded-lg text-sm transition-colors mr-2 ${
+                sortBy === "profit" ? "bg-green-600 text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+              }`}
+            >
+              <ArrowUpDown className="w-4 h-4 mr-1" />
+              Profit
+            </button>
+            <button 
+              onClick={() => setSortBy("timeframe")}
+              className={`flex items-center px-3 py-1 rounded-lg text-sm transition-colors mr-2 ${
+                sortBy === "timeframe" ? "bg-purple-600 text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+              }`}
+            >
+              <ArrowUpDown className="w-4 h-4 mr-1" />
+              Timeframe
+            </button>
+            <button 
+              onClick={() => setSortBy("difficulty")}
+              className={`flex items-center px-3 py-1 rounded-lg text-sm transition-colors ${
+                sortBy === "difficulty" ? "bg-orange-600 text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
+              }`}
+            >
+              <ArrowUpDown className="w-4 h-4 mr-1" />
+              Difficulty
+            </button>
+          </div>
         </div>
         
         <div className="overflow-x-auto">
