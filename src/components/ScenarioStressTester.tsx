@@ -647,22 +647,6 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               </div>
             </div>
             
-            {/* Plan Effectiveness Meter */}
-            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 mb-6">
-              <h4 className="font-medium text-gray-900 mb-2">Plan Effectiveness</h4>
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-sm text-gray-600">Adopted Plans</span>
-                <span className="text-sm font-medium text-gray-900">$2,000 saved</span>
-              </div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">Projected Resilience</span>
-                <span className="text-sm font-medium text-green-600">68/100</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div className="bg-green-500 h-2.5 rounded-full" style={{ width: '68%' }}></div>
-              </div>
-            </div>
-            
             {/* Export Actions */}
             <div className="space-y-3">
               <button className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center">
@@ -674,37 +658,6 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                 <Target className="w-4 h-4 mr-2" />
                 Share with Advisor
               </button>
-            </div>
-          </div>
-          
-          {/* Historical Comparison */}
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <TrendingUp className="w-5 h-5 text-blue-600 mr-2" />
-              Similar Businesses
-            </h3>
-            
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Average Resilience</span>
-                <span className="text-sm font-medium text-gray-900">62/100</span>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Survival Rate</span>
-                <span className="text-sm font-medium text-gray-900">87%</span>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Recovery Time</span>
-                <span className="text-sm font-medium text-gray-900">4.2 months</span>
-              </div>
-            </div>
-            
-            <div className="mt-4 pt-4 border-t border-gray-200">
-              <div className="text-xs text-gray-500">
-                Based on data from 120+ similar businesses that faced comparable scenarios
-              </div>
             </div>
           </div>
         </div>
