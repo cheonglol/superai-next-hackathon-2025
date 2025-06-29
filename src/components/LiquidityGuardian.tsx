@@ -48,6 +48,20 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
   const [timeHorizon, setTimeHorizon] = useState<7 | 14 | 30>(7);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // Monthly expenses and loan installment
+  const monthlyExpenses = 70000; // Estimated monthly expenses
+  const monthlyLoanInstallment = 7000; // Estimated monthly loan installment (10% of expenses)
+  
+  // Safety buffer state - default is 1 month of expenses + 1 month of loan installments
+  const [safetyBufferMonths, setSafetyBufferMonths] = useState(1);
+  
+  // Calculate safety buffer based on months
+  const calculateSafetyBuffer = (months: number) => {
+    return (monthlyExpenses + monthlyLoanInstallment) * months;
+  };
+  
+  const [safetyBuffer, setSafetyBuffer] = useState(calculateSafetyBuffer(1));
+
   // Default data if not provided
   const data = mockFinancialData || {
     totalLiquidity: 48920,
@@ -79,20 +93,6 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
     lastUpdated: "Today 08:45",
     dataSources: ["Xero", "Bank feeds"]
   };
-
-  // Monthly expenses and loan installment
-  const monthlyExpenses = 70000; // Estimated monthly expenses
-  const monthlyLoanInstallment = 7000; // Estimated monthly loan installment (10% of expenses)
-  
-  // Safety buffer state - default is 1 month of expenses + 1 month of loan installments
-  const [safetyBufferMonths, setSafetyBufferMonths] = useState(1);
-  
-  // Calculate safety buffer based on months
-  const calculateSafetyBuffer = (months: number) => {
-    return (monthlyExpenses + monthlyLoanInstallment) * months;
-  };
-  
-  const [safetyBuffer, setSafetyBuffer] = useState(calculateSafetyBuffer(1));
 
   // Generate 7/14/30 day projection data
   const generateProjectionData = () => {
