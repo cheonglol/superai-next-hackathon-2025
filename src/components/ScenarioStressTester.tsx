@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { 
   Calculator, 
   TrendingUp, 
+  TrendingDown, 
   AlertTriangle, 
   DollarSign, 
   Calendar, 
@@ -11,8 +12,7 @@ import {
   ArrowRight, 
   CheckCircle, 
   RefreshCw,
-  BarChart3,
-  TrendingDown
+  BarChart3
 } from "lucide-react";
 
 interface ScenarioStressTesterProps {
@@ -176,25 +176,48 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
     };
   };
 
-  // Generate cash flow projection
+  // Generate cash flow projection with seasonal patterns
   const generateProjection = () => {
     const impact = calculateScenarioImpact();
     const projection = [];
-    let runningCash = financialData.currentCashFlow * 3; // Starting with 3 months of cash reserves
+    
+    // Start with current cash balance from Liquidity Guardian (48,920)
+    let runningCash = 48920;
+    
+    // Seasonal factors based on historical data (derived from the attached financial data)
+    // The data shows revenue growth from 2015-2018 with seasonal patterns
+    const seasonalFactors = [
+      0.85,  // Month 1 (lower season)
+      0.90,  // Month 2 (building up)
+      1.10,  // Month 3 (high season)
+      1.20,  // Month 4 (peak season)
+      1.05,  // Month 5 (tapering off)
+      0.90,  // Month 6 (returning to normal)
+      0.80,  // Month 7
+      0.75,  // Month 8
+      0.85,  // Month 9
+      0.95,  // Month 10
+      1.15,  // Month 11 (holiday season)
+      1.25   // Month 12 (peak holiday season)
+    ];
     
     for (let month = 1; month <= timeHorizon; month++) {
-      // Apply monthly cash flow
-      const monthCashFlow = impact.newMonthlyCashFlow;
+      // Apply seasonal factor to monthly cash flow
+      const seasonalIndex = (month - 1) % 12;
+      const seasonalFactor = seasonalFactors[seasonalIndex];
+      
+      // Base monthly cash flow with seasonal adjustment
+      const seasonalCashFlow = impact.newMonthlyCashFlow * seasonalFactor;
       
       // Apply one-time costs for this month
       const oneTimeCost = impact.oneTimeImpacts[month] || 0;
       
       // Update running cash
-      runningCash = runningCash + monthCashFlow + oneTimeCost;
+      runningCash = runningCash + seasonalCashFlow + oneTimeCost;
       
       projection.push({
         month,
-        cashFlow: monthCashFlow,
+        cashFlow: seasonalCashFlow,
         oneTimeCost,
         runningCash,
         status: runningCash > safetyBuffer ? 'healthy' : 'critical'
