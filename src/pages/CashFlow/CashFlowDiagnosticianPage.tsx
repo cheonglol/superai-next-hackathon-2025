@@ -89,7 +89,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
 
   // Cash flow metrics
   const cashFlowMetrics = [
-    // Operating Cash Flow Metrics
+    // Operating Cash Flow
     { name: 'Net Operating Cash Flow', value: '$100,000', category: 'operating' },
     { name: 'Operating Cash Flow Margin (%)', value: '15.5%', category: 'operating' },
     { name: 'Cash Conversion Cycle (CCC)', value: '32 days', category: 'operating' },
@@ -101,12 +101,12 @@ const CashFlowDiagnosticianPage: React.FC = () => {
     { name: 'Days Payable Outstanding (DPO)', value: '28 days', category: 'working_capital' },
     { name: 'Working Capital Ratio', value: '1.75', category: 'working_capital' },
     
-    // Liquidity & Buffer Metrics
+    // Liquidity & Buffer
     { name: 'Cash Reserve Ratio', value: '3.2 months', category: 'liquidity' },
     { name: 'Burn Rate', value: '$2,500/day', category: 'liquidity' },
     { name: 'Runway', value: '76 days', category: 'liquidity' },
     
-    // Revenue & Cost Impact Metrics
+    // Revenue & Cost Impact
     { name: 'Gross Profit to Cash Conversion', value: '0.85', category: 'impact' },
     { name: 'Profit vs Cash Flow Gap', value: '$12,500', category: 'impact' },
     { name: 'Cost of Sales to Cash Outflow', value: '0.92', category: 'impact' },
@@ -470,11 +470,11 @@ const CashFlowDiagnosticianPage: React.FC = () => {
               
               {/* Group metrics by category */}
               <div className="space-y-6">
-                {/* Operating Cash Flow Metrics */}
+                {/* Operating Cash Flow */}
                 <div>
                   <h4 className="text-md font-semibold text-blue-800 mb-4 flex items-center">
                     <DollarSign className="w-4 h-4 mr-2" />
-                    Operating Cash Flow Metrics
+                    Operating Cash Flow
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {cashFlowMetrics.filter(metric => metric.category === 'operating').map((metric, index) => (
@@ -506,11 +506,11 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                   </div>
                 </div>
                 
-                {/* Liquidity & Buffer Metrics */}
+                {/* Liquidity & Buffer */}
                 <div>
                   <h4 className="text-md font-semibold text-purple-800 mb-4 flex items-center">
                     <DollarSign className="w-4 h-4 mr-2" />
-                    Liquidity & Buffer Metrics
+                    Liquidity & Buffer
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {cashFlowMetrics.filter(metric => metric.category === 'liquidity').map((metric, index) => (
@@ -524,11 +524,11 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                   </div>
                 </div>
                 
-                {/* Revenue & Cost Impact Metrics */}
+                {/* Revenue & Cost Impact */}
                 <div>
                   <h4 className="text-md font-semibold text-amber-800 mb-4 flex items-center">
                     <TrendingUp className="w-4 h-4 mr-2" />
-                    Revenue & Cost Impact Metrics
+                    Revenue & Cost Impact
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {cashFlowMetrics.filter(metric => metric.category === 'impact').map((metric, index) => (
@@ -868,51 +868,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     </div>
                   </div>
                 ))}
-              </div>
-              
-              {/* Corrective Actions Section - Moved from Scenario Stress Tester */}
-              <div className="mt-8">
-                <div className="flex items-center mb-6">
-                  <Zap className="w-5 h-5 text-purple-600 mr-2" />
-                  <h3 className="text-lg font-semibold text-gray-900">Prioritized Corrective Actions</h3>
-                </div>
-                
-                <div className="space-y-4">
-                  {correctiveActions.map((action, index) => (
-                    <div key={index} className={`border rounded-lg p-4 ${getPriorityColor(action.priority)}`}>
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
-                        <div className="flex items-center mb-2 md:mb-0">
-                          <div className={`p-2 rounded-full ${
-                            action.priority === 'high' ? 'bg-red-200' : 
-                            action.priority === 'medium' ? 'bg-yellow-200' : 
-                            'bg-green-200'
-                          }`}>
-                            {index + 1}
-                          </div>
-                          <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
-                            action.priority === 'high' ? 'bg-red-200 text-red-800' : 
-                            action.priority === 'medium' ? 'bg-yellow-200 text-yellow-800' : 
-                            'bg-green-200 text-green-800'
-                          }`}>
-                            {action.priority.charAt(0).toUpperCase() + action.priority.slice(1)} Priority
-                          </span>
-                        </div>
-                        <div className="flex items-center">
-                          <span className="text-sm mr-3">Impact: <strong>{action.impact}</strong></span>
-                          <span className="text-sm">Timeframe: <strong>{action.timeframe}</strong></span>
-                        </div>
-                      </div>
-                      <h4 className="font-semibold text-gray-900 mb-2">{action.action}</h4>
-                      <p className="text-sm mb-2">{action.details}</p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs">Difficulty: <span className={getDifficultyColor(action.difficulty)}>{action.difficulty.charAt(0).toUpperCase() + action.difficulty.slice(1)}</span></span>
-                        <button className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors flex items-center">
-                          Implement <ArrowRight className="w-3 h-3 ml-1" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
           )}
