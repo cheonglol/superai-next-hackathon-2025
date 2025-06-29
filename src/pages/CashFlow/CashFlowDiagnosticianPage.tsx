@@ -176,22 +176,22 @@ const CashFlowDiagnosticianPage: React.FC = () => {
       details: 'Reduce overhead expenses through operational efficiency'
     },
     {
-      category: 'Reduction in Accounts Receivable Days',
-      value: '1 days',
+      category: 'Accounts Receivable Days Reduction',
+      value: '1 day',
       cashFlowImpact: 18115,
       profitImpact: 0,
       details: 'Improve collection processes to receive payments faster'
     },
     {
-      category: 'Reduction in Inventory Days',
-      value: '1 days',
+      category: 'Inventory Days Reduction',
+      value: '1 day',
       cashFlowImpact: 12862,
       profitImpact: 0,
       details: 'Optimize inventory management to reduce holding costs'
     },
     {
-      category: 'Increase in Accounts Payable Days',
-      value: '1 days',
+      category: 'Accounts Payable Days Increase',
+      value: '1 day',
       cashFlowImpact: 12862,
       profitImpact: 0,
       details: 'Extend payment terms with suppliers without affecting relationships'
@@ -649,10 +649,10 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     </tr>
                     <tr>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        Reduction in Accounts Receivable Days
+                        Accounts Receivable Days Reduction
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
-                        1 days
+                        1 day
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
                         18,115
@@ -663,10 +663,10 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     </tr>
                     <tr className="bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        Reduction in Inventory Days
+                        Inventory Days Reduction
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
-                        1 days
+                        1 day
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
                         12,862
@@ -677,10 +677,10 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     </tr>
                     <tr>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        Increase in Accounts Payable Days
+                        Accounts Payable Days Increase
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
-                        1 days
+                        1 day
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
                         12,862
