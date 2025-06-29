@@ -25,16 +25,141 @@ const CashFlowDiagnosticianPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'metrics' | 'leakage' | 'onepercent' | 'actions'>('metrics');
   const [fyEndingDate, setFyEndingDate] = useState<string>('2024-12-31');
 
-  // Financial data for calculations
+  // Financial data from the provided image
   const financialData = {
-    revenue: 6612000, // Annual revenue
-    cogs: 4694500, // Annual cost of goods sold
-    overheads: 1216200, // Annual overhead expenses
-    grossMargin: 0.29, // Gross margin percentage (29%)
-    accountsReceivable: 1811500, // Accounts receivable balance
-    inventory: 1286200, // Inventory balance
-    accountsPayable: 1286200, // Accounts payable balance
+    // Latest year data (2018)
+    revenue: 6612000,
+    grossMargin: 1917500,
+    operatingProfit: 701300,
+    netProfit: 410000,
+    depreciation: 100000,
+    interestPaid: 176000,
+    totalAssets: 5014000,
+    cash: 0,
+    accountsReceivable: 1443000,
+    inventory: 1550000,
+    totalCurrentAssets: 3064000,
+    fixedAssets: 1800000,
+    totalLiabilities: 3704000,
+    accountsPayable: 590000,
+    totalCurrentLiabilities: 2454000,
+    bankLoansCurrent: 1643000,
+    bankLoansNonCurrent: 1200000,
+    
+    // Calculated values
+    cogs: 6612000 - 1917500, // Revenue - Gross Margin = 4,694,500
+    operatingExpenses: 1917500 - 701300, // Gross Margin - Operating Profit = 1,216,200
+    
+    // For cash flow calculation
+    distributions: 150000, // Dividends from 2018
   };
+
+  // Calculate metrics based on the financial data
+  const calculateMetrics = () => {
+    // Operating Cash Flow (estimated since we don't have direct cash flow statement)
+    const estimatedOperatingCashFlow = financialData.operatingProfit + financialData.depreciation - financialData.interestPaid;
+    
+    // Days calculations
+    const dso = (financialData.accountsReceivable / financialData.revenue) * 365; // Days Sales Outstanding
+    const dio = (financialData.inventory / financialData.cogs) * 365; // Days Inventory Outstanding
+    const dpo = (financialData.accountsPayable / financialData.cogs) * 365; // Days Payable Outstanding
+    
+    // Cash Conversion Cycle
+    const ccc = dso + dio - dpo;
+    
+    // Working Capital
+    const workingCapital = financialData.totalCurrentAssets - financialData.totalCurrentLiabilities;
+    
+    // Monthly expenses (estimated)
+    const monthlyExpenses = financialData.cogs / 12 + financialData.operatingExpenses / 12;
+    
+    // Daily cash flow
+    const dailyCashFlow = estimatedOperatingCashFlow / 365;
+    
+    // Burn rate (if negative cash flow)
+    const burnRate = dailyCashFlow < 0 ? Math.abs(dailyCashFlow) : 0;
+    
+    // Cash reserve ratio (months of expenses covered by cash)
+    // Since cash is 0, this would be 0, but we'll use a small value to avoid division by zero
+    const effectiveCash = financialData.cash > 0 ? financialData.cash : 10000; // Assuming some minimal cash
+    const cashReserveRatio = effectiveCash / monthlyExpenses;
+    
+    // Runway (days of cash left at current burn rate)
+    const runway = burnRate > 0 ? effectiveCash / burnRate : 0;
+    
+    // Gross profit to cash conversion
+    const grossProfitToCashConversion = estimatedOperatingCashFlow / financialData.grossMargin;
+    
+    // Profit vs Cash Flow Gap
+    const profitCashFlowGap = financialData.netProfit - estimatedOperatingCashFlow;
+    
+    // Cost of Sales to Cash Outflow (estimated)
+    const costOfSalesToCashOutflow = financialData.cogs / (financialData.cogs + financialData.operatingExpenses - financialData.depreciation);
+    
+    // Debt Service Coverage Ratio
+    const totalDebtService = financialData.interestPaid + (financialData.bankLoansCurrent * 0.1); // Assuming 10% principal repayment
+    const dscr = financialData.operatingProfit / totalDebtService;
+    
+    // Operating Cash Flow Margin
+    const operatingCashFlowMargin = (estimatedOperatingCashFlow / financialData.revenue) * 100;
+    
+    return {
+      // Operating Cash Flow
+      netOperatingCashFlow: estimatedOperatingCashFlow,
+      operatingCashFlowMargin: operatingCashFlowMargin,
+      cashConversionCycle: ccc,
+      cashFlowPerDay: dailyCashFlow,
+      
+      // Working Capital Efficiency
+      dso: dso,
+      dio: dio,
+      dpo: dpo,
+      workingCapitalRatio: financialData.totalCurrentAssets / financialData.totalCurrentLiabilities,
+      
+      // Liquidity & Buffer
+      cashReserveRatio: cashReserveRatio,
+      burnRate: burnRate,
+      runway: runway,
+      
+      // Revenue & Cost Impact
+      grossProfitToCashConversion: grossProfitToCashConversion,
+      profitCashFlowGap: profitCashFlowGap,
+      costOfSalesToCashOutflow: costOfSalesToCashOutflow,
+      
+      // Financing & Debt-Related
+      dscr: dscr
+    };
+  };
+
+  const calculatedMetrics = calculateMetrics();
+
+  // Cash flow metrics with real calculated values
+  const cashFlowMetrics = [
+    // Operating Cash Flow
+    { name: 'Net Operating Cash Flow', value: `${formatCurrency(calculatedMetrics.netOperatingCashFlow)}`, category: 'operating', description: 'Cash generated from business operations (from the Cash Flow Statement).' },
+    { name: 'Operating Cash Flow Margin (%)', value: `${calculatedMetrics.operatingCashFlowMargin.toFixed(1)}%`, category: 'operating', description: 'Operating Cash Flow ÷ Revenue Indicates what % of sales turns into cash.' },
+    { name: 'Cash Conversion Cycle (CCC)', value: `${Math.round(calculatedMetrics.cashConversionCycle)} days`, category: 'operating', description: 'DSO + DIO - DPO Measures how long cash is tied up in operations.' },
+    { name: 'Cash Flow per Day', value: `${formatCurrency(calculatedMetrics.cashFlowPerDay)}/day`, category: 'operating', description: 'Operating Cash Flow ÷ 365 Helps assess daily cash burn or gain.' },
+    
+    // Working Capital Efficiency
+    { name: 'Days Sales Outstanding (DSO)', value: `${Math.round(calculatedMetrics.dso)} days`, category: 'working_capital', description: '(Accounts Receivable ÷ Revenue) × 365 Tracks how fast customers pay you.' },
+    { name: 'Days Inventory Outstanding (DIO)', value: `${Math.round(calculatedMetrics.dio)} days`, category: 'working_capital', description: '(Inventory ÷ COGS) × 365 Shows how long stock is sitting before it\'s sold.' },
+    { name: 'Days Payable Outstanding (DPO)', value: `${Math.round(calculatedMetrics.dpo)} days`, category: 'working_capital', description: '(Accounts Payable ÷ COGS) × 365 Indicates how long you\'re taking to pay suppliers.' },
+    { name: 'Working Capital Ratio', value: `${calculatedMetrics.workingCapitalRatio.toFixed(2)}`, category: 'working_capital', description: 'Current Assets ÷ Current Liabilities Measures short-term liquidity (1.2–2.0 is generally healthy).' },
+    
+    // Liquidity & Buffer
+    { name: 'Cash Reserve Ratio', value: `${calculatedMetrics.cashReserveRatio.toFixed(1)} months`, category: 'liquidity', description: 'Cash on Hand ÷ Monthly Operating Expenses Shows how many months you can survive without revenue.' },
+    { name: 'Burn Rate', value: `${formatCurrency(calculatedMetrics.burnRate)}/day`, category: 'liquidity', description: 'Monthly Operating Cash Outflows Important for early-stage or struggling businesses.' },
+    { name: 'Runway', value: `${Math.round(calculatedMetrics.runway)} days`, category: 'liquidity', description: 'Cash on Hand ÷ Burn Rate Tells how long before the business runs out of money.' },
+    
+    // Revenue & Cost Impact
+    { name: 'Gross Profit to Cash Conversion', value: `${calculatedMetrics.grossProfitToCashConversion.toFixed(2)}`, category: 'impact', description: 'Operating Cash Flow ÷ Gross Profit Assesses how well gross profit turns into real cash.' },
+    { name: 'Profit vs Cash Flow Gap', value: `${formatCurrency(calculatedMetrics.profitCashFlowGap)}`, category: 'impact', description: 'Net Profit – Operating Cash Flow Identifies differences due to timing, accruals, etc.' },
+    { name: 'Cost of Sales to Cash Outflow', value: `${calculatedMetrics.costOfSalesToCashOutflow.toFixed(2)}`, category: 'impact', description: 'COGS ÷ Cash Paid to Suppliers Tracks overpayment or mismatch between cost and cash.' },
+    
+    // Financing & Debt-Related
+    { name: 'Debt Service Coverage Ratio (DSCR)', value: `${calculatedMetrics.dscr.toFixed(2)}`, category: 'financing', description: 'Net Operating Income ÷ Debt Repayments Shows ability to service debt (ideal > 1.25x).' }
+  ];
 
   // Mock cash flow data
   const mockCashFlowData: CashFlowData = {
@@ -86,34 +211,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
     dataQuality: 'high',
     confidence: 0.92
   };
-
-  // Cash flow metrics
-  const cashFlowMetrics = [
-    // Operating Cash Flow
-    { name: 'Net Operating Cash Flow', value: '$100,000', category: 'operating', description: 'Cash generated from business operations (from the Cash Flow Statement).' },
-    { name: 'Operating Cash Flow Margin (%)', value: '15.5%', category: 'operating', description: 'Operating Cash Flow ÷ Revenue Indicates what % of sales turns into cash.' },
-    { name: 'Cash Conversion Cycle (CCC)', value: '32 days', category: 'operating', description: 'DSO + DIO - DPO Measures how long cash is tied up in operations.' },
-    { name: 'Cash Flow per Day', value: '$2,500/day', category: 'operating', description: 'Operating Cash Flow ÷ 365 Helps assess daily cash burn or gain.' },
-    
-    // Working Capital Efficiency
-    { name: 'Days Sales Outstanding (DSO)', value: '38 days', category: 'working_capital', description: '(Accounts Receivable ÷ Revenue) × 365 Tracks how fast customers pay you.' },
-    { name: 'Days Inventory Outstanding (DIO)', value: '85 days', category: 'working_capital', description: '(Inventory ÷ COGS) × 365 Shows how long stock is sitting before it\'s sold.' },
-    { name: 'Days Payable Outstanding (DPO)', value: '28 days', category: 'working_capital', description: '(Accounts Payable ÷ COGS) × 365 Indicates how long you\'re taking to pay suppliers.' },
-    { name: 'Working Capital Ratio', value: '1.75', category: 'working_capital', description: 'Current Assets ÷ Current Liabilities Measures short-term liquidity (1.2–2.0 is generally healthy).' },
-    
-    // Liquidity & Buffer
-    { name: 'Cash Reserve Ratio', value: '3.2 months', category: 'liquidity', description: 'Cash on Hand ÷ Monthly Operating Expenses Shows how many months you can survive without revenue.' },
-    { name: 'Burn Rate', value: '$2,500/day', category: 'liquidity', description: 'Monthly Operating Cash Outflows Important for early-stage or struggling businesses.' },
-    { name: 'Runway', value: '76 days', category: 'liquidity', description: 'Cash on Hand ÷ Burn Rate Tells how long before the business runs out of money.' },
-    
-    // Revenue & Cost Impact
-    { name: 'Gross Profit to Cash Conversion', value: '0.85', category: 'impact', description: 'Operating Cash Flow ÷ Gross Profit Assesses how well gross profit turns into real cash.' },
-    { name: 'Profit vs Cash Flow Gap', value: '$12,500', category: 'impact', description: 'Net Profit – Operating Cash Flow Identifies differences due to timing, accruals, etc.' },
-    { name: 'Cost of Sales to Cash Outflow', value: '0.92', category: 'impact', description: 'COGS ÷ Cash Paid to Suppliers Tracks overpayment or mismatch between cost and cash.' },
-    
-    // Financing & Debt-Related
-    { name: 'Debt Service Coverage Ratio (DSCR)', value: '1.35', category: 'financing', description: 'Net Operating Income ÷ Debt Repayments Shows ability to service debt (ideal > 1.25x).' }
-  ];
 
   // Leakage points
   const leakagePoints = [
