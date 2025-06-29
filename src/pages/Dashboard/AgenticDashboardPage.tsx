@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Brain, Users, TrendingUp, Shield, Zap, Activity, Calculator } from 'lucide-react';
+import { Brain, Users, TrendingUp, Shield, Activity, Calculator } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
 import { AgentDashboard } from '@/components/agents/AgentDashboard';
 import { CashFlowAgent } from '@/components/agents/CashFlowAgent';
 import ScenarioStressTester from '@/components/ScenarioStressTester';
 import LiquidityGuardian from '@/components/LiquidityGuardian';
-import ReceivablesAutopilot from '@/components/ReceivablesAutopilot';
 
 const AgenticDashboardPage: React.FC = () => {
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
@@ -80,69 +79,6 @@ const AgenticDashboardPage: React.FC = () => {
             }}
           />
         );
-      case 'receivables-autopilot':
-        return (
-          <ReceivablesAutopilot 
-            mockFinancialData={{
-              totalOutstanding: 42560,
-              overdueAmount: 18200,
-              avgDaysLate: 12,
-              collectionsRisk: 8,
-              invoices: [
-                {
-                  id: "INV-001",
-                  customer: "Ray's Hardware",
-                  amount: 2500,
-                  dueDate: "5 days ago",
-                  status: 'overdue',
-                  daysLate: 5,
-                  payProbability: 92
-                },
-                {
-                  id: "INV-002",
-                  customer: "Bloom Café",
-                  amount: 1200,
-                  dueDate: "Today",
-                  status: 'due-today',
-                  payProbability: 88,
-                  riskOfDelay: 35
-                },
-                {
-                  id: "INV-003",
-                  customer: "TechGadgets",
-                  amount: 4800,
-                  dueDate: "47 days ago",
-                  status: 'collections',
-                  daysLate: 47,
-                  payProbability: 68
-                }
-              ],
-              customerHealthScores: [
-                {
-                  customer: "Ray's Hardware",
-                  score: 76,
-                  insight: "Prompt payer, 5% delay risk next invoice"
-                },
-                {
-                  customer: "Bloom Café",
-                  score: 65,
-                  insight: "Increasing delay probability"
-                }
-              ],
-              trendAlerts: [
-                {
-                  trend: "Overdue invoices increased",
-                  value: "+22% vs. last month"
-                }
-              ],
-              optimizationTips: [
-                {
-                  tip: "Offer 2% discount for Bloom Café early payments"
-                }
-              ]
-            }}
-          />
-        );
       default:
         return <AgentDashboard onAgentSelect={handleAgentSelect} />;
     }
@@ -193,10 +129,10 @@ const AgenticDashboardPage: React.FC = () => {
                 </div>
                 <div className="text-center">
                   <div className="bg-white bg-opacity-20 rounded-lg p-4 mb-2">
-                    <Zap className="w-8 h-8 mx-auto" />
+                    <Calculator className="w-8 h-8 mx-auto" />
                   </div>
-                  <h3 className="font-semibold">Process Automation</h3>
-                  <p className="text-sm opacity-80">Streamlined operations</p>
+                  <h3 className="font-semibold">Scenario Planning</h3>
+                  <p className="text-sm opacity-80">What-if analysis</p>
                 </div>
                 <div className="text-center">
                   <div className="bg-white bg-opacity-20 rounded-lg p-4 mb-2">

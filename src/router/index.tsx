@@ -7,11 +7,10 @@ import {
 import { ReactElement } from "react";
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 import AuthProtectedRouteLogic from "./logic/AuthProtectedRouteLogic";
-import { BarChart3, Activity, TrendingUp, Shield, Zap, Calculator } from "lucide-react";
+import { BarChart3, Activity, TrendingUp, Shield, Calculator } from "lucide-react";
 import CashFlowDiagnosticianPage from "@/pages/CashFlow/CashFlowDiagnosticianPage";
 import ScenarioStressTesterPage from "@/pages/CashFlow/ScenarioStressTrackerPage";
 import LiquidityGuardianPage from "@/pages/CashFlow/LiquidityGuardianPage";
-import ReceivablesAutopilotPage from "@/pages/CashFlow/ReceivablesAutopilotPage";
 
 const ROOT_PATH = "";
 
@@ -95,21 +94,6 @@ export const routes: ExtendedRouteObject[] = [
       ),
       errorElement: <ErrorBoundaryPage />,
       icon: Shield,
-    },
-  },
-  {
-    title: "Receivables Autopilot",
-    logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
-    category: "AI Agents",
-    routeObject: {
-      path: `${ROOT_PATH}/receivables-autopilot`,
-      element: (
-        <MainLayout>
-          <ReceivablesAutopilotPage />
-        </MainLayout>
-      ),
-      errorElement: <ErrorBoundaryPage />,
-      icon: Zap,
     },
   },
 ];
