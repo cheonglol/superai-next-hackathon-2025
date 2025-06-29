@@ -12,74 +12,81 @@ const ReceivablesAutopilotPage: React.FC = () => {
     collectionsRisk: 8,
     invoices: [
       {
-        id: "INV-001",
-        customer: "Ray's Hardware",
+        id: "INV-2025-0156",
+        customer: "Linear Dots Production Pte Ltd",
         amount: 2500,
         dueDate: "5 days ago",
         status: 'overdue' as const,
         daysLate: 5,
-        payProbability: 92
+        payProbability: 92,
+        remindersSent: 1,
+        responseReceived: false
       },
       {
-        id: "INV-002",
-        customer: "Bloom Café",
+        id: "INV-2025-0187",
+        customer: "A&P Floral Creation",
         amount: 1200,
         dueDate: "Today",
         status: 'due-today' as const,
         payProbability: 88,
-        riskOfDelay: 35
+        riskOfDelay: 35,
+        remindersSent: 0,
+        responseReceived: false
       },
       {
-        id: "INV-003",
-        customer: "TechGadgets",
+        id: "INV-2025-0098",
+        customer: "Curators Collective Pte Ltd",
         amount: 4800,
         dueDate: "47 days ago",
         status: 'collections' as const,
         daysLate: 47,
-        payProbability: 68
+        payProbability: 68,
+        remindersSent: 3,
+        responseReceived: false
       },
       {
-        id: "INV-004",
-        customer: "Green Grocers",
+        id: "INV-2025-0203",
+        customer: "HoneySpree Pte Ltd",
         amount: 850,
         dueDate: "Tomorrow",
         status: 'on-time' as const,
-        payProbability: 95
+        payProbability: 95,
+        remindersSent: 0,
+        responseReceived: false
       },
       {
-        id: "INV-005",
-        customer: "City Fitness",
+        id: "INV-2025-0142",
+        customer: "Quant Consulting Group Pte Ltd",
         amount: 3200,
         dueDate: "12 days ago",
         status: 'overdue' as const,
         daysLate: 12,
-        payProbability: 78
+        payProbability: 78,
+        remindersSent: 2,
+        responseReceived: false
       },
       {
-        id: "INV-006",
-        customer: "Lakeside Spa",
+        id: "INV-2025-0175",
+        customer: "Whimsy Safari Pte Ltd",
         amount: 1750,
         dueDate: "3 days ago",
         status: 'overdue' as const,
         daysLate: 3,
-        payProbability: 89
+        payProbability: 89,
+        remindersSent: 1,
+        responseReceived: true
       }
     ],
     customerHealthScores: [
       {
-        customer: "Ray's Hardware",
+        customer: "Linear Dots Production Pte Ltd",
         score: 76,
         insight: "Prompt payer, 5% delay risk next invoice"
       },
       {
-        customer: "Bloom Café",
+        customer: "A&P Floral Creation",
         score: 65,
         insight: "Increasing delay probability"
-      },
-      {
-        customer: "TechGadgets",
-        score: 42,
-        insight: "Consistent late payments, needs attention"
       }
     ],
     trendAlerts: [
@@ -88,13 +95,13 @@ const ReceivablesAutopilotPage: React.FC = () => {
         value: "+22% vs. last month"
       },
       {
-        trend: "Bloom Café delay probability",
+        trend: "A&P Floral Creation delay probability",
         value: "Rising trend detected"
       }
     ],
     optimizationTips: [
       {
-        tip: "Offer 2% discount for Bloom Café early payments"
+        tip: "Offer 2% discount for A&P Floral Creation early payments"
       },
       {
         tip: "Send reminders 3 days before due date to improve on-time payments"
