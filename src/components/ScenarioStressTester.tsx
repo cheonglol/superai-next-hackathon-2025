@@ -395,39 +395,6 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               Run Simulation
             </button>
           </div>
-          
-          {/* Affordability Thresholds */}
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-              <Target className="w-5 h-5 text-green-600 mr-2" />
-              Affordability Thresholds
-            </h3>
-            <div className="grid grid-cols-4 gap-3">
-              <div className="bg-green-50 rounded-lg p-3 border border-green-200">
-                <div className="text-sm text-green-700 mb-1">Max Sustainable Rent</div>
-                <div className="text-xl font-bold text-green-800">{affordabilityThresholds.maxRent}/mo</div>
-                <div className="text-xs text-green-600">Current: {formatCurrency(financialData.currentRent)}/mo</div>
-              </div>
-              
-              <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
-                <div className="text-sm text-blue-700 mb-1">Max New Salary</div>
-                <div className="text-xl font-bold text-blue-800">{affordabilityThresholds.maxSalary}/mo</div>
-                <div className="text-xs text-blue-600">Per new hire capacity</div>
-              </div>
-              
-              <div className="bg-purple-50 rounded-lg p-3 border border-purple-200">
-                <div className="text-sm text-purple-700 mb-1">Max Equipment Purchase</div>
-                <div className="text-xl font-bold text-purple-800">{affordabilityThresholds.maxEquipment}</div>
-                <div className="text-xs text-purple-600">One-time purchase limit</div>
-              </div>
-              
-              <div className="bg-orange-50 rounded-lg p-3 border border-orange-200">
-                <div className="text-sm text-orange-700 mb-1">Max Monthly Commitment</div>
-                <div className="text-xl font-bold text-orange-800">{affordabilityThresholds.maxMonthlyCommitment}/mo</div>
-                <div className="text-xs text-orange-600">Any recurring expense</div>
-              </div>
-            </div>
-          </div>
         </div>
         
         {/* Center Column - Impact Visualization */}
@@ -661,6 +628,36 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                 Share with Advisor
               </button>
             </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Affordability Thresholds - full width below main grid */}
+      <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <Target className="w-5 h-5 text-green-600 mr-2" />
+          Affordability Thresholds
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <div className="bg-green-50 rounded-lg p-3 border border-green-200">
+            <div className="text-sm text-green-700 mb-1">Max Sustainable Rent</div>
+            <div className="text-xl font-bold text-green-800">{affordabilityThresholds.maxRent}/mo</div>
+            <div className="text-xs text-green-600">Current: {formatCurrency(financialData.currentRent)}/mo</div>
+          </div>
+          <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
+            <div className="text-sm text-blue-700 mb-1">Max New Salary</div>
+            <div className="text-xl font-bold text-blue-800">{affordabilityThresholds.maxSalary}/mo</div>
+            <div className="text-xs text-blue-600">Per new hire capacity</div>
+          </div>
+          <div className="bg-purple-50 rounded-lg p-3 border border-purple-200">
+            <div className="text-sm text-purple-700 mb-1">Max Equipment Purchase</div>
+            <div className="text-xl font-bold text-purple-800">{affordabilityThresholds.maxEquipment}</div>
+            <div className="text-xs text-purple-600">One-time purchase limit</div>
+          </div>
+          <div className="bg-orange-50 rounded-lg p-3 border border-orange-200">
+            <div className="text-sm text-orange-700 mb-1">Max Monthly Commitment</div>
+            <div className="text-xl font-bold text-orange-800">{affordabilityThresholds.maxMonthlyCommitment}/mo</div>
+            <div className="text-xs text-orange-600">Any recurring expense</div>
           </div>
         </div>
       </div>

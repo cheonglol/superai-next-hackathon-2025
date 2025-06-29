@@ -217,49 +217,6 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
 
   return (
     <div className="space-y-6">
-      {/* Header Bar */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="flex items-center">
-            <div className="p-3 bg-blue-100 rounded-lg mr-3">
-              <Activity className="w-6 h-6 text-blue-600" />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900">Liquidity Guardian</h2>
-              <p className="text-sm text-gray-600">Real-time cash flow monitoring and alerts</p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => setIsConnected(!isConnected)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium flex items-center ${isConnected ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-700"}`}
-            >
-              {isConnected ? (
-                <>
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Connected
-                </>
-              ) : (
-                <>
-                  <Plus className="w-4 h-4 mr-2" />
-                  Connect Accounts
-                </>
-              )}
-            </button>
-
-            <button
-              onClick={refreshData}
-              disabled={isRefreshing}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center disabled:opacity-50"
-            >
-              <RefreshCw className={`w-4 h-4 mr-2 ${isRefreshing ? "animate-spin" : ""}`} />
-              Refresh Data
-            </button>
-          </div>
-        </div>
-      </div>
-
       {/* Current Liquidity Snapshot */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">

@@ -476,47 +476,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
           icon={<Activity className="w-8 h-8 text-blue-600" />} 
         />
 
-        {/* Agent Header with FY Ending Date Selector */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-            <div className="flex items-center mb-4 md:mb-0">
-              <div className="p-3 bg-blue-100 rounded-lg mr-3">
-                <Activity className="w-6 h-6 text-blue-600" />
-              </div>
-              <div>
-                <h2 className="text-xl font-semibold text-gray-900">Cash Flow Diagnostician</h2>
-                <p className="text-sm text-gray-600">Financial health assessment and optimization</p>
-              </div>
-            </div>
-            
-            {/* FY Ending Date Selector */}
-            <div className="flex flex-wrap gap-3 items-center">
-              <div className="flex items-center">
-                <Calendar className="w-4 h-4 mr-2 text-gray-600" />
-                <span className="text-sm text-gray-600 mr-2">Latest FY Ending Date:</span>
-                <input 
-                  type="date" 
-                  value={fyEndingDate} 
-                  onChange={(e) => setFyEndingDate(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm"
-                />
-              </div>
-              <button
-                onClick={handleFYEndingDateChange}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
-              >
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Analyze
-              </button>
-            </div>
-          </div>
-          {lastUpdate && (
-            <div className="mt-4 text-xs text-gray-500">
-              Last updated: {lastUpdate}
-            </div>
-          )}
-        </div>
-
         {/* Tabs Navigation */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
           <div className="flex flex-wrap gap-2">
