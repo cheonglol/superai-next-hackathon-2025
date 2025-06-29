@@ -211,14 +211,6 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
             </button>
             
             <button 
-              onClick={() => setShowBufferSettings(!showBufferSettings)}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center"
-            >
-              <Settings className="w-4 h-4 mr-2" />
-              Safety Buffer
-            </button>
-            
-            <button 
               onClick={refreshData}
               disabled={isRefreshing}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center disabled:opacity-50"
@@ -228,51 +220,6 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
             </button>
           </div>
         </div>
-        
-        {/* Safety Buffer Settings */}
-        {showBufferSettings && (
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="font-medium text-gray-900">Safety Buffer Settings</h3>
-              <button 
-                onClick={() => setShowBufferSettings(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <AlertTriangle className="w-4 h-4" />
-              </button>
-            </div>
-            
-            <div className="mb-4">
-              <label className="block text-sm text-gray-700 mb-1">Buffer Amount (Months)</label>
-              <div className="flex items-center">
-                <input
-                  type="range"
-                  min="1"
-                  max="3"
-                  step="1"
-                  value={safetyBufferMonths}
-                  onChange={(e) => updateSafetyBufferMonths(parseInt(e.target.value))}
-                  className="flex-1 mr-4"
-                />
-                <span className="text-lg font-bold text-gray-900">{safetyBufferMonths} month{safetyBufferMonths > 1 ? 's' : ''}</span>
-              </div>
-              <p className="text-xs text-gray-500 mt-1">
-                Buffer = {safetyBufferMonths} month{safetyBufferMonths > 1 ? 's' : ''} of expenses ({formatCurrency(monthlyExpenses)}) + loan payments ({formatCurrency(monthlyLoanInstallment)})
-              </p>
-              <div className="text-sm font-medium text-gray-900 mt-2">
-                Total Safety Buffer: {formatCurrency(safetyBuffer)}
-              </div>
-            </div>
-            
-            <div className="flex justify-end">
-              <button 
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-              >
-                Save Settings
-              </button>
-            </div>
-          </div>
-        )}
       </div>
       
       {/* Current Liquidity Snapshot */}
@@ -290,13 +237,32 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
         </div>
         
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center mb-2">
-            <Target className="w-5 h-5 text-blue-600 mr-2" />
-            <h3 className="font-semibold text-gray-900">Safety Buffer</h3>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center">
+              <Target className="w-5 h-5 text-blue-600 mr-2" />
+              <h3 className="font-semibold text-gray-900">Safety Buffer</h3>
+            </div>
           </div>
           <div className="text-3xl font-bold text-gray-900 mb-1">{formatCurrency(safetyBuffer)}</div>
-          <div className="text-sm text-gray-600">
-            {safetyBufferMonths} month{safetyBufferMonths > 1 ? 's' : ''} of expenses + loan payments
+          
+          {/* Integrated safety buffer slider */}
+          <div className="mt-2">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-gray-600">Buffer Months:</span>
+              <span className="text-xs font-medium text-gray-900">{safetyBufferMonths} month{safetyBufferMonths > 1 ? 's' : ''}</span>
+            </div>
+            <input
+              type="range"
+              min="1"
+              max="3"
+              step="1"
+              value={safetyBufferMonths}
+              onChange={(e) => updateSafetyBufferMonths(parseInt(e.target.value))}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              {safetyBufferMonths} month{safetyBufferMonths > 1 ? 's' : ''} of expenses + loan payments
+            </p>
           </div>
         </div>
         
@@ -503,6 +469,40 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
                 <div className="flex items-center">
                   <div className="w-2 h-2 bg-red-500 rounded-full mr-1"></div>
                   <span>Safety Buffer</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Cash Flow Visualization */}
+            <div className="mt-6">
+              <div className="w-full bg-gray-100 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700">Cash Runway Visualization</span>
+                  <span className="text-xs text-gray-500">Months →</span>
+                </div>
+                <div className="relative h-12 w-full bg-gray-200 rounded-lg overflow-hidden">
+                  {projectionData.map((month, index) => (
+                    <div 
+                      key={index}
+                      className={`absolute h-full ${month.runningCash >= safetyBuffer ? 'bg-green-500' : 'bg-red-500'}`}
+                      style={{ 
+                        left: `${(index / timeHorizon) * 100}%`, 
+                        width: `${(1 / timeHorizon) * 100}%`,
+                        opacity: 0.7 + (0.3 * (index / timeHorizon))
+                      }}
+                    >
+                    </div>
+                  ))}
+                  
+                  {/* Safety threshold line */}
+                  <div className="absolute top-1/2 left-0 w-full border-t-2 border-dashed border-yellow-500"></div>
+                </div>
+                <div className="flex justify-between mt-1">
+                  {Array.from({ length: Math.min(6, timeHorizon) }).map((_, index) => (
+                    <div key={index} className="text-xs text-gray-500">
+                      {index + 1}
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
