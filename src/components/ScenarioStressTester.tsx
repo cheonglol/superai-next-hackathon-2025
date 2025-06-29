@@ -240,8 +240,8 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
       {/* Main layout with 3 columns */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column - Scenario Setup Panel */}
-        <div className="lg:col-span-3 space-y-6">
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <div className="lg:col-span-3 space-y-6 flex flex-col">
+          <div className="bg-white rounded-lg p-6 border border-gray-200 flex-grow">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <Target className="w-5 h-5 text-blue-600 mr-2" />
               Scenario Setup
@@ -411,12 +411,23 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                     {formatCurrency(financialData.currentCashFlow)}/mo
                   </div>
                 </div>
+<<<<<<< HEAD
 
                 {/* Projected Cash Flow Bar - Make this larger than current */}
                 <div className="absolute bottom-0 left-0 h-8 bg-green-100 rounded-lg w-full">
                   <div
                     className="h-8 bg-green-500 rounded-lg"
                     style={{ width: `${Math.min(100, Math.max(0, (Math.abs(impact.newMonthlyCashFlow) / (financialData.currentCashFlow * 2)) * 100))}%` }}
+=======
+                
+                {/* Projected Cash Flow Bar - Make it less than current */}
+                <div className="absolute bottom-0 left-0 h-8 bg-red-100 rounded-lg w-full">
+                  <div 
+                    className={`h-8 ${impact.newMonthlyCashFlow >= 0 ? 'bg-green-500' : 'bg-red-500'} rounded-lg`}
+                    style={{ 
+                      width: `${Math.min(100, Math.max(0, (Math.abs(impact.newMonthlyCashFlow) / (financialData.currentCashFlow * 2)) * 100 * 0.8))}%` 
+                    }}
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
                   ></div>
                   <div className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 text-white font-bold">{formatCurrency(impact.newMonthlyCashFlow)}/mo</div>
                 </div>
@@ -530,8 +541,8 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
         </div>
 
         {/* Right Column - Contingency Planner */}
-        <div className="lg:col-span-3 space-y-6">
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <div className="lg:col-span-3 space-y-6 flex flex-col">
+          <div className="bg-white rounded-lg p-6 border border-gray-200 flex-grow">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <Target className="w-5 h-5 text-purple-600 mr-2" />
               Contingency Planner
@@ -578,6 +589,7 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                 </button>
               </div>
             </div>
+<<<<<<< HEAD
 
             {/* Plan Effectiveness Meter */}
             <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 mb-6">
@@ -593,6 +605,20 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               <div className="w-full bg-gray-200 rounded-full h-2.5">
                 <div className="bg-green-500 h-2.5 rounded-full" style={{ width: "68%" }}></div>
               </div>
+=======
+            
+            {/* Export Actions */}
+            <div className="space-y-3">
+              <button className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center">
+                <DollarSign className="w-4 h-4 mr-2" />
+                Export Contingency Plan
+              </button>
+              
+              <button className="w-full py-2 px-4 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center">
+                <Target className="w-4 h-4 mr-2" />
+                Share with Advisor
+              </button>
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
             </div>
           </div>
         </div>

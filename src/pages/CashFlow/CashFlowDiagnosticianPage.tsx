@@ -52,7 +52,11 @@ const CashFlowDiagnosticianPage: React.FC = () => {
 
     // For cash flow calculation
     distributions: 150000, // Dividends from 2018
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
     // Monthly expenses (estimated)
     monthlyExpenses: (6612000 - 1917500 + 1917500 - 701300) / 12, // (COGS + OpEx) / 12
   };
@@ -84,10 +88,17 @@ const CashFlowDiagnosticianPage: React.FC = () => {
 
     // Cash reserve ratio (months of expenses covered by cash)
     const cashReserveRatio = financialData.cash / monthlyExpenses;
+<<<<<<< HEAD
 
     // Runway (days of cash left at current burn rate)
     const runway = burnRate > 0 ? financialData.cash / burnRate : 0;
 
+=======
+    
+    // Runway (days of cash left at current burn rate)
+    const runway = burnRate > 0 ? financialData.cash / burnRate : 0;
+    
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
     // Gross profit to cash conversion
     const grossProfitToCashConversion = estimatedOperatingCashFlow / financialData.grossMargin;
 
@@ -209,6 +220,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
 
   // Leakage points based on actual metrics
   const leakagePoints = [
+<<<<<<< HEAD
     {
       category: "Receivables",
       issue: "Extended collection period",
@@ -244,6 +256,43 @@ const CashFlowDiagnosticianPage: React.FC = () => {
       severity: "medium",
       details: `Interest expense of ${formatCurrency(financialData.interestPaid)} annually represents a significant cash outflow that could be reduced through refinancing`,
     },
+=======
+    { 
+      category: 'Receivables', 
+      issue: 'Extended collection period', 
+      impact: `${formatCurrency(financialData.accountsReceivable * 0.1)}/month`, 
+      severity: 'high',
+      details: `Current DSO is ${Math.round(calculatedMetrics.dso)} days, significantly above industry benchmark of 30 days, tying up cash in unpaid invoices`
+    },
+    { 
+      category: 'Inventory', 
+      issue: 'Excess inventory holding', 
+      impact: `${formatCurrency(financialData.inventory * 0.08)}/month`, 
+      severity: 'high',
+      details: `Inventory days of ${Math.round(calculatedMetrics.dio)} days indicates slow-moving inventory, increasing storage costs and tying up capital`
+    },
+    { 
+      category: 'Cash', 
+      issue: 'Low cash reserves', 
+      impact: `${formatCurrency(financialData.monthlyExpenses * 0.05)}/month`, 
+      severity: 'medium',
+      details: `Current cash reserves of ${formatCurrency(financialData.cash)} only cover ${calculatedMetrics.cashReserveRatio.toFixed(1)} months of expenses, below recommended 3-6 month buffer`
+    },
+    { 
+      category: 'Payables', 
+      issue: 'Suboptimal payment terms', 
+      impact: `${formatCurrency(financialData.accountsPayable * 0.05)}/month`, 
+      severity: 'medium',
+      details: `Current DPO of ${Math.round(calculatedMetrics.dpo)} days is below optimal level, missing opportunity to extend payment terms with suppliers`
+    },
+    { 
+      category: 'Debt', 
+      issue: 'High interest expense', 
+      impact: `${formatCurrency(financialData.interestPaid * 0.15)}/month`, 
+      severity: 'medium',
+      details: `Interest expense of ${formatCurrency(financialData.interestPaid)} annually represents a significant cash outflow that could be reduced through refinancing`
+    }
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
   ];
 
   // One Percent Fix data with exact values from the image
@@ -301,6 +350,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
 
   // Corrective actions
   const correctiveActions = [
+<<<<<<< HEAD
     {
       priority: "high",
       action: "Implement accounts receivable acceleration program",
@@ -341,6 +391,48 @@ const CashFlowDiagnosticianPage: React.FC = () => {
       difficulty: "medium",
       details: "Reduce interest expense by refinancing existing debt at lower rates, potentially saving 15-20% annually",
     },
+=======
+    { 
+      priority: 'high', 
+      action: 'Implement accounts receivable acceleration program', 
+      impact: `${formatCurrency(financialData.accountsReceivable * 0.2)}/quarter`, 
+      timeframe: '1-2 months',
+      difficulty: 'medium',
+      details: 'Reduce DSO from 80 to 45 days through automated reminders, early payment incentives, and stricter credit terms'
+    },
+    { 
+      priority: 'high', 
+      action: 'Optimize inventory levels with just-in-time system', 
+      impact: `${formatCurrency(financialData.inventory * 0.25)}/quarter`, 
+      timeframe: '2-3 months',
+      difficulty: 'high',
+      details: 'Reduce inventory days from 120 to 60 days through demand forecasting, vendor-managed inventory, and ABC analysis'
+    },
+    { 
+      priority: 'medium', 
+      action: 'Establish minimum cash reserve policy', 
+      impact: 'Risk mitigation', 
+      timeframe: 'Immediate',
+      difficulty: 'medium',
+      details: 'Implement policy to maintain cash reserves equal to at least 3 months of operating expenses'
+    },
+    { 
+      priority: 'medium', 
+      action: 'Renegotiate supplier payment terms', 
+      impact: `${formatCurrency(financialData.accountsPayable * 0.3)}/quarter`, 
+      timeframe: '1-3 months',
+      difficulty: 'medium',
+      details: 'Extend DPO from 45 to 60-90 days through supplier negotiations and payment schedule optimization'
+    },
+    { 
+      priority: 'medium', 
+      action: 'Refinance high-interest debt', 
+      impact: `${formatCurrency(financialData.interestPaid * 0.2)}/year`, 
+      timeframe: '2-4 months',
+      difficulty: 'medium',
+      details: 'Reduce interest expense by refinancing existing debt at lower rates, potentially saving 15-20% annually'
+    }
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
   ];
 
   useEffect(() => {
@@ -373,6 +465,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
 
   // Mock cash flow data
   const mockCashFlowData: CashFlowData = {
+<<<<<<< HEAD
     id: "cf-001",
     companyId: "company-001",
     period: "2025-01",
@@ -408,17 +501,41 @@ const CashFlowDiagnosticianPage: React.FC = () => {
         { id: "4", category: "Rent", description: "Office rent", amount: 15000, date: "2025-01-01", type: "outflow", source: "actual", confidence: 1.0, tags: ["expense"] },
       ],
       netOperating: 100000,
+=======
+    id: 'cf-001',
+    companyId: 'company-001',
+    period: '2025-01',
+    startDate: '2025-01-01',
+    endDate: '2025-01-31',
+    operatingCashFlow: {
+      receipts: [
+        { id: '1', category: 'Sales', description: 'Product sales', amount: 150000, date: '2025-01-15', type: 'inflow', source: 'actual', confidence: 0.95, tags: ['revenue'] },
+        { id: '2', category: 'Services', description: 'Consulting services', amount: 45000, date: '2025-01-20', type: 'inflow', source: 'actual', confidence: 0.9, tags: ['revenue'] }
+      ],
+      payments: [
+        { id: '3', category: 'Payroll', description: 'Employee salaries', amount: 80000, date: '2025-01-31', type: 'outflow', source: 'actual', confidence: 1.0, tags: ['expense'] },
+        { id: '4', category: 'Rent', description: 'Office rent', amount: 15000, date: '2025-01-01', type: 'outflow', source: 'actual', confidence: 1.0, tags: ['expense'] }
+      ],
+      netOperating: 100000
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
     },
     investingCashFlow: {
       receipts: [],
       payments: [
+<<<<<<< HEAD
         { id: "5", category: "Equipment", description: "New computers", amount: 25000, date: "2025-01-10", type: "outflow", source: "actual", confidence: 1.0, tags: ["capex"] },
       ],
       netInvesting: -25000,
+=======
+        { id: '5', category: 'Equipment', description: 'New computers', amount: 25000, date: '2025-01-10', type: 'outflow', source: 'actual', confidence: 1.0, tags: ['capex'] }
+      ],
+      netInvesting: -25000
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
     },
     financingCashFlow: {
       receipts: [],
       payments: [
+<<<<<<< HEAD
         {
           id: "6",
           category: "Loan Payment",
@@ -432,24 +549,42 @@ const CashFlowDiagnosticianPage: React.FC = () => {
         },
       ],
       netFinancing: -5000,
+=======
+        { id: '6', category: 'Loan Payment', description: 'Monthly loan payment', amount: 5000, date: '2025-01-15', type: 'outflow', source: 'actual', confidence: 1.0, tags: ['debt'] }
+      ],
+      netFinancing: -5000
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
     },
     openingBalance: 120000,
     closingBalance: 190000,
     netCashFlow: 70000,
     forecast: [
       {
+<<<<<<< HEAD
         period: "2025-02",
+=======
+        period: '2025-02',
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
         projectedInflow: 180000,
         projectedOutflow: 110000,
         projectedBalance: 260000,
         confidence: 0.85,
         scenarios: { optimistic: 280000, realistic: 260000, pessimistic: 240000 },
+<<<<<<< HEAD
         assumptions: ["Seasonal uptick in sales", "No major expenses planned"],
       },
     ],
     lastUpdated: new Date().toISOString(),
     dataQuality: "high",
     confidence: 0.92,
+=======
+        assumptions: ['Seasonal uptick in sales', 'No major expenses planned']
+      }
+    ],
+    lastUpdated: new Date().toISOString(),
+    dataQuality: 'high',
+    confidence: 0.92
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
   };
 
   const getStatusColor = (status: string) => {
@@ -467,6 +602,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
+<<<<<<< HEAD
       case "high":
         return "text-red-600 bg-red-100 border-red-200";
       case "medium":
@@ -477,11 +613,19 @@ const CashFlowDiagnosticianPage: React.FC = () => {
         return "text-purple-600 bg-purple-100 border-purple-200";
       default:
         return "text-gray-600 bg-gray-100 border-gray-200";
+=======
+      case 'high': return 'text-red-600 bg-red-100 border-red-200';
+      case 'medium': return 'text-yellow-600 bg-yellow-100 border-yellow-200';
+      case 'low': return 'text-blue-600 bg-blue-100 border-blue-200';
+      case 'critical': return 'text-purple-600 bg-purple-100 border-purple-200';
+      default: return 'text-gray-600 bg-gray-100 border-gray-200';
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
+<<<<<<< HEAD
       case "high":
         return "text-red-600 bg-red-100 border-red-200";
       case "medium":
@@ -492,6 +636,13 @@ const CashFlowDiagnosticianPage: React.FC = () => {
         return "text-purple-600 bg-purple-100 border-purple-200";
       default:
         return "text-gray-600 bg-gray-100 border-gray-200";
+=======
+      case 'high': return 'text-red-600 bg-red-100 border-red-200';
+      case 'medium': return 'text-yellow-600 bg-yellow-100 border-yellow-200';
+      case 'low': return 'text-green-600 bg-green-100 border-green-200';
+      case 'critical': return 'text-purple-600 bg-purple-100 border-purple-200';
+      default: return 'text-gray-600 bg-gray-100 border-gray-200';
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
     }
   };
 
@@ -751,6 +902,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                   <div key={index} className={`border rounded-lg p-4 ${getSeverityColor(point.severity)}`}>
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
                       <div className="flex items-center mb-2 md:mb-0">
+<<<<<<< HEAD
                         <div
                           className={`p-2 rounded-full ${
                             point.severity === "high"
@@ -767,10 +919,24 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                           {point.category === "Cash" && <DollarSign className="w-4 h-4" />}
                           {point.category === "Payables" && <Activity className="w-4 h-4" />}
                           {point.category === "Debt" && <TrendingDown className="w-4 h-4" />}
+=======
+                        <div className={`p-2 rounded-full ${
+                          point.severity === 'high' ? 'bg-red-200' : 
+                          point.severity === 'medium' ? 'bg-yellow-200' : 
+                          point.severity === 'critical' ? 'bg-purple-200' :
+                          'bg-blue-200'
+                        }`}>
+                          {point.category === 'Inventory' && <BarChart3 className="w-4 h-4" />}
+                          {point.category === 'Receivables' && <DollarSign className="w-4 h-4" />}
+                          {point.category === 'Cash' && <DollarSign className="w-4 h-4" />}
+                          {point.category === 'Payables' && <Activity className="w-4 h-4" />}
+                          {point.category === 'Debt' && <TrendingDown className="w-4 h-4" />}
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
                         </div>
                         <span className="font-medium ml-2">{point.category}</span>
                       </div>
                       <div className="flex items-center">
+<<<<<<< HEAD
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-medium ${
                             point.severity === "high"
@@ -782,6 +948,14 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                                   : "bg-blue-200 text-blue-800"
                           }`}
                         >
+=======
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          point.severity === 'high' ? 'bg-red-200 text-red-800' : 
+                          point.severity === 'medium' ? 'bg-yellow-200 text-yellow-800' : 
+                          point.severity === 'critical' ? 'bg-purple-200 text-purple-800' :
+                          'bg-blue-200 text-blue-800'
+                        }`}>
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
                           {point.severity.charAt(0).toUpperCase() + point.severity.slice(1)} Severity
                         </span>
                         <span className="ml-3 font-bold">{point.impact}</span>
@@ -944,6 +1118,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                   <div key={index} className={`border rounded-lg p-4 ${getPriorityColor(action.priority)}`}>
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
                       <div className="flex items-center mb-2 md:mb-0">
+<<<<<<< HEAD
                         <div
                           className={`p-2 rounded-full ${
                             action.priority === "high"
@@ -968,6 +1143,22 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                                   : "bg-green-200 text-green-800"
                           }`}
                         >
+=======
+                        <div className={`p-2 rounded-full ${
+                          action.priority === 'high' ? 'bg-red-200' : 
+                          action.priority === 'medium' ? 'bg-yellow-200' : 
+                          action.priority === 'critical' ? 'bg-purple-200' :
+                          'bg-green-200'
+                        }`}>
+                          {index + 1}
+                        </div>
+                        <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
+                          action.priority === 'high' ? 'bg-red-200 text-red-800' : 
+                          action.priority === 'medium' ? 'bg-yellow-200 text-yellow-800' : 
+                          action.priority === 'critical' ? 'bg-purple-200 text-purple-800' :
+                          'bg-green-200 text-green-800'
+                        }`}>
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
                           {action.priority.charAt(0).toUpperCase() + action.priority.slice(1)} Priority
                         </span>
                       </div>

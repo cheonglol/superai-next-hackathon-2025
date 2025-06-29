@@ -44,15 +44,28 @@ interface LiquidityGuardianProps {
 
 const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData }) => {
   const [isConnected, setIsConnected] = useState(true);
-  const [safetyBuffer, setSafetyBuffer] = useState(15000);
   const [showBufferSettings, setShowBufferSettings] = useState(false);
   const [timeHorizon, setTimeHorizon] = useState<7 | 14 | 30>(7);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // Monthly expenses and loan installment
+  const monthlyExpenses = 70000; // Estimated monthly expenses
+  const monthlyLoanInstallment = 7000; // Estimated monthly loan installment (10% of expenses)
+  
+  // Safety buffer state - default is 1 month of expenses + 1 month of loan installments
+  const [safetyBufferMonths, setSafetyBufferMonths] = useState(1);
+  
+  // Calculate safety buffer based on months
+  const calculateSafetyBuffer = (months: number) => {
+    return (monthlyExpenses + monthlyLoanInstallment) * months;
+  };
+  
+  const [safetyBuffer, setSafetyBuffer] = useState(calculateSafetyBuffer(1));
+
   // Default data if not provided
   const data = mockFinancialData || {
     totalLiquidity: 48920,
-    safetyBuffer: 15000,
+    safetyBuffer: 77000, // Updated to 1 month expenses + 1 month loan installment
     bankBalances: [
       { name: "DBS", balance: 28400, change: 1.5, trend: 'up' as const },
       { name: "OCBC", balance: 15700, change: -0.8, trend: 'down' as const },
@@ -63,14 +76,14 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
       { 
         date: "July 3", 
         projectedBalance: 12400, 
-        bufferDifference: -2600, 
+        bufferDifference: -64600, // Updated based on new safety buffer
         reason: "Vendor payment", 
         likelihood: 89 
       },
       { 
         date: "July 5", 
         projectedBalance: 14100, 
-        bufferDifference: -900, 
+        bufferDifference: -62900, // Updated based on new safety buffer
         reason: "Payroll processing day", 
         likelihood: 76 
       }
@@ -107,7 +120,7 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
         date: new Date(Date.now() + i * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
         balance: currentBalance,
         isAlert: alertForDay !== undefined,
-        bufferDifference: currentBalance - data.safetyBuffer
+        bufferDifference: currentBalance - safetyBuffer
       });
     }
     
@@ -153,6 +166,15 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
 
   const riskStatus = getRiskStatus();
 
+  // Update safety buffer when months change
+  const updateSafetyBufferMonths = (months: number) => {
+    setSafetyBufferMonths(months);
+    
+    // Calculate new safety buffer based on months
+    const newBuffer = calculateSafetyBuffer(months);
+    setSafetyBuffer(newBuffer);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header Bar */}
@@ -189,14 +211,6 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
             </button>
             
             <button 
-              onClick={() => setShowBufferSettings(!showBufferSettings)}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors flex items-center"
-            >
-              <Settings className="w-4 h-4 mr-2" />
-              Safety Buffer
-            </button>
-            
-            <button 
               onClick={refreshData}
               disabled={isRefreshing}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center disabled:opacity-50"
@@ -206,48 +220,6 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
             </button>
           </div>
         </div>
-        
-        {/* Safety Buffer Settings */}
-        {showBufferSettings && (
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="font-medium text-gray-900">Safety Buffer Settings</h3>
-              <button 
-                onClick={() => setShowBufferSettings(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <AlertTriangle className="w-4 h-4" />
-              </button>
-            </div>
-            
-            <div className="mb-4">
-              <label className="block text-sm text-gray-700 mb-1">Buffer Amount</label>
-              <div className="flex items-center">
-                <input
-                  type="range"
-                  min="5000"
-                  max="50000"
-                  step="1000"
-                  value={safetyBuffer}
-                  onChange={(e) => setSafetyBuffer(parseInt(e.target.value))}
-                  className="flex-1 mr-4"
-                />
-                <span className="text-lg font-bold text-gray-900">{formatCurrency(safetyBuffer)}</span>
-              </div>
-              <p className="text-xs text-gray-500 mt-1">
-                Adaptive Threshold: Automatically adjusts based on your transaction patterns
-              </p>
-            </div>
-            
-            <div className="flex justify-end">
-              <button 
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-              >
-                Save Settings
-              </button>
-            </div>
-          </div>
-        )}
       </div>
       
       {/* Current Liquidity Snapshot */}
@@ -265,13 +237,32 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
         </div>
         
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center mb-2">
-            <Target className="w-5 h-5 text-blue-600 mr-2" />
-            <h3 className="font-semibold text-gray-900">Safety Buffer</h3>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center">
+              <Target className="w-5 h-5 text-blue-600 mr-2" />
+              <h3 className="font-semibold text-gray-900">Safety Buffer</h3>
+            </div>
           </div>
-          <div className="text-3xl font-bold text-gray-900 mb-1">{formatCurrency(data.safetyBuffer)}</div>
-          <div className="text-sm text-gray-600">
-            Adaptive Threshold
+          <div className="text-3xl font-bold text-gray-900 mb-1">{formatCurrency(safetyBuffer)}</div>
+          
+          {/* Integrated safety buffer slider */}
+          <div className="mt-2">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-gray-600">Buffer Months:</span>
+              <span className="text-xs font-medium text-gray-900">{safetyBufferMonths} month{safetyBufferMonths > 1 ? 's' : ''}</span>
+            </div>
+            <input
+              type="range"
+              min="1"
+              max="3"
+              step="1"
+              value={safetyBufferMonths}
+              onChange={(e) => updateSafetyBufferMonths(parseInt(e.target.value))}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              {safetyBufferMonths} month{safetyBufferMonths > 1 ? 's' : ''} of expenses + loan payments
+            </p>
           </div>
         </div>
         
@@ -387,10 +378,10 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
               {/* Safety Buffer Line */}
               <div 
                 className="absolute left-0 right-0 border-t-2 border-dashed border-red-400"
-                style={{ top: `${100 - (data.safetyBuffer / 60000) * 100}%` }}
+                style={{ top: `${100 - (safetyBuffer / 60000) * 100}%` }}
               >
                 <div className="absolute -top-6 right-0 bg-red-50 px-2 py-1 rounded text-xs text-red-600 font-medium">
-                  Buffer: {formatCurrency(data.safetyBuffer)}
+                  Buffer: {formatCurrency(safetyBuffer)}
                 </div>
               </div>
               
@@ -481,6 +472,40 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
                 </div>
               </div>
             </div>
+            
+            {/* Cash Flow Visualization */}
+            <div className="mt-6">
+              <div className="w-full bg-gray-100 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-gray-700">Cash Runway Visualization</span>
+                  <span className="text-xs text-gray-500">Months →</span>
+                </div>
+                <div className="relative h-12 w-full bg-gray-200 rounded-lg overflow-hidden">
+                  {projectionData.map((month, index) => (
+                    <div 
+                      key={index}
+                      className={`absolute h-full ${month.runningCash >= safetyBuffer ? 'bg-green-500' : 'bg-red-500'}`}
+                      style={{ 
+                        left: `${(index / timeHorizon) * 100}%`, 
+                        width: `${(1 / timeHorizon) * 100}%`,
+                        opacity: 0.7 + (0.3 * (index / timeHorizon))
+                      }}
+                    >
+                    </div>
+                  ))}
+                  
+                  {/* Safety threshold line */}
+                  <div className="absolute top-1/2 left-0 w-full border-t-2 border-dashed border-yellow-500"></div>
+                </div>
+                <div className="flex justify-between mt-1">
+                  {Array.from({ length: Math.min(6, timeHorizon) }).map((_, index) => (
+                    <div key={index} className="text-xs text-gray-500">
+                      {index + 1}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -542,35 +567,6 @@ const LiquidityGuardian: React.FC<LiquidityGuardianProps> = ({ mockFinancialData
               </button>
             </div>
           </div>
-        </div>
-      </div>
-      
-      {/* Prediction Accuracy Module */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-          <div className="flex items-center mb-3 md:mb-0">
-            <Target className="w-5 h-5 text-blue-600 mr-2" />
-            <div>
-              <h3 className="font-semibold text-gray-900">Prediction Confidence: {data.predictionConfidence}%</h3>
-              <p className="text-sm text-gray-600">(±{data.predictionVariance}% avg variance)</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center text-sm text-gray-600">
-            <span className="mr-4">Model updated: {data.lastUpdated}</span>
-            <span>Sources: {data.dataSources.join(', ')}</span>
-          </div>
-        </div>
-        
-        <div className="mt-4 w-full bg-gray-200 rounded-full h-2.5">
-          <div 
-            className={`h-2.5 rounded-full ${
-              data.predictionConfidence > 95 ? 'bg-green-500' : 
-              data.predictionConfidence > 85 ? 'bg-yellow-500' : 
-              'bg-red-500'
-            }`}
-            style={{ width: `${data.predictionConfidence}%` }}
-          ></div>
         </div>
       </div>
     </div>

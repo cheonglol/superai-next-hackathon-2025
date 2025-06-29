@@ -460,6 +460,7 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
             ))}
           </div>
         </div>
+<<<<<<< HEAD
 
         {/* Customer Health Scores */}
         <div className="mt-6 pt-6 border-t border-gray-200">
@@ -482,6 +483,8 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
             ))}
           </div>
         </div>
+=======
+>>>>>>> 0aaed5e6c05568f223508946e319b72b2a1053b6
       </div>
 
       {/* Collections Escalation Hub - Only show for critical invoices */}
