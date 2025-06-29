@@ -256,8 +256,8 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
     }
   };
 
-  // Check if human intervention is needed (15+ days overdue or 3+ reminders with no response)
-  const needsHumanIntervention = (invoice: any) => {
+  // Check if escalation is needed (15+ days overdue or 3+ reminders with no response)
+  const needsEscalation = (invoice: any) => {
     return (invoice.status === 'overdue' && invoice.daysLate && invoice.daysLate >= 15) || 
            (invoice.remindersSent >= 3 && !invoice.responseReceived) ||
            invoice.status === 'collections';
@@ -376,7 +376,7 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
                     <th className="text-center py-3 px-4 font-medium text-gray-900">Due Date</th>
                     <th className="text-center py-3 px-4 font-medium text-gray-900">Status</th>
                     <th className="text-center py-3 px-4 font-medium text-gray-900">Reminders</th>
-                    <th className="text-right py-3 px-4 font-medium text-gray-900">Actions</th>
+                    <th className="text-right py-3 px-4 font-medium text-gray-900">Red Flag</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -406,16 +406,18 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
                       </td>
                       <td className="py-3 px-4 text-right">
                         <div className="flex items-center justify-end space-x-2">
-                          {needsHumanIntervention(invoice) ? (
+                          {needsEscalation(invoice) ? (
                             <button className="px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 transition-colors flex items-center">
                               <Flag className="w-3 h-3 mr-1" />
-                              Human Intervention
+                              Escalation
                             </button>
                           ) : (
-                            <button className="px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 transition-colors flex items-center">
-                              <Flag className="w-3 h-3 mr-1" />
-                              Red Flag
-                            </button>
+                            invoice.status === 'overdue' && !invoice.responseReceived ? (
+                              <button className="px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 transition-colors flex items-center">
+                                <Flag className="w-3 h-3 mr-1" />
+                                Red Flag
+                              </button>
+                            ) : null
                           )}
                         </div>
                       </td>
