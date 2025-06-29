@@ -20,7 +20,8 @@ import {
   Clock,
   Search,
   Filter,
-  ChevronDown
+  ChevronDown,
+  Flag
 } from "lucide-react";
 
 interface ReceivablesAutopilotProps {
@@ -38,6 +39,8 @@ interface ReceivablesAutopilotProps {
       daysLate?: number;
       payProbability?: number;
       riskOfDelay?: number;
+      remindersSent?: number;
+      responseReceived?: boolean;
     }[];
     customerHealthScores: {
       customer: string;
@@ -75,7 +78,9 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
         dueDate: "5 days ago",
         status: 'overdue',
         daysLate: 5,
-        payProbability: 92
+        payProbability: 92,
+        remindersSent: 1,
+        responseReceived: false
       },
       {
         id: "INV-002",
@@ -84,7 +89,9 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
         dueDate: "Today",
         status: 'due-today',
         payProbability: 88,
-        riskOfDelay: 35
+        riskOfDelay: 35,
+        remindersSent: 0,
+        responseReceived: false
       },
       {
         id: "INV-003",
@@ -93,7 +100,9 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
         dueDate: "47 days ago",
         status: 'collections',
         daysLate: 47,
-        payProbability: 68
+        payProbability: 68,
+        remindersSent: 3,
+        responseReceived: false
       },
       {
         id: "INV-004",
@@ -101,7 +110,9 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
         amount: 850,
         dueDate: "Tomorrow",
         status: 'on-time',
-        payProbability: 95
+        payProbability: 95,
+        remindersSent: 0,
+        responseReceived: false
       },
       {
         id: "INV-005",
@@ -110,7 +121,9 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
         dueDate: "12 days ago",
         status: 'overdue',
         daysLate: 12,
-        payProbability: 78
+        payProbability: 78,
+        remindersSent: 2,
+        responseReceived: false
       },
       {
         id: "INV-006",
@@ -119,7 +132,9 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
         dueDate: "3 days ago",
         status: 'overdue',
         daysLate: 3,
-        payProbability: 89
+        payProbability: 89,
+        remindersSent: 1,
+        responseReceived: true
       }
     ],
     customerHealthScores: [
@@ -246,10 +261,20 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
     }
   };
 
-  // Check if human intervention is needed (15+ days overdue)
+  // Check if human intervention is needed (15+ days overdue or 3+ reminders with no response)
   const needsHumanIntervention = (invoice: any) => {
     return (invoice.status === 'overdue' && invoice.daysLate && invoice.daysLate >= 15) || 
+           (invoice.remindersSent >= 3 && !invoice.responseReceived) ||
            invoice.status === 'collections';
+  };
+
+  // Get status text for the Status column
+  const getStatusText = (invoice: any) => {
+    if (invoice.remindersSent === 0) {
+      return "No reminders sent";
+    } else {
+      return `${invoice.remindersSent} reminder${invoice.remindersSent > 1 ? 's' : ''} sent${invoice.responseReceived ? ', response received' : ', no response'}`;
+    }
   };
 
   return (
@@ -355,7 +380,7 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
                     <th className="text-center py-3 px-4 font-medium text-gray-900">Amount</th>
                     <th className="text-center py-3 px-4 font-medium text-gray-900">Due Date</th>
                     <th className="text-center py-3 px-4 font-medium text-gray-900">Status</th>
-                    <th className="text-center py-3 px-4 font-medium text-gray-900">Prediction</th>
+                    <th className="text-center py-3 px-4 font-medium text-gray-900">Reminders</th>
                     <th className="text-right py-3 px-4 font-medium text-gray-900">Actions</th>
                   </tr>
                 </thead>
@@ -380,26 +405,21 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
                         {getStatusBadge(invoice.status)}
                       </td>
                       <td className="py-3 px-4 text-center">
-                        {invoice.payProbability && (
-                          <div className="text-xs text-green-700 bg-green-50 px-2 py-1 rounded-full inline-block">
-                            {invoice.payProbability}% Pay Probability
-                          </div>
-                        )}
-                        {invoice.riskOfDelay && (
-                          <div className="text-xs text-yellow-700 bg-yellow-50 px-2 py-1 rounded-full inline-block mt-1">
-                            {invoice.riskOfDelay}% Risk of Delay
-                          </div>
-                        )}
+                        <div className="text-xs text-gray-700">
+                          {getStatusText(invoice)}
+                        </div>
                       </td>
                       <td className="py-3 px-4 text-right">
                         <div className="flex items-center justify-end space-x-2">
                           {needsHumanIntervention(invoice) ? (
-                            <button className="px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 transition-colors">
+                            <button className="px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 transition-colors flex items-center">
+                              <Flag className="w-3 h-3 mr-1" />
                               Human Intervention
                             </button>
                           ) : (
-                            <button className="px-3 py-1 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition-colors">
-                              Send Reminder
+                            <button className="px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 transition-colors flex items-center">
+                              <Flag className="w-3 h-3 mr-1" />
+                              Red Flag
                             </button>
                           )}
                         </div>
@@ -420,102 +440,6 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
               </div>
             )}
           </div>
-          
-          {/* Dunning Assistant - Only show when an invoice is selected */}
-          {selectedInvoice && (
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                  <Mail className="w-5 h-5 text-purple-600 mr-2" />
-                  Automated Reminders
-                </h3>
-                <div className="text-sm text-gray-600">
-                  Invoice #{selectedInvoice}
-                </div>
-              </div>
-              
-              {/* Tone Selector */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Tone</label>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => setMessageType('friendly')}
-                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${
-                      messageType === 'friendly' 
-                        ? 'bg-blue-600 text-white' 
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    Friendly
-                  </button>
-                  <button
-                    onClick={() => setMessageType('formal')}
-                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${
-                      messageType === 'formal' 
-                        ? 'bg-blue-600 text-white' 
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    Formal
-                  </button>
-                  <button
-                    onClick={() => setMessageType('urgent')}
-                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${
-                      messageType === 'urgent' 
-                        ? 'bg-blue-600 text-white' 
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    Urgent
-                  </button>
-                </div>
-              </div>
-              
-              {/* Auto-Generated Message */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">Auto-Generated Message</label>
-                <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                  <p className="text-gray-800">{generateMessage()}</p>
-                </div>
-              </div>
-              
-              {/* Channel Toggle */}
-              <div className="mb-6">
-                <div className="flex items-center justify-between">
-                  <label className="block text-sm font-medium text-gray-700">Channel</label>
-                  <div className="flex items-center space-x-4">
-                    <button
-                      onClick={() => setMessageChannel('email')}
-                      className={`flex items-center ${messageChannel === 'email' ? 'text-blue-600' : 'text-gray-400'}`}
-                    >
-                      <Mail className="w-5 h-5 mr-1" />
-                      <span className="text-sm">Email</span>
-                    </button>
-                    <button
-                      onClick={() => setMessageChannel('sms')}
-                      className={`flex items-center ${messageChannel === 'sms' ? 'text-blue-600' : 'text-gray-400'}`}
-                    >
-                      <MessageSquare className="w-5 h-5 mr-1" />
-                      <span className="text-sm">SMS</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Send Options */}
-              <div className="flex space-x-3">
-                <button className="flex-1 py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center">
-                  Send Now
-                </button>
-                <button className="flex-1 py-2 px-4 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center">
-                  Schedule
-                </button>
-                <button className="flex-1 py-2 px-4 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center">
-                  Save Template
-                </button>
-              </div>
-            </div>
-          )}
           
           {/* Collections Escalation Hub - Only show for critical invoices */}
           {selectedInvoice && data.invoices.find(inv => inv.id === selectedInvoice)?.status === 'collections' && (
@@ -605,7 +529,7 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
             <div className="space-y-3">
               <button className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center text-sm">
                 <Mail className="w-4 h-4 mr-2" />
-                Remind All Overdue
+                Bulk Flag Overdue
               </button>
               
               <button className="w-full py-2 px-4 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center text-sm">
