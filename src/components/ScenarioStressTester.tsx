@@ -220,7 +220,8 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
         cashFlow: seasonalCashFlow,
         oneTimeCost,
         runningCash,
-        status: runningCash > safetyBuffer ? 'healthy' : 'critical'
+        status: runningCash > safetyBuffer ? 'healthy' : 'critical',
+        seasonalFactor
       });
     }
     
@@ -247,6 +248,15 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
     maxSalary: formatCurrency(financialData.averageSalary * 1.5), // 50% more than average salary
     maxEquipment: formatCurrency(financialData.currentCashFlow * 12 * 0.2), // 20% of annual cash flow
     maxMonthlyCommitment: formatCurrency(financialData.currentCashFlow * 0.3), // 30% of monthly cash flow
+  };
+
+  // Get month name for x-axis labels
+  const getMonthName = (monthIndex: number) => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const targetMonth = (currentMonth + monthIndex) % 12;
+    return months[targetMonth];
   };
 
   return (
@@ -442,7 +452,164 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               </div>
             </div>
             
-            {/* 6-Month Cash Flow Projection */}
+            {/* Cash Flow Projection Graph */}
+            <div className="mb-6">
+              <h4 className="font-medium text-gray-900 mb-3 flex items-center">
+                <Calendar className="w-4 h-4 mr-2" />
+                {timeHorizon}-Month Cash Flow Projection
+              </h4>
+              
+              <div className="relative h-64 w-full bg-gray-50 border border-gray-200 rounded-lg p-4">
+                {/* Y-axis labels */}
+                <div className="absolute left-0 top-0 bottom-0 w-12 flex flex-col justify-between text-xs text-gray-500 py-2">
+                  <div>{formatCurrency(Math.max(...projection.map(p => p.runningCash)) * 1.1).slice(0, -3)}K</div>
+                  <div>{formatCurrency(Math.max(...projection.map(p => p.runningCash)) * 0.75).slice(0, -3)}K</div>
+                  <div>{formatCurrency(Math.max(...projection.map(p => p.runningCash)) * 0.5).slice(0, -3)}K</div>
+                  <div>{formatCurrency(Math.max(...projection.map(p => p.runningCash)) * 0.25).slice(0, -3)}K</div>
+                  <div>{formatCurrency(0)}</div>
+                </div>
+                
+                {/* Graph area */}
+                <div className="absolute left-12 right-4 top-2 bottom-6 bg-white rounded border border-gray-100">
+                  {/* Horizontal grid lines */}
+                  <div className="absolute left-0 right-0 top-1/4 border-t border-gray-100"></div>
+                  <div className="absolute left-0 right-0 top-2/4 border-t border-gray-100"></div>
+                  <div className="absolute left-0 right-0 top-3/4 border-t border-gray-100"></div>
+                  
+                  {/* Safety buffer line */}
+                  <div 
+                    className="absolute left-0 right-0 border-t-2 border-dashed border-yellow-400"
+                    style={{ 
+                      top: `${100 - (safetyBuffer / Math.max(...projection.map(p => p.runningCash))) * 100}%` 
+                    }}
+                  >
+                    <div className="absolute -top-6 right-0 bg-yellow-50 px-2 py-1 rounded text-xs text-yellow-600 font-medium">
+                      Buffer: {formatCurrency(safetyBuffer)}
+                    </div>
+                  </div>
+                  
+                  {/* Cash flow line */}
+                  <svg className="absolute inset-0 w-full h-full overflow-visible">
+                    {/* Area under the line */}
+                    <defs>
+                      <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="rgba(59, 130, 246, 0.3)" />
+                        <stop offset="100%" stopColor="rgba(59, 130, 246, 0)" />
+                      </linearGradient>
+                    </defs>
+                    
+                    {/* Area fill */}
+                    <path 
+                      d={`
+                        M0,${100 - (projection[0].runningCash / Math.max(...projection.map(p => p.runningCash))) * 100}
+                        ${projection.map((point, i) => 
+                          `L${(i / (projection.length - 1)) * 100},${100 - (point.runningCash / Math.max(...projection.map(p => p.runningCash))) * 100}`
+                        ).join(' ')}
+                        L100,100 L0,100 Z
+                      `}
+                      fill="url(#areaGradient)"
+                    />
+                    
+                    {/* Line */}
+                    <path 
+                      d={`
+                        M0,${100 - (projection[0].runningCash / Math.max(...projection.map(p => p.runningCash))) * 100}
+                        ${projection.map((point, i) => 
+                          `L${(i / (projection.length - 1)) * 100},${100 - (point.runningCash / Math.max(...projection.map(p => p.runningCash))) * 100}`
+                        ).join(' ')}
+                      `}
+                      fill="none"
+                      stroke="#3b82f6"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    
+                    {/* Data points */}
+                    {projection.map((point, i) => (
+                      <circle 
+                        key={i}
+                        cx={`${(i / (projection.length - 1)) * 100}%`}
+                        cy={`${100 - (point.runningCash / Math.max(...projection.map(p => p.runningCash))) * 100}%`}
+                        r="4"
+                        fill={point.runningCash < safetyBuffer ? "#ef4444" : "#3b82f6"}
+                        stroke="#fff"
+                        strokeWidth="1"
+                      />
+                    ))}
+                    
+                    {/* One-time cost indicators */}
+                    {projection.map((point, i) => point.oneTimeCost !== 0 && (
+                      <g key={`cost-${i}`}>
+                        <line 
+                          x1={`${(i / (projection.length - 1)) * 100}%`}
+                          y1={`${100 - (point.runningCash / Math.max(...projection.map(p => p.runningCash))) * 100}%`}
+                          x2={`${(i / (projection.length - 1)) * 100}%`}
+                          y2={`${100 - ((point.runningCash - point.oneTimeCost) / Math.max(...projection.map(p => p.runningCash))) * 100}%`}
+                          stroke="#ef4444"
+                          strokeWidth="2"
+                          strokeDasharray="4"
+                        />
+                        <circle 
+                          cx={`${(i / (projection.length - 1)) * 100}%`}
+                          cy={`${100 - ((point.runningCash - point.oneTimeCost) / Math.max(...projection.map(p => p.runningCash))) * 100}%`}
+                          r="3"
+                          fill="#ef4444"
+                        />
+                      </g>
+                    ))}
+                  </svg>
+                  
+                  {/* Tooltips for data points */}
+                  {projection.map((point, i) => (
+                    <div 
+                      key={`tooltip-${i}`}
+                      className="absolute bg-white border border-gray-200 rounded shadow-md px-2 py-1 text-xs pointer-events-none opacity-0 hover:opacity-100 transition-opacity"
+                      style={{ 
+                        left: `${(i / (projection.length - 1)) * 100}%`, 
+                        top: `${100 - (point.runningCash / Math.max(...projection.map(p => p.runningCash))) * 100}%`,
+                        transform: 'translate(-50%, -130%)'
+                      }}
+                    >
+                      <div className="font-bold">{formatCurrency(point.runningCash)}</div>
+                      <div>Month {point.month} ({getMonthName(point.month - 1)})</div>
+                      {point.oneTimeCost !== 0 && (
+                        <div className="text-red-600">One-time: {formatCurrency(point.oneTimeCost)}</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                
+                {/* X-axis labels */}
+                <div className="absolute left-12 right-4 bottom-0 h-6 flex justify-between text-xs text-gray-500">
+                  {projection.map((point, i) => (
+                    i % Math.max(1, Math.floor(projection.length / 6)) === 0 && (
+                      <div key={`x-label-${i}`} className="text-center" style={{ width: `${100 / Math.min(6, projection.length)}%` }}>
+                        {getMonthName(point.month - 1)}
+                      </div>
+                    )
+                  ))}
+                </div>
+              </div>
+              
+              {/* Legend */}
+              <div className="flex justify-between items-center text-xs text-gray-600 mt-2">
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full mr-1"></div>
+                  <span>Cash Balance</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-yellow-400 rounded-full mr-1"></div>
+                  <span>Safety Buffer</span>
+                </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 bg-red-500 rounded-full mr-1"></div>
+                  <span>Risk Zone</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* 6-Month Cash Flow Projection Table */}
             <div>
               <h4 className="font-medium text-gray-900 mb-3 flex items-center">
                 <Calendar className="w-4 h-4 mr-2" />
@@ -457,12 +624,15 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                       <th className="text-center py-2 px-3 font-medium text-gray-900">Cash Flow</th>
                       <th className="text-center py-2 px-3 font-medium text-gray-900">One-time Costs</th>
                       <th className="text-center py-2 px-3 font-medium text-gray-900">Running Cash</th>
+                      <th className="text-center py-2 px-3 font-medium text-gray-900">Seasonal Factor</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100">
                     {projection.map((month) => (
                       <tr key={month.month} className={month.status === 'critical' ? 'bg-red-50' : ''}>
-                        <td className="py-2 px-3 font-medium text-gray-900">Month {month.month}</td>
+                        <td className="py-2 px-3 font-medium text-gray-900">
+                          Month {month.month} ({getMonthName(month.month - 1)})
+                        </td>
                         <td className="py-2 px-3 text-center">
                           <span className={month.cashFlow >= 0 ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'}>
                             {formatCurrency(month.cashFlow)}
@@ -480,6 +650,11 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                         <td className="py-2 px-3 text-center font-bold">
                           <span className={month.runningCash >= 0 ? 'text-green-600' : 'text-red-600'}>
                             {formatCurrency(month.runningCash)}
+                          </span>
+                        </td>
+                        <td className="py-2 px-3 text-center">
+                          <span className={month.seasonalFactor > 1 ? 'text-green-600' : month.seasonalFactor < 0.9 ? 'text-red-600' : 'text-gray-600'}>
+                            {month.seasonalFactor.toFixed(2)}x
                           </span>
                         </td>
                       </tr>
@@ -515,7 +690,7 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                   <div className="flex justify-between mt-1">
                     {Array.from({ length: Math.min(6, timeHorizon) }).map((_, index) => (
                       <div key={index} className="text-xs text-gray-500">
-                        {index + 1}
+                        {getMonthName(index)}
                       </div>
                     ))}
                   </div>
@@ -565,7 +740,7 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                   <div>
                     <h4 className="font-medium text-red-800">Cash Flow Risk Detected</h4>
                     <p className="text-sm text-red-700 mt-1">
-                      Your cash reserves are projected to fall below your safety buffer of {formatCurrency(safetyBuffer)} in month {projection.findIndex(month => month.runningCash < safetyBuffer) + 1}.
+                      Your cash reserves are projected to fall below your safety buffer of {formatCurrency(safetyBuffer)} in month {projection.findIndex(month => month.runningCash < safetyBuffer) + 1} ({getMonthName(projection.findIndex(month => month.runningCash < safetyBuffer))}).
                       Consider reducing expenses or securing additional funding.
                     </p>
                   </div>
@@ -573,8 +748,28 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               </div>
             )}
             
-            {impact.monthlyImpact < 0 && Math.abs(impact.monthlyImpact) > financialData.currentCashFlow * 0.3 && (
+            {/* Seasonal Risk Warning */}
+            {projection.some(month => month.seasonalFactor < 0.85) && (
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <div className="flex items-start">
+                  <AlertTriangle className="w-5 h-5 text-yellow-600 mr-2 mt-0.5" />
+                  <div>
+                    <h4 className="font-medium text-yellow-800">Seasonal Low Period Detected</h4>
+                    <p className="text-sm text-yellow-700 mt-1">
+                      Your business shows significant seasonal variation with low periods in {
+                        projection.filter(month => month.seasonalFactor < 0.85)
+                          .map(month => getMonthName(month.month - 1))
+                          .join(', ')
+                      }. 
+                      Consider building additional reserves before these periods.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {impact.monthlyImpact < 0 && Math.abs(impact.monthlyImpact) > financialData.currentCashFlow * 0.3 && (
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4">
                 <div className="flex items-start">
                   <AlertTriangle className="w-5 h-5 text-yellow-600 mr-2 mt-0.5" />
                   <div>
@@ -637,6 +832,29 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                 <button className="text-xs flex items-center text-purple-700 hover:text-purple-800">
                   Apply to simulation <ArrowRight className="w-3 h-3 ml-1" />
                 </button>
+              </div>
+            </div>
+            
+            {/* Seasonal Strategy */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <h4 className="font-medium text-blue-800 mb-2">Seasonal Strategy</h4>
+              <p className="text-xs text-blue-700 mb-3">
+                Your business shows strong seasonal patterns with peaks in {getMonthName(3)} and {getMonthName(11)}-{getMonthName(0)}, 
+                and lows in {getMonthName(6)}-{getMonthName(7)}.
+              </p>
+              <div className="space-y-2">
+                <div className="flex items-start">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5 mr-2"></div>
+                  <p className="text-xs text-blue-700">Build cash reserves during peak months ({getMonthName(3)}, {getMonthName(11)}-{getMonthName(0)})</p>
+                </div>
+                <div className="flex items-start">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5 mr-2"></div>
+                  <p className="text-xs text-blue-700">Reduce discretionary spending before low season ({getMonthName(5)}-{getMonthName(6)})</p>
+                </div>
+                <div className="flex items-start">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5 mr-2"></div>
+                  <p className="text-xs text-blue-700">Consider seasonal promotions to boost low-season revenue</p>
+                </div>
               </div>
             </div>
             
@@ -724,7 +942,7 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {Array.from({ length: timeHorizon }, (_, i) => (
-                    <option key={i+1} value={i+1}>Month {i+1}</option>
+                    <option key={i+1} value={i+1}>Month {i+1} ({getMonthName(i)})</option>
                   ))}
                 </select>
               </div>
