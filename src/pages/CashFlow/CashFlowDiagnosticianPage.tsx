@@ -49,7 +49,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
     depreciation: 100000,
     interestPaid: 176000,
     totalAssets: 5014000,
-    cash: 0,
+    cash: 48920, // Updated to match Liquidity Guardian's total cash amount
     accountsReceivable: 1443000,
     inventory: 1550000,
     totalCurrentAssets: 3064000,
@@ -66,6 +66,9 @@ const CashFlowDiagnosticianPage: React.FC = () => {
     
     // For cash flow calculation
     distributions: 150000, // Dividends from 2018
+    
+    // Monthly expenses (estimated)
+    monthlyExpenses: (6612000 - 1917500 + 1917500 - 701300) / 12, // (COGS + OpEx) / 12
   };
 
   // Calculate metrics based on the financial data
@@ -94,12 +97,10 @@ const CashFlowDiagnosticianPage: React.FC = () => {
     const burnRate = dailyCashFlow < 0 ? Math.abs(dailyCashFlow) : 0;
     
     // Cash reserve ratio (months of expenses covered by cash)
-    // Since cash is 0, this would be 0, but we'll use a small value to avoid division by zero
-    const effectiveCash = financialData.cash > 0 ? financialData.cash : 10000; // Assuming some minimal cash
-    const cashReserveRatio = effectiveCash / monthlyExpenses;
+    const cashReserveRatio = financialData.cash / monthlyExpenses;
     
     // Runway (days of cash left at current burn rate)
-    const runway = burnRate > 0 ? effectiveCash / burnRate : 0;
+    const runway = burnRate > 0 ? financialData.cash / burnRate : 0;
     
     // Gross profit to cash conversion
     const grossProfitToCashConversion = estimatedOperatingCashFlow / financialData.grossMargin;
@@ -193,10 +194,10 @@ const CashFlowDiagnosticianPage: React.FC = () => {
     },
     { 
       category: 'Cash', 
-      issue: 'Zero cash reserves', 
+      issue: 'Low cash reserves', 
       impact: `${formatCurrency(financialData.monthlyExpenses * 0.05)}/month`, 
-      severity: 'critical',
-      details: 'No cash reserves creates high liquidity risk and potential emergency borrowing costs'
+      severity: 'medium',
+      details: `Current cash reserves of ${formatCurrency(financialData.cash)} only cover ${calculatedMetrics.cashReserveRatio.toFixed(1)} months of expenses, below recommended 3-6 month buffer`
     },
     { 
       category: 'Payables', 
@@ -213,57 +214,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
       details: `Interest expense of ${formatCurrency(financialData.interestPaid)} annually represents a significant cash outflow that could be reduced through refinancing`
     }
   ];
-
-  // Mock cash flow data
-  const mockCashFlowData: CashFlowData = {
-    id: 'cf-001',
-    companyId: 'company-001',
-    period: '2025-01',
-    startDate: '2025-01-01',
-    endDate: '2025-01-31',
-    operatingCashFlow: {
-      receipts: [
-        { id: '1', category: 'Sales', description: 'Product sales', amount: 150000, date: '2025-01-15', type: 'inflow', source: 'actual', confidence: 0.95, tags: ['revenue'] },
-        { id: '2', category: 'Services', description: 'Consulting services', amount: 45000, date: '2025-01-20', type: 'inflow', source: 'actual', confidence: 0.9, tags: ['revenue'] }
-      ],
-      payments: [
-        { id: '3', category: 'Payroll', description: 'Employee salaries', amount: 80000, date: '2025-01-31', type: 'outflow', source: 'actual', confidence: 1.0, tags: ['expense'] },
-        { id: '4', category: 'Rent', description: 'Office rent', amount: 15000, date: '2025-01-01', type: 'outflow', source: 'actual', confidence: 1.0, tags: ['expense'] }
-      ],
-      netOperating: 100000
-    },
-    investingCashFlow: {
-      receipts: [],
-      payments: [
-        { id: '5', category: 'Equipment', description: 'New computers', amount: 25000, date: '2025-01-10', type: 'outflow', source: 'actual', confidence: 1.0, tags: ['capex'] }
-      ],
-      netInvesting: -25000
-    },
-    financingCashFlow: {
-      receipts: [],
-      payments: [
-        { id: '6', category: 'Loan Payment', description: 'Monthly loan payment', amount: 5000, date: '2025-01-15', type: 'outflow', source: 'actual', confidence: 1.0, tags: ['debt'] }
-      ],
-      netFinancing: -5000
-    },
-    openingBalance: 120000,
-    closingBalance: 190000,
-    netCashFlow: 70000,
-    forecast: [
-      {
-        period: '2025-02',
-        projectedInflow: 180000,
-        projectedOutflow: 110000,
-        projectedBalance: 260000,
-        confidence: 0.85,
-        scenarios: { optimistic: 280000, realistic: 260000, pessimistic: 240000 },
-        assumptions: ['Seasonal uptick in sales', 'No major expenses planned']
-      }
-    ],
-    lastUpdated: new Date().toISOString(),
-    dataQuality: 'high',
-    confidence: 0.92
-  };
 
   // One Percent Fix data with exact values from the image
   const onePercentFixData = [
@@ -337,12 +287,12 @@ const CashFlowDiagnosticianPage: React.FC = () => {
       details: 'Reduce inventory days from 120 to 60 days through demand forecasting, vendor-managed inventory, and ABC analysis'
     },
     { 
-      priority: 'critical', 
+      priority: 'medium', 
       action: 'Establish minimum cash reserve policy', 
       impact: 'Risk mitigation', 
       timeframe: 'Immediate',
       difficulty: 'medium',
-      details: 'Implement policy to maintain cash reserves equal to at least 1 month of operating expenses'
+      details: 'Implement policy to maintain cash reserves equal to at least 3 months of operating expenses'
     },
     { 
       priority: 'medium', 
@@ -388,6 +338,57 @@ const CashFlowDiagnosticianPage: React.FC = () => {
 
   const handleFYEndingDateChange = () => {
     runAnalysis();
+  };
+
+  // Mock cash flow data
+  const mockCashFlowData: CashFlowData = {
+    id: 'cf-001',
+    companyId: 'company-001',
+    period: '2025-01',
+    startDate: '2025-01-01',
+    endDate: '2025-01-31',
+    operatingCashFlow: {
+      receipts: [
+        { id: '1', category: 'Sales', description: 'Product sales', amount: 150000, date: '2025-01-15', type: 'inflow', source: 'actual', confidence: 0.95, tags: ['revenue'] },
+        { id: '2', category: 'Services', description: 'Consulting services', amount: 45000, date: '2025-01-20', type: 'inflow', source: 'actual', confidence: 0.9, tags: ['revenue'] }
+      ],
+      payments: [
+        { id: '3', category: 'Payroll', description: 'Employee salaries', amount: 80000, date: '2025-01-31', type: 'outflow', source: 'actual', confidence: 1.0, tags: ['expense'] },
+        { id: '4', category: 'Rent', description: 'Office rent', amount: 15000, date: '2025-01-01', type: 'outflow', source: 'actual', confidence: 1.0, tags: ['expense'] }
+      ],
+      netOperating: 100000
+    },
+    investingCashFlow: {
+      receipts: [],
+      payments: [
+        { id: '5', category: 'Equipment', description: 'New computers', amount: 25000, date: '2025-01-10', type: 'outflow', source: 'actual', confidence: 1.0, tags: ['capex'] }
+      ],
+      netInvesting: -25000
+    },
+    financingCashFlow: {
+      receipts: [],
+      payments: [
+        { id: '6', category: 'Loan Payment', description: 'Monthly loan payment', amount: 5000, date: '2025-01-15', type: 'outflow', source: 'actual', confidence: 1.0, tags: ['debt'] }
+      ],
+      netFinancing: -5000
+    },
+    openingBalance: 120000,
+    closingBalance: 190000,
+    netCashFlow: 70000,
+    forecast: [
+      {
+        period: '2025-02',
+        projectedInflow: 180000,
+        projectedOutflow: 110000,
+        projectedBalance: 260000,
+        confidence: 0.85,
+        scenarios: { optimistic: 280000, realistic: 260000, pessimistic: 240000 },
+        assumptions: ['Seasonal uptick in sales', 'No major expenses planned']
+      }
+    ],
+    lastUpdated: new Date().toISOString(),
+    dataQuality: 'high',
+    confidence: 0.92
   };
 
   const getStatusColor = (status: string) => {
