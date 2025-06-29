@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { 
   Calculator, 
   TrendingUp, 
-  TrendingDown, 
   AlertTriangle, 
   DollarSign, 
   Calendar, 
@@ -12,7 +11,8 @@ import {
   ArrowRight, 
   CheckCircle, 
   RefreshCw,
-  BarChart3
+  BarChart3,
+  TrendingDown
 } from "lucide-react";
 
 interface ScenarioStressTesterProps {
@@ -45,34 +45,34 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
       name: "Rent Increase",
       type: "expense",
       description: "Rent increase of 20%",
-      monthlyImpact: -3700, // 20% of 8000
+      monthlyImpact: -1600, // 20% of 8000
       oneTimeImpact: 0,
       startMonth: 1,
       active: false,
     },
     {
       id: "new-hire",
-      name: "New Hire",
+      name: "New Staff Hire",
       type: "expense",
       description: "Hiring additional chef",
-      monthlyImpact: -5850,
+      monthlyImpact: -3500,
       oneTimeImpact: -1000, // Onboarding costs
       startMonth: 1,
       active: false,
     },
     {
       id: "equipment-purchase",
-      name: "Big Purchase",
+      name: "Equipment Purchase",
       type: "expense",
       description: "New commercial oven (24-month financing)",
-      monthlyImpact: -3750, // $15,000 over 24 months
+      monthlyImpact: -625, // $15,000 over 24 months
       oneTimeImpact: -3000, // Down payment
       startMonth: 2,
       active: false,
     },
     {
       id: "price-increase",
-      name: "Price Increase",
+      name: "Menu Price Increase",
       type: "revenue",
       description: "8% across-the-board price increase",
       monthlyImpact: 6800, // 8% of monthly revenue
@@ -107,6 +107,13 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
   };
   
   const [safetyBuffer, setSafetyBuffer] = useState(calculateDefaultSafetyBuffer());
+
+  // Resilience score calculation
+  const calculateResilienceScore = (cashFlow: number, reserves: number) => {
+    // Simple formula: higher is better, max 100
+    const score = Math.min(100, Math.max(0, 50 + (cashFlow / 1000) + (reserves / 10000)));
+    return Math.round(score);
+  };
 
   // Toggle scenario active state
   const toggleScenario = (id: string) => {
@@ -176,52 +183,28 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
     };
   };
 
-  // Generate cash flow projection with seasonal patterns
+  // Generate cash flow projection
   const generateProjection = () => {
     const impact = calculateScenarioImpact();
     const projection = [];
-    
-    // Start with current cash balance from Liquidity Guardian (48,920)
-    let runningCash = 48920;
-    
-    // Seasonal factors based on historical data (derived from the financial data)
-    // The data shows revenue growth from 2015-2018 with seasonal patterns
-    const seasonalFactors = [
-      0.85,  // Month 1 (lower season)
-      0.90,  // Month 2 (building up)
-      1.10,  // Month 3 (high season)
-      1.20,  // Month 4 (peak season)
-      1.05,  // Month 5 (tapering off)
-      0.90,  // Month 6 (returning to normal)
-      0.80,  // Month 7
-      0.75,  // Month 8
-      0.85,  // Month 9
-      0.95,  // Month 10
-      1.15,  // Month 11 (holiday season)
-      1.25   // Month 12 (peak holiday season)
-    ];
+    let runningCash = financialData.currentCashFlow * 3; // Starting with 3 months of cash reserves
     
     for (let month = 1; month <= timeHorizon; month++) {
-      // Apply seasonal factor to monthly cash flow
-      const seasonalIndex = (month - 1) % 12;
-      const seasonalFactor = seasonalFactors[seasonalIndex];
-      
-      // Base monthly cash flow with seasonal adjustment
-      const seasonalCashFlow = impact.newMonthlyCashFlow * seasonalFactor;
+      // Apply monthly cash flow
+      const monthCashFlow = impact.newMonthlyCashFlow;
       
       // Apply one-time costs for this month
       const oneTimeCost = impact.oneTimeImpacts[month] || 0;
       
       // Update running cash
-      runningCash = runningCash + seasonalCashFlow + oneTimeCost;
+      runningCash = runningCash + monthCashFlow + oneTimeCost;
       
       projection.push({
         month,
-        cashFlow: seasonalCashFlow,
+        cashFlow: monthCashFlow,
         oneTimeCost,
         runningCash,
-        status: runningCash > safetyBuffer ? 'healthy' : 'critical',
-        seasonalFactor
+        status: runningCash > safetyBuffer ? 'healthy' : 'critical'
       });
     }
     
@@ -230,6 +213,25 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
 
   const projection = generateProjection();
   const impact = calculateScenarioImpact();
+  
+  // Calculate resilience scores
+  const currentResilienceScore = calculateResilienceScore(
+    financialData.currentCashFlow, 
+    financialData.currentCashFlow * 3 // Starting cash reserves
+  );
+  
+  const projectedResilienceScore = calculateResilienceScore(
+    impact.newMonthlyCashFlow,
+    projection[projection.length - 1].runningCash
+  );
+
+  // Calculate affordability thresholds
+  const affordabilityThresholds = {
+    maxRent: formatCurrency(financialData.currentRent * 1.2), // 20% more than current rent
+    maxSalary: formatCurrency(financialData.averageSalary * 1.5), // 50% more than average salary
+    maxEquipment: formatCurrency(financialData.currentCashFlow * 12 * 0.2), // 20% of annual cash flow
+    maxMonthlyCommitment: formatCurrency(financialData.currentCashFlow * 0.3), // 30% of monthly cash flow
+  };
   
   // Update safety buffer when months change
   const updateSafetyBufferMonths = (months: number) => {
@@ -242,63 +244,13 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
     setSafetyBuffer(newBuffer);
   };
 
-  // Calculate affordability thresholds
-  const affordabilityThresholds = {
-    maxRent: formatCurrency(financialData.currentRent * 1.2), // 20% more than current rent
-    maxSalary: formatCurrency(financialData.averageSalary * 1.5), // 50% more than average salary
-    maxEquipment: formatCurrency(financialData.currentCashFlow * 12 * 0.2), // 20% of annual cash flow
-    maxMonthlyCommitment: formatCurrency(financialData.currentCashFlow * 0.3), // 30% of monthly cash flow
-  };
-
-  // Get month name for x-axis labels
-  const getMonthName = (monthIndex: number) => {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const targetMonth = (currentMonth + monthIndex) % 12;
-    return months[targetMonth];
-  };
-
   return (
     <div className="space-y-6">
-      {/* Affordability Thresholds - Horizontal Panel */}
-      <div className="bg-white rounded-lg p-6 border border-gray-200">
-        <div className="flex items-center mb-4">
-          <Target className="w-5 h-5 text-green-600 mr-2" />
-          <h3 className="text-lg font-semibold text-gray-900">Affordability Thresholds</h3>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="flex flex-col">
-            <span className="text-sm font-medium text-gray-700 mb-1">Max Sustainable Rent</span>
-            <span className="text-xl font-bold text-green-600">{affordabilityThresholds.maxRent}/mo</span>
-            <span className="text-xs text-gray-500 mt-1">Current: {formatCurrency(financialData.currentRent)}/mo</span>
-          </div>
-          
-          <div className="flex flex-col">
-            <span className="text-sm font-medium text-gray-700 mb-1">Max New Salary</span>
-            <span className="text-xl font-bold text-blue-600">{affordabilityThresholds.maxSalary}/mo</span>
-            <span className="text-xs text-gray-500 mt-1">Per new hire capacity</span>
-          </div>
-          
-          <div className="flex flex-col">
-            <span className="text-sm font-medium text-gray-700 mb-1">Max Equipment Purchase</span>
-            <span className="text-xl font-bold text-purple-600">{affordabilityThresholds.maxEquipment}</span>
-            <span className="text-xs text-gray-500 mt-1">One-time purchase limit</span>
-          </div>
-          
-          <div className="flex flex-col">
-            <span className="text-sm font-medium text-gray-700 mb-1">Max Monthly Commitment</span>
-            <span className="text-xl font-bold text-orange-600">{affordabilityThresholds.maxMonthlyCommitment}/mo</span>
-            <span className="text-xs text-gray-500 mt-1">Any recurring expense</span>
-          </div>
-        </div>
-      </div>
-      
       {/* Main layout with 3 columns */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column - Scenario Setup Panel */}
-        <div className="lg:col-span-3 space-y-6">
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <div className="lg:col-span-3 space-y-6 flex flex-col">
+          <div className="bg-white rounded-lg p-6 border border-gray-200 flex-grow">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <Target className="w-5 h-5 text-blue-600 mr-2" />
               Scenario Setup
@@ -388,6 +340,48 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               </div>
             </div>
             
+            {/* Resilience Score */}
+            <div className="mb-6">
+              <h4 className="font-medium text-gray-900 mb-2">Resilience Score</h4>
+              <div className="bg-gray-100 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-gray-600">Current</span>
+                  <span className="text-lg font-bold text-gray-900">{currentResilienceScore}/100</span>
+                </div>
+                <div className="w-full bg-gray-300 rounded-full h-2.5">
+                  <div 
+                    className={`h-2.5 rounded-full ${
+                      currentResilienceScore > 75 ? 'bg-green-500' : 
+                      currentResilienceScore > 50 ? 'bg-yellow-500' : 
+                      'bg-red-500'
+                    }`} 
+                    style={{ width: `${currentResilienceScore}%` }}
+                  ></div>
+                </div>
+                
+                <div className="flex items-center justify-between mt-4 mb-2">
+                  <span className="text-sm text-gray-600">Projected</span>
+                  <span className={`text-lg font-bold ${
+                    projectedResilienceScore > 75 ? 'text-green-600' : 
+                    projectedResilienceScore > 50 ? 'text-yellow-600' : 
+                    'text-red-600'
+                  }`}>
+                    {projectedResilienceScore}/100
+                  </span>
+                </div>
+                <div className="w-full bg-gray-300 rounded-full h-2.5">
+                  <div 
+                    className={`h-2.5 rounded-full ${
+                      projectedResilienceScore > 75 ? 'bg-green-500' : 
+                      projectedResilienceScore > 50 ? 'bg-yellow-500' : 
+                      'bg-red-500'
+                    }`} 
+                    style={{ width: `${projectedResilienceScore}%` }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+            
             {/* Run Simulation Button */}
             <button
               onClick={() => {
@@ -400,6 +394,39 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               <RefreshCw className="w-4 h-4 mr-2" />
               Run Simulation
             </button>
+          </div>
+          
+          {/* Affordability Thresholds */}
+          <div className="bg-white rounded-lg p-6 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <Target className="w-5 h-5 text-green-600 mr-2" />
+              Affordability Thresholds
+            </h3>
+            <div className="grid grid-cols-4 gap-3">
+              <div className="bg-green-50 rounded-lg p-3 border border-green-200">
+                <div className="text-sm text-green-700 mb-1">Max Sustainable Rent</div>
+                <div className="text-xl font-bold text-green-800">{affordabilityThresholds.maxRent}/mo</div>
+                <div className="text-xs text-green-600">Current: {formatCurrency(financialData.currentRent)}/mo</div>
+              </div>
+              
+              <div className="bg-blue-50 rounded-lg p-3 border border-blue-200">
+                <div className="text-sm text-blue-700 mb-1">Max New Salary</div>
+                <div className="text-xl font-bold text-blue-800">{affordabilityThresholds.maxSalary}/mo</div>
+                <div className="text-xs text-blue-600">Per new hire capacity</div>
+              </div>
+              
+              <div className="bg-purple-50 rounded-lg p-3 border border-purple-200">
+                <div className="text-sm text-purple-700 mb-1">Max Equipment Purchase</div>
+                <div className="text-xl font-bold text-purple-800">{affordabilityThresholds.maxEquipment}</div>
+                <div className="text-xs text-purple-600">One-time purchase limit</div>
+              </div>
+              
+              <div className="bg-orange-50 rounded-lg p-3 border border-orange-200">
+                <div className="text-sm text-orange-700 mb-1">Max Monthly Commitment</div>
+                <div className="text-xl font-bold text-orange-800">{affordabilityThresholds.maxMonthlyCommitment}/mo</div>
+                <div className="text-xs text-orange-600">Any recurring expense</div>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -421,28 +448,28 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                     <span className="text-xs text-gray-600">Current</span>
                   </div>
                   <div className="flex items-center">
-                    <div className="w-3 h-3 bg-green-500 rounded-full mr-1"></div>
+                    <div className="w-3 h-3 bg-red-500 rounded-full mr-1"></div>
                     <span className="text-xs text-gray-600">Projected</span>
                   </div>
                 </div>
               </div>
               
               <div className="relative h-16 flex items-center">
-                {/* Current Cash Flow Bar - Make this smaller than projected */}
+                {/* Current Cash Flow Bar */}
                 <div className="absolute top-0 left-0 h-8 bg-blue-100 rounded-lg w-full">
                   <div 
                     className="h-8 bg-blue-500 rounded-lg"
-                    style={{ width: `${Math.min(100, Math.max(0, (financialData.currentCashFlow / (financialData.currentCashFlow * 2)) * 70))}%` }}
+                    style={{ width: `${Math.min(100, Math.max(0, (financialData.currentCashFlow / (financialData.currentCashFlow * 2)) * 100))}%` }}
                   ></div>
                   <div className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 text-white font-bold">
                     {formatCurrency(financialData.currentCashFlow)}/mo
                   </div>
                 </div>
                 
-                {/* Projected Cash Flow Bar - Make this larger than current */}
-                <div className="absolute bottom-0 left-0 h-8 bg-green-100 rounded-lg w-full">
+                {/* Projected Cash Flow Bar */}
+                <div className="absolute bottom-0 left-0 h-8 bg-red-100 rounded-lg w-full">
                   <div 
-                    className="h-8 bg-green-500 rounded-lg"
+                    className={`h-8 ${impact.newMonthlyCashFlow >= 0 ? 'bg-green-500' : 'bg-red-500'} rounded-lg`}
                     style={{ width: `${Math.min(100, Math.max(0, (Math.abs(impact.newMonthlyCashFlow) / (financialData.currentCashFlow * 2)) * 100))}%` }}
                   ></div>
                   <div className="absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 text-white font-bold">
@@ -452,165 +479,7 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               </div>
             </div>
             
-            {/* 6-Month Cash Flow Projection Graph */}
-            <div className="mb-6">
-              <h4 className="font-medium text-gray-900 mb-3 flex items-center">
-                <Calendar className="w-4 h-4 mr-2" />
-                {timeHorizon}-Month Cash Flow Projection
-              </h4>
-              
-              <div className="relative h-64 w-full bg-gray-50 border border-gray-200 rounded-lg p-4">
-                {/* Y-axis labels */}
-                <div className="absolute left-0 top-0 bottom-0 w-12 flex flex-col justify-between text-xs text-gray-500 py-2">
-                  <div>{formatCurrency(Math.max(...projection.map(p => p.runningCash)) * 1.1).slice(0, -3)}K</div>
-                  <div>{formatCurrency(Math.max(...projection.map(p => p.runningCash)) * 0.75).slice(0, -3)}K</div>
-                  <div>{formatCurrency(Math.max(...projection.map(p => p.runningCash)) * 0.5).slice(0, -3)}K</div>
-                  <div>{formatCurrency(Math.max(...projection.map(p => p.runningCash)) * 0.25).slice(0, -3)}K</div>
-                  <div>{formatCurrency(0)}</div>
-                </div>
-                
-                {/* Graph area */}
-                <div className="absolute left-12 right-4 top-2 bottom-6 bg-white rounded border border-gray-100">
-                  {/* Horizontal grid lines */}
-                  <div className="absolute left-0 right-0 top-1/4 border-t border-gray-100"></div>
-                  <div className="absolute left-0 right-0 top-2/4 border-t border-gray-100"></div>
-                  <div className="absolute left-0 right-0 top-3/4 border-t border-gray-100"></div>
-                  
-                  {/* Safety buffer line */}
-                  <div 
-                    className="absolute left-0 right-0 border-t-2 border-dashed border-yellow-400"
-                    style={{ 
-                      top: `${100 - (safetyBuffer / Math.max(...projection.map(p => p.runningCash))) * 100}%` 
-                    }}
-                  >
-                    <div className="absolute -top-6 right-0 bg-yellow-50 px-2 py-1 rounded text-xs text-yellow-600 font-medium">
-                      Buffer: {formatCurrency(safetyBuffer)}
-                    </div>
-                  </div>
-                  
-                  {/* Cash flow line - DOTTED LINE for projected cash balance */}
-                  <svg className="absolute inset-0 w-full h-full overflow-visible">
-                    {/* Area under the line */}
-                    <defs>
-                      <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                        <stop offset="0%" stopColor="rgba(59, 130, 246, 0.2)" />
-                        <stop offset="100%" stopColor="rgba(59, 130, 246, 0)" />
-                      </linearGradient>
-                    </defs>
-                    
-                    {/* Area fill */}
-                    <path 
-                      d={`
-                        M0,${100 - (projection[0].runningCash / Math.max(...projection.map(p => p.runningCash))) * 100}
-                        ${projection.map((point, i) => 
-                          `L${(i / (projection.length - 1)) * 100},${100 - (point.runningCash / Math.max(...projection.map(p => p.runningCash))) * 100}`
-                        ).join(' ')}
-                        L100,100 L0,100 Z
-                      `}
-                      fill="url(#areaGradient)"
-                    />
-                    
-                    {/* Dotted Line for projected cash balance */}
-                    <path 
-                      d={`
-                        M0,${100 - (projection[0].runningCash / Math.max(...projection.map(p => p.runningCash))) * 100}
-                        ${projection.map((point, i) => 
-                          `L${(i / (projection.length - 1)) * 100},${100 - (point.runningCash / Math.max(...projection.map(p => p.runningCash))) * 100}`
-                        ).join(' ')}
-                      `}
-                      fill="none"
-                      stroke="#3b82f6"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeDasharray="6,4"
-                    />
-                    
-                    {/* Data points */}
-                    {projection.map((point, i) => (
-                      <circle 
-                        key={i}
-                        cx={`${(i / (projection.length - 1)) * 100}%`}
-                        cy={`${100 - (point.runningCash / Math.max(...projection.map(p => p.runningCash))) * 100}%`}
-                        r="4"
-                        fill={point.runningCash < safetyBuffer ? "#ef4444" : "#3b82f6"}
-                        stroke="#fff"
-                        strokeWidth="1"
-                      />
-                    ))}
-                    
-                    {/* One-time cost indicators */}
-                    {projection.map((point, i) => point.oneTimeCost !== 0 && (
-                      <g key={`cost-${i}`}>
-                        <line 
-                          x1={`${(i / (projection.length - 1)) * 100}%`}
-                          y1={`${100 - (point.runningCash / Math.max(...projection.map(p => p.runningCash))) * 100}%`}
-                          x2={`${(i / (projection.length - 1)) * 100}%`}
-                          y2={`${100 - ((point.runningCash - point.oneTimeCost) / Math.max(...projection.map(p => p.runningCash))) * 100}%`}
-                          stroke="#ef4444"
-                          strokeWidth="2"
-                          strokeDasharray="4"
-                        />
-                        <circle 
-                          cx={`${(i / (projection.length - 1)) * 100}%`}
-                          cy={`${100 - ((point.runningCash - point.oneTimeCost) / Math.max(...projection.map(p => p.runningCash))) * 100}%`}
-                          r="3"
-                          fill="#ef4444"
-                        />
-                      </g>
-                    ))}
-                  </svg>
-                  
-                  {/* Tooltips for data points */}
-                  {projection.map((point, i) => (
-                    <div 
-                      key={`tooltip-${i}`}
-                      className="absolute bg-white border border-gray-200 rounded shadow-md px-2 py-1 text-xs pointer-events-none opacity-0 hover:opacity-100 transition-opacity"
-                      style={{ 
-                        left: `${(i / (projection.length - 1)) * 100}%`, 
-                        top: `${100 - (point.runningCash / Math.max(...projection.map(p => p.runningCash))) * 100}%`,
-                        transform: 'translate(-50%, -130%)'
-                      }}
-                    >
-                      <div className="font-bold">{formatCurrency(point.runningCash)}</div>
-                      <div>Month {point.month} ({getMonthName(point.month - 1)})</div>
-                      {point.oneTimeCost !== 0 && (
-                        <div className="text-red-600">One-time: {formatCurrency(point.oneTimeCost)}</div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                
-                {/* X-axis labels */}
-                <div className="absolute left-12 right-4 bottom-0 h-6 flex justify-between text-xs text-gray-500">
-                  {projection.map((point, i) => (
-                    i % Math.max(1, Math.floor(projection.length / 6)) === 0 && (
-                      <div key={`x-label-${i}`} className="text-center" style={{ width: `${100 / Math.min(6, projection.length)}%` }}>
-                        {getMonthName(point.month - 1)}
-                      </div>
-                    )
-                  ))}
-                </div>
-              </div>
-              
-              {/* Legend */}
-              <div className="flex justify-between items-center text-xs text-gray-600 mt-2">
-                <div className="flex items-center">
-                  <div className="w-8 h-1 bg-blue-500 border-0 border-blue-500 border-dashed mr-1"></div>
-                  <span>Projected Cash Balance</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-3 h-3 bg-yellow-400 rounded-full mr-1"></div>
-                  <span>Safety Buffer</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-3 h-3 bg-red-500 rounded-full mr-1"></div>
-                  <span>Risk Zone</span>
-                </div>
-              </div>
-            </div>
-            
-            {/* 6-Month Cash Flow Projection Table */}
+            {/* 6-Month Cash Flow Projection */}
             <div>
               <h4 className="font-medium text-gray-900 mb-3 flex items-center">
                 <Calendar className="w-4 h-4 mr-2" />
@@ -630,9 +499,7 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                   <tbody className="divide-y divide-gray-100">
                     {projection.map((month) => (
                       <tr key={month.month} className={month.status === 'critical' ? 'bg-red-50' : ''}>
-                        <td className="py-2 px-3 font-medium text-gray-900">
-                          Month {month.month} ({getMonthName(month.month - 1)})
-                        </td>
+                        <td className="py-2 px-3 font-medium text-gray-900">Month {month.month}</td>
                         <td className="py-2 px-3 text-center">
                           <span className={month.cashFlow >= 0 ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'}>
                             {formatCurrency(month.cashFlow)}
@@ -685,11 +552,15 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                 <div className="text-sm text-gray-600 mb-1">Risk Level</div>
                 <div className={`text-xl font-bold ${
-                  projection.some(month => month.runningCash < safetyBuffer) ? 'text-red-600' : 'text-green-600'
+                  projectedResilienceScore > 75 ? 'text-green-600' : 
+                  projectedResilienceScore > 50 ? 'text-yellow-600' : 
+                  'text-red-600'
                 }`}>
-                  {projection.some(month => month.runningCash < safetyBuffer) ? 'High' : 'Low'}
+                  {projectedResilienceScore > 75 ? 'Low' : 
+                   projectedResilienceScore > 50 ? 'Medium' : 
+                   'High'}
                 </div>
-                <div className="text-xs text-gray-500">Based on safety buffer</div>
+                <div className="text-xs text-gray-500">Based on resilience score</div>
               </div>
             </div>
             
@@ -701,7 +572,7 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                   <div>
                     <h4 className="font-medium text-red-800">Cash Flow Risk Detected</h4>
                     <p className="text-sm text-red-700 mt-1">
-                      Your cash reserves are projected to fall below your safety buffer of {formatCurrency(safetyBuffer)} in month {projection.findIndex(month => month.runningCash < safetyBuffer) + 1} ({getMonthName(projection.findIndex(month => month.runningCash < safetyBuffer))}).
+                      Your cash reserves are projected to fall below your safety buffer of {formatCurrency(safetyBuffer)} in month {projection.findIndex(month => month.runningCash < safetyBuffer) + 1}.
                       Consider reducing expenses or securing additional funding.
                     </p>
                   </div>
@@ -709,28 +580,8 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               </div>
             )}
             
-            {/* Seasonal Risk Warning */}
-            {projection.some(month => month.seasonalFactor < 0.85) && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <div className="flex items-start">
-                  <AlertTriangle className="w-5 h-5 text-yellow-600 mr-2 mt-0.5" />
-                  <div>
-                    <h4 className="font-medium text-yellow-800">Seasonal Low Period Detected</h4>
-                    <p className="text-sm text-yellow-700 mt-1">
-                      Your business shows significant seasonal variation with low periods in {
-                        projection.filter(month => month.seasonalFactor < 0.85)
-                          .map(month => getMonthName(month.month - 1))
-                          .join(', ')
-                      }. 
-                      Consider building additional reserves before these periods.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-            
             {impact.monthlyImpact < 0 && Math.abs(impact.monthlyImpact) > financialData.currentCashFlow * 0.3 && (
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <div className="flex items-start">
                   <AlertTriangle className="w-5 h-5 text-yellow-600 mr-2 mt-0.5" />
                   <div>
@@ -747,8 +598,8 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
         </div>
         
         {/* Right Column - Contingency Planner */}
-        <div className="lg:col-span-3 space-y-6">
-          <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <div className="lg:col-span-3 space-y-6 flex flex-col">
+          <div className="bg-white rounded-lg p-6 border border-gray-200 flex-grow">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
               <Target className="w-5 h-5 text-purple-600 mr-2" />
               Contingency Planner
@@ -796,29 +647,6 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               </div>
             </div>
             
-            {/* Seasonal Strategy */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <h4 className="font-medium text-blue-800 mb-2">Seasonal Strategy</h4>
-              <p className="text-xs text-blue-700 mb-3">
-                Your business shows strong seasonal patterns with peaks in {getMonthName(3)} and {getMonthName(11)}-{getMonthName(0)}, 
-                and lows in {getMonthName(6)}-{getMonthName(7)}.
-              </p>
-              <div className="space-y-2">
-                <div className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5 mr-2"></div>
-                  <p className="text-xs text-blue-700">Build cash reserves during peak months ({getMonthName(3)}, {getMonthName(11)}-{getMonthName(0)})</p>
-                </div>
-                <div className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5 mr-2"></div>
-                  <p className="text-xs text-blue-700">Reduce discretionary spending before low season ({getMonthName(5)}-{getMonthName(6)})</p>
-                </div>
-                <div className="flex items-start">
-                  <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5 mr-2"></div>
-                  <p className="text-xs text-blue-700">Consider seasonal promotions to boost low-season revenue</p>
-                </div>
-              </div>
-            </div>
-            
             {/* Plan Effectiveness Meter */}
             <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 mb-6">
               <h4 className="font-medium text-gray-900 mb-2">Plan Effectiveness</h4>
@@ -827,11 +655,55 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                 <span className="text-sm font-medium text-gray-900">$2,000 saved</span>
               </div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">Projected Survival</span>
-                <span className="text-sm font-medium text-green-600">6+ months</span>
+                <span className="text-sm text-gray-600">Projected Resilience</span>
+                <span className="text-sm font-medium text-green-600">68/100</span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2.5">
                 <div className="bg-green-500 h-2.5 rounded-full" style={{ width: '68%' }}></div>
+              </div>
+            </div>
+            
+            {/* Export Actions */}
+            <div className="space-y-3">
+              <button className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center">
+                <DollarSign className="w-4 h-4 mr-2" />
+                Export Contingency Plan
+              </button>
+              
+              <button className="w-full py-2 px-4 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center">
+                <Target className="w-4 h-4 mr-2" />
+                Share with Advisor
+              </button>
+            </div>
+          </div>
+          
+          {/* Historical Comparison */}
+          <div className="bg-white rounded-lg p-6 border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <TrendingUp className="w-5 h-5 text-blue-600 mr-2" />
+              Similar Businesses
+            </h3>
+            
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Average Resilience</span>
+                <span className="text-sm font-medium text-gray-900">62/100</span>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Survival Rate</span>
+                <span className="text-sm font-medium text-gray-900">87%</span>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Recovery Time</span>
+                <span className="text-sm font-medium text-gray-900">4.2 months</span>
+              </div>
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <div className="text-xs text-gray-500">
+                Based on data from 120+ similar businesses that faced comparable scenarios
               </div>
             </div>
           </div>
@@ -903,7 +775,7 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   {Array.from({ length: timeHorizon }, (_, i) => (
-                    <option key={i+1} value={i+1}>Month {i+1} ({getMonthName(i)})</option>
+                    <option key={i+1} value={i+1}>Month {i+1}</option>
                   ))}
                 </select>
               </div>
