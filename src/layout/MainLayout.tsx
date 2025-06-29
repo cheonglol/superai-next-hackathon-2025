@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/store";
 import { logout } from "@/store/slices/authSlice";
 import { setSidebarOpen, toggleSidebar } from "@/store/slices/uiSlice";
-import { BarChart3, LogOut, Menu, X } from "lucide-react";
+import { BarChart3, LogOut, Menu, X, FileText, Upload } from "lucide-react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { routes } from "../router";
@@ -22,6 +22,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const dispatch = useAppDispatch();
   const { sidebarOpen } = useAppSelector((state) => state.ui);
   const { user } = useAppSelector((state) => state.auth);
+  const { selectedFile } = useAppSelector((state) => state.dataImport);
 
   const handleLogout = async () => {
     try {
@@ -33,6 +34,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   const navigationItems: NavigationItem[] = routes
     .filter((route) => typeof route.routeObject.path === "string" && route.routeObject.path)
+    .filter((route) => {
+      // Only show AI Agents if there's a selected file
+      if (route.category === "AI Agents" && !selectedFile) {
+        return false;
+      }
+      return true;
+    })
     .map((route) => ({
       path: route.routeObject.path as string,
       icon: route.routeObject.icon || BarChart3,
@@ -50,7 +58,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const handleMenuToggle = () => {
     dispatch(toggleSidebar());
   };
-  
+
   const handleLinkClick = () => {
     dispatch(setSidebarOpen(false));
   };
@@ -94,7 +102,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               <p className="text-sm text-charcoal-200">SME Financial Platform</p>
             </div>
           </div>
-          
+
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
             {/* Dashboard - standalone */}
@@ -116,6 +124,37 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </Link>
               );
             })}
+
+            {/* Import Group */}
+            {groupedItems["Import"] && (
+              <>
+                <div className="pt-6 pb-2">
+                  <div className="flex items-center">
+                    <div className="flex-1 border-t border-charcoal-600"></div>
+                    <span className="px-3 text-xs font-medium text-caribbean_current-300 bg-charcoal-700 uppercase tracking-wider">Import</span>
+                    <div className="flex-1 border-t border-charcoal-600"></div>
+                  </div>
+                </div>
+                {groupedItems["Import"].map((item) => {
+                  const Icon = item.icon;
+                  const isActive = isActivePath(item.path);
+
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      onClick={handleLinkClick}
+                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
+                        isActive ? "bg-caribbean_current-600 text-white shadow-lg" : "text-charcoal-100 hover:bg-charcoal-600 hover:text-white"
+                      }`}
+                    >
+                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-white" : "text-charcoal-200"}`} />
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </>
+            )}
 
             {/* AI Agents Group */}
             {groupedItems["AI Agents"] && (
@@ -148,7 +187,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               </>
             )}
           </nav>
-          
+
           {/* Footer */}
           <div className="px-6 py-4 border-t border-charcoal-600">
             {user && (
@@ -177,8 +216,40 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       {/* Mobile overlay */}
       {sidebarOpen && <div className="fixed inset-0 z-30 bg-black bg-opacity-50 lg:hidden" onClick={() => dispatch(setSidebarOpen(false))} />}
 
-      {/* Main content area - no right sidebar */}
-      <main className="flex-1 min-h-screen bg-gray-100">{children}</main>
+      {/* Main content area */}
+      <div className="flex-1 lg:ml-0">
+        {/* Selected File Indicator */}
+        <div className="bg-white border-b border-gray-200 px-6 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              {selectedFile ? (
+                <>
+                  <FileText className="w-5 h-5 text-green-600 mr-2" />
+                  <div>
+                    <span className="text-sm font-medium text-gray-900">Active Dataset:</span>
+                    <span className="ml-2 text-sm text-green-700 font-semibold">{selectedFile.filename}</span>
+                    <span className="ml-2 text-xs text-gray-500">({selectedFile.record_count} records)</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Upload className="w-5 h-5 text-gray-400 mr-2" />
+                  <div>
+                    <span className="text-sm text-gray-600">No dataset selected.</span>
+                    <Link to="/data-import" className="ml-2 text-sm text-blue-600 hover:text-blue-800 underline">
+                      Go to Data Import page to upload and select a file
+                    </Link>
+                  </div>
+                </>
+              )}
+            </div>
+            {selectedFile && <div className="text-xs text-gray-500">Uploaded: {new Date(selectedFile.upload_date).toLocaleDateString()}</div>}
+          </div>
+        </div>
+
+        {/* Page content */}
+        <div className="h-full">{children}</div>
+      </div>
     </div>
   );
 };

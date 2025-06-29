@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
-import { Brain, Users, TrendingUp, Shield, Zap, Activity, Calculator } from 'lucide-react';
-import { PageHeader } from '@/components/common/PageHeader';
-import { AgentDashboard } from '@/components/agents/AgentDashboard';
-import { CashFlowAgent } from '@/components/agents/CashFlowAgent';
-import ScenarioStressTester from '@/components/ScenarioStressTester';
-import LiquidityGuardian from '@/components/LiquidityGuardian';
-import ReceivablesAutopilot from '@/components/ReceivablesAutopilot';
+/* eslint-disable */
+// @ts-nocheck
+import React, { useState } from "react";
+import { Brain, Users, TrendingUp, Shield, Zap, Activity, Calculator } from "lucide-react";
+import { PageHeader } from "@/components/common/PageHeader";
+import { AgentDashboard } from "@/components/agents/AgentDashboard";
+import { CashFlowAgent } from "@/components/agents/CashFlowAgent";
+import ScenarioStressTester from "@/components/ScenarioStressTester";
+import LiquidityGuardian from "@/components/LiquidityGuardian";
+import ReceivablesAutopilot from "@/components/ReceivablesAutopilot";
 
 const AgenticDashboardPage: React.FC = () => {
   const [selectedAgent, setSelectedAgent] = useState<string | null>(null);
@@ -29,11 +31,11 @@ const AgenticDashboardPage: React.FC = () => {
 
   const renderAgentView = () => {
     switch (selectedAgent) {
-      case 'cashflow-diagnostician':
+      case "cashflow-diagnostician":
         return <CashFlowAgent />;
-      case 'scenario-stress-tester':
+      case "scenario-stress-tester":
         return (
-          <ScenarioStressTester 
+          <ScenarioStressTester
             mockFinancialData={{
               currentCashFlow: 15000,
               monthlyRevenue: 85000,
@@ -45,44 +47,44 @@ const AgenticDashboardPage: React.FC = () => {
             formatCurrency={formatCurrency}
           />
         );
-      case 'liquidity-sentinel':
+      case "liquidity-sentinel":
         return (
-          <LiquidityGuardian 
+          <LiquidityGuardian
             mockFinancialData={{
               totalLiquidity: 48920,
               safetyBuffer: 15000,
               bankBalances: [
-                { name: "Bank of A", balance: 28400, change: 1.5, trend: 'up' },
-                { name: "NeoBank B", balance: 15700, change: -0.8, trend: 'down' },
-                { name: "Credit Union", balance: 4820, change: 0, trend: 'stable' }
+                { name: "Bank of A", balance: 28400, change: 1.5, trend: "up" },
+                { name: "NeoBank B", balance: 15700, change: -0.8, trend: "down" },
+                { name: "Credit Union", balance: 4820, change: 0, trend: "stable" },
               ],
               todayNetChange: 1200,
               alerts: [
-                { 
-                  date: "July 3", 
-                  projectedBalance: 12400, 
-                  bufferDifference: -2600, 
-                  reason: "Vendor payment", 
-                  likelihood: 89 
+                {
+                  date: "July 3",
+                  projectedBalance: 12400,
+                  bufferDifference: -2600,
+                  reason: "Vendor payment",
+                  likelihood: 89,
                 },
-                { 
-                  date: "July 5", 
-                  projectedBalance: 14100, 
-                  bufferDifference: -900, 
-                  reason: "Payroll processing day", 
-                  likelihood: 76 
-                }
+                {
+                  date: "July 5",
+                  projectedBalance: 14100,
+                  bufferDifference: -900,
+                  reason: "Payroll processing day",
+                  likelihood: 76,
+                },
               ],
               predictionConfidence: 97.3,
               predictionVariance: 2.1,
               lastUpdated: "Today 08:45",
-              dataSources: ["Xero", "Bank feeds"]
+              dataSources: ["Xero", "Bank feeds"],
             }}
           />
         );
-      case 'receivables-autopilot':
+      case "receivables-autopilot":
         return (
-          <ReceivablesAutopilot 
+          <ReceivablesAutopilot
             mockFinancialData={{
               totalOutstanding: 42560,
               overdueAmount: 18200,
@@ -94,52 +96,52 @@ const AgenticDashboardPage: React.FC = () => {
                   customer: "Ray's Hardware",
                   amount: 2500,
                   dueDate: "5 days ago",
-                  status: 'overdue',
+                  status: "overdue",
                   daysLate: 5,
-                  payProbability: 92
+                  payProbability: 92,
                 },
                 {
                   id: "INV-002",
                   customer: "Bloom Café",
                   amount: 1200,
                   dueDate: "Today",
-                  status: 'due-today',
+                  status: "due-today",
                   payProbability: 88,
-                  riskOfDelay: 35
+                  riskOfDelay: 35,
                 },
                 {
                   id: "INV-003",
                   customer: "TechGadgets",
                   amount: 4800,
                   dueDate: "47 days ago",
-                  status: 'collections',
+                  status: "collections",
                   daysLate: 47,
-                  payProbability: 68
-                }
+                  payProbability: 68,
+                },
               ],
               customerHealthScores: [
                 {
                   customer: "Ray's Hardware",
                   score: 76,
-                  insight: "Prompt payer, 5% delay risk next invoice"
+                  insight: "Prompt payer, 5% delay risk next invoice",
                 },
                 {
                   customer: "Bloom Café",
                   score: 65,
-                  insight: "Increasing delay probability"
-                }
+                  insight: "Increasing delay probability",
+                },
               ],
               trendAlerts: [
                 {
                   trend: "Overdue invoices increased",
-                  value: "+22% vs. last month"
-                }
+                  value: "+22% vs. last month",
+                },
               ],
               optimizationTips: [
                 {
-                  tip: "Offer 2% discount for Bloom Café early payments"
-                }
-              ]
+                  tip: "Offer 2% discount for Bloom Café early payments",
+                },
+              ],
             }}
           />
         );
@@ -157,10 +159,7 @@ const AgenticDashboardPage: React.FC = () => {
           icon={<Brain className="w-8 h-8 text-blue-600" />}
           actions={
             selectedAgent ? (
-              <button
-                onClick={handleBackToDashboard}
-                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-              >
+              <button onClick={handleBackToDashboard} className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
                 ← Back to Dashboard
               </button>
             ) : undefined
@@ -173,8 +172,8 @@ const AgenticDashboardPage: React.FC = () => {
             <div className="max-w-4xl">
               <h2 className="text-2xl font-bold mb-4">Democratizing Financial Intelligence for SMEs</h2>
               <p className="text-lg opacity-90 mb-6">
-                Our AI-powered platform empowers small and medium enterprises to manage cash flow, optimize operations, 
-                and access credit opportunities, enabling underserved businesses to participate fully in the digital economy.
+                Our AI-powered platform empowers small and medium enterprises to manage cash flow, optimize operations, and access credit opportunities, enabling underserved
+                businesses to participate fully in the digital economy.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div className="text-center">

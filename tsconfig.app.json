@@ -47,7 +47,8 @@
       "@/loaders/*": ["src/loaders/*"],
       "@/store": ["src/store/index"],
       "@/store/*": ["src/store/*"],
-      "@/routes": ["src/router/index"]
+      "@/routes": ["src/router/index"],
+      "@/db/*": ["src/db/*"]
     },
     // "rootDirs": [],                                   /* Allow multiple folders to be treated as one when resolving modules. */
     // "typeRoots": [],                                  /* Specify multiple folders that act like './node_modules/@types'. */

@@ -1,17 +1,14 @@
 import MainLayout from "@/layout/MainLayout";
-import {
-  DashboardPage,
-  ErrorBoundaryPage,
-  LoginPage,
-} from "@/pages";
+import { DashboardPage, ErrorBoundaryPage, LoginPage } from "@/pages";
 import { ReactElement } from "react";
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 import AuthProtectedRouteLogic from "./logic/AuthProtectedRouteLogic";
-import { BarChart3, Activity, TrendingUp, Shield, Zap, Calculator } from "lucide-react";
+import { BarChart3, Activity, Shield, Zap, Calculator, Database } from "lucide-react";
 import CashFlowDiagnosticianPage from "@/pages/CashFlow/CashFlowDiagnosticianPage";
 import ScenarioStressTesterPage from "@/pages/CashFlow/ScenarioStressTrackerPage";
 import LiquidityGuardianPage from "@/pages/CashFlow/LiquidityGuardianPage";
 import ReceivablesAutopilotPage from "@/pages/CashFlow/ReceivablesAutopilotPage";
+import DataImportPage from "@/pages/DataImport/DataImportPage";
 
 const ROOT_PATH = "";
 
@@ -110,6 +107,21 @@ export const routes: ExtendedRouteObject[] = [
       ),
       errorElement: <ErrorBoundaryPage />,
       icon: Zap,
+    },
+  },
+  {
+    title: "Data Import",
+    logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
+    category: "Import",
+    routeObject: {
+      path: `${ROOT_PATH}/data-import`,
+      element: (
+        <MainLayout>
+          <DataImportPage />
+        </MainLayout>
+      ),
+      errorElement: <ErrorBoundaryPage />,
+      icon: Database,
     },
   },
 ];
