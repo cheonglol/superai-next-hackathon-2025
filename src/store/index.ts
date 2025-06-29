@@ -11,6 +11,11 @@ import uiReducer from "./slices/uiSlice";
 import insightsReducer from "./slices/insightsSlice";
 import notificationsReducer from "./slices/notificationsSlice";
 import aiAgentsReducer from "./slices/aiAgentsSlice";
+import cashFlowReducer from "./slices/cashFlowSlice";
+import liquidityGuardianReducer from "./slices/liquidityGuardianSlice";
+import scenarioStressReducer from "./slices/scenarioStressSlice";
+import receivablesAutopilotReducer from "./slices/receivablesAutopilotSlice";
+import dataImportReducer from "./slices/dataImportSlice";
 
 export const store = configureStore({
   reducer: {
@@ -25,6 +30,11 @@ export const store = configureStore({
     insights: insightsReducer,
     notifications: notificationsReducer,
     aiAgents: aiAgentsReducer,
+    cashFlow: cashFlowReducer,
+    liquidityGuardian: liquidityGuardianReducer,
+    scenarioStress: scenarioStressReducer,
+    receivablesAutopilot: receivablesAutopilotReducer,
+    dataImport: dataImportReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
