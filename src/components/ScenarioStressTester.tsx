@@ -45,34 +45,34 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
       name: "Rent Increase",
       type: "expense",
       description: "Rent increase of 20%",
-      monthlyImpact: -1600, // 20% of 8000
+      monthlyImpact: -3700, // 20% of 8000
       oneTimeImpact: 0,
       startMonth: 1,
       active: false,
     },
     {
       id: "new-hire",
-      name: "New Staff Hire",
+      name: "New Hire",
       type: "expense",
       description: "Hiring additional chef",
-      monthlyImpact: -3500,
+      monthlyImpact: -5850,
       oneTimeImpact: -1000, // Onboarding costs
       startMonth: 1,
       active: false,
     },
     {
       id: "equipment-purchase",
-      name: "Equipment Purchase",
+      name: "Big Purchase",
       type: "expense",
       description: "New commercial oven (24-month financing)",
-      monthlyImpact: -625, // $15,000 over 24 months
+      monthlyImpact: -3750, // $15,000 over 24 months
       oneTimeImpact: -3000, // Down payment
       startMonth: 2,
       active: false,
     },
     {
       id: "price-increase",
-      name: "Menu Price Increase",
+      name: "Price Increase",
       type: "revenue",
       description: "8% across-the-board price increase",
       monthlyImpact: 6800, // 8% of monthly revenue
