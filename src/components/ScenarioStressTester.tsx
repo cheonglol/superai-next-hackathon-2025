@@ -590,19 +590,6 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                 <div className="bg-green-500 h-2.5 rounded-full" style={{ width: '68%' }}></div>
               </div>
             </div>
-            
-            {/* Export Actions */}
-            <div className="space-y-3">
-              <button className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center">
-                <DollarSign className="w-4 h-4 mr-2" />
-                Export Contingency Plan
-              </button>
-              
-              <button className="w-full py-2 px-4 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center">
-                <Target className="w-4 h-4 mr-2" />
-                Share with Advisor
-              </button>
-            </div>
           </div>
           
           {/* Historical Comparison */}
