@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TrendingUp, Target, Zap, ArrowUpDown } from "lucide-react";
+import { TrendingUp, Target, Zap, ArrowUpDown, ChevronDown } from "lucide-react";
 
 interface SensitivityAnalysisData {
   scenarios?: Array<{
@@ -30,6 +30,7 @@ interface SensitivityAnalysisProps {
 
 const SensitivityAnalysis: React.FC<SensitivityAnalysisProps> = ({ mockFinancialData, formatCurrency }) => {
   const [sortBy, setSortBy] = useState<"cashFlow" | "profit" | "timeframe" | "difficulty">("cashFlow");
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
 
   // Provide default values if mockFinancialData is undefined
   const financialData = mockFinancialData || {
@@ -298,43 +299,76 @@ const SensitivityAnalysis: React.FC<SensitivityAnalysisProps> = ({ mockFinancial
             <Target className="w-5 h-5 text-purple-600 mr-2" />
             <h3 className="text-lg font-semibold text-gray-900">Corrective Actions</h3>
           </div>
-          <div className="flex items-center">
+          <div className="relative">
             <button 
-              onClick={() => setSortBy("cashFlow")}
-              className={`flex items-center px-3 py-1 rounded-lg text-sm transition-colors mr-2 ${
-                sortBy === "cashFlow" ? "bg-blue-600 text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-              }`}
+              onClick={() => setShowSortDropdown(!showSortDropdown)}
+              className="flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
             >
-              <ArrowUpDown className="w-4 h-4 mr-1" />
-              Cash Flow
+              <ArrowUpDown className="w-4 h-4 mr-2" />
+              Sort by: {sortBy === "cashFlow" ? "Cash Flow Impact" : 
+                        sortBy === "profit" ? "Profit Impact" : 
+                        sortBy === "timeframe" ? "Timeframe" : "Difficulty"}
+              <ChevronDown className="w-4 h-4 ml-2" />
             </button>
-            <button 
-              onClick={() => setSortBy("profit")}
-              className={`flex items-center px-3 py-1 rounded-lg text-sm transition-colors mr-2 ${
-                sortBy === "profit" ? "bg-green-600 text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-              }`}
-            >
-              <ArrowUpDown className="w-4 h-4 mr-1" />
-              Profit
-            </button>
-            <button 
-              onClick={() => setSortBy("timeframe")}
-              className={`flex items-center px-3 py-1 rounded-lg text-sm transition-colors mr-2 ${
-                sortBy === "timeframe" ? "bg-purple-600 text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-              }`}
-            >
-              <ArrowUpDown className="w-4 h-4 mr-1" />
-              Timeframe
-            </button>
-            <button 
-              onClick={() => setSortBy("difficulty")}
-              className={`flex items-center px-3 py-1 rounded-lg text-sm transition-colors ${
-                sortBy === "difficulty" ? "bg-orange-600 text-white" : "bg-gray-100 hover:bg-gray-200 text-gray-700"
-              }`}
-            >
-              <ArrowUpDown className="w-4 h-4 mr-1" />
-              Difficulty
-            </button>
+            
+            {showSortDropdown && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                <ul className="py-1">
+                  <li>
+                    <button
+                      onClick={() => {
+                        setSortBy("cashFlow");
+                        setShowSortDropdown(false);
+                      }}
+                      className={`block px-4 py-2 text-sm w-full text-left ${
+                        sortBy === "cashFlow" ? "bg-blue-50 text-blue-700" : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      Cash Flow Impact
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setSortBy("profit");
+                        setShowSortDropdown(false);
+                      }}
+                      className={`block px-4 py-2 text-sm w-full text-left ${
+                        sortBy === "profit" ? "bg-green-50 text-green-700" : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      Profit Impact
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setSortBy("timeframe");
+                        setShowSortDropdown(false);
+                      }}
+                      className={`block px-4 py-2 text-sm w-full text-left ${
+                        sortBy === "timeframe" ? "bg-purple-50 text-purple-700" : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      Timeframe
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setSortBy("difficulty");
+                        setShowSortDropdown(false);
+                      }}
+                      className={`block px-4 py-2 text-sm w-full text-left ${
+                        sortBy === "difficulty" ? "bg-orange-50 text-orange-700" : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      Difficulty
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
         </div>
         
