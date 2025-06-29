@@ -89,21 +89,30 @@ const CashFlowDiagnosticianPage: React.FC = () => {
 
   // Cash flow metrics
   const cashFlowMetrics = [
-    { name: 'Operating Ratio', value: '0.85', benchmark: '0.80', status: 'good' },
-    { name: 'Working Capital Adequacy', value: '1.75', benchmark: '1.50', status: 'good' },
-    { name: 'Cash Conversion Cycle', value: '32 days', benchmark: '45 days', status: 'good' },
-    { name: 'Burn Rate', value: '$2,500/day', benchmark: '$3,000/day', status: 'good' },
-    { name: 'Cash Flow Coverage Ratio', value: '1.35', benchmark: '1.20', status: 'good' },
-    { name: 'Days Sales Outstanding', value: '38 days', benchmark: '30 days', status: 'warning' },
-    { name: 'Days Payable Outstanding', value: '28 days', benchmark: '30 days', status: 'good' },
-    { name: 'Inventory Turnover', value: '8.5x', benchmark: '10x', status: 'warning' },
-    { name: 'Cash to Current Liabilities', value: '0.65', benchmark: '0.50', status: 'good' },
-    { name: 'Operating Cash Flow Ratio', value: '1.25', benchmark: '1.00', status: 'good' },
-    { name: 'Free Cash Flow Yield', value: '8.5%', benchmark: '5.0%', status: 'good' },
-    { name: 'Cash Flow to Debt Ratio', value: '0.45', benchmark: '0.30', status: 'good' },
-    { name: 'Cash Return on Assets', value: '12.5%', benchmark: '10.0%', status: 'good' },
-    { name: 'Cash to Cash Cycle', value: '42 days', benchmark: '45 days', status: 'good' },
-    { name: 'Cash Flow Margin', value: '15.5%', benchmark: '12.0%', status: 'good' }
+    // Operating Cash Flow Metrics
+    { name: 'Net Operating Cash Flow', value: '$100,000', category: 'operating' },
+    { name: 'Operating Cash Flow Margin (%)', value: '15.5%', category: 'operating' },
+    { name: 'Cash Conversion Cycle (CCC)', value: '32 days', category: 'operating' },
+    { name: 'Cash Flow per Day', value: '$2,500/day', category: 'operating' },
+    
+    // Working Capital Efficiency
+    { name: 'Days Sales Outstanding (DSO)', value: '38 days', category: 'working_capital' },
+    { name: 'Days Inventory Outstanding (DIO)', value: '85 days', category: 'working_capital' },
+    { name: 'Days Payable Outstanding (DPO)', value: '28 days', category: 'working_capital' },
+    { name: 'Working Capital Ratio', value: '1.75', category: 'working_capital' },
+    
+    // Liquidity & Buffer Metrics
+    { name: 'Cash Reserve Ratio', value: '3.2 months', category: 'liquidity' },
+    { name: 'Burn Rate', value: '$2,500/day', category: 'liquidity' },
+    { name: 'Runway', value: '76 days', category: 'liquidity' },
+    
+    // Revenue & Cost Impact Metrics
+    { name: 'Gross Profit to Cash Conversion', value: '0.85', category: 'impact' },
+    { name: 'Profit vs Cash Flow Gap', value: '$12,500', category: 'impact' },
+    { name: 'Cost of Sales to Cash Outflow', value: '0.92', category: 'impact' },
+    
+    // Financing & Debt-Related
+    { name: 'Debt Service Coverage Ratio (DSCR)', value: '1.35', category: 'financing' }
   ];
 
   // Leakage points
@@ -324,6 +333,17 @@ const CashFlowDiagnosticianPage: React.FC = () => {
     return 'text-green-600';
   };
 
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'operating': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'working_capital': return 'bg-green-100 text-green-800 border-green-200';
+      case 'liquidity': return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'impact': return 'bg-amber-100 text-amber-800 border-amber-200';
+      case 'financing': return 'bg-indigo-100 text-indigo-800 border-indigo-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100 p-6">
@@ -445,32 +465,100 @@ const CashFlowDiagnosticianPage: React.FC = () => {
             <div>
               <div className="flex items-center mb-6">
                 <BarChart3 className="w-5 h-5 text-blue-600 mr-2" />
-                <h3 className="text-lg font-semibold text-gray-900">15+ Cash Flow Metrics</h3>
+                <h3 className="text-lg font-semibold text-gray-900">Cash Flow Metrics</h3>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {cashFlowMetrics.map((metric, index) => (
-                  <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-all">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium text-gray-900">{metric.name}</span>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(metric.status)}`}>
-                        {metric.status === 'good' ? 'Good' : metric.status === 'warning' ? 'Needs Attention' : 'Critical'}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
+              {/* Group metrics by category */}
+              <div className="space-y-6">
+                {/* Operating Cash Flow Metrics */}
+                <div>
+                  <h4 className="text-md font-semibold text-blue-800 mb-4 flex items-center">
+                    <DollarSign className="w-4 h-4 mr-2" />
+                    Operating Cash Flow Metrics
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {cashFlowMetrics.filter(metric => metric.category === 'operating').map((metric, index) => (
+                      <div key={index} className="border border-blue-200 rounded-lg p-4 bg-blue-50">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-medium text-blue-800">{metric.name}</span>
+                        </div>
                         <div className="text-xl font-bold text-gray-900">{metric.value}</div>
-                        <div className="text-xs text-gray-600">Benchmark: {metric.benchmark}</div>
                       </div>
-                      {metric.status === 'good' ? 
-                        <CheckCircle className="w-5 h-5 text-green-600" /> : 
-                        metric.status === 'warning' ? 
-                        <AlertTriangle className="w-5 h-5 text-yellow-600" /> : 
-                        <AlertTriangle className="w-5 h-5 text-red-600" />
-                      }
-                    </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+                
+                {/* Working Capital Efficiency */}
+                <div>
+                  <h4 className="text-md font-semibold text-green-800 mb-4 flex items-center">
+                    <BarChart3 className="w-4 h-4 mr-2" />
+                    Working Capital Efficiency
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {cashFlowMetrics.filter(metric => metric.category === 'working_capital').map((metric, index) => (
+                      <div key={index} className="border border-green-200 rounded-lg p-4 bg-green-50">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-medium text-green-800">{metric.name}</span>
+                        </div>
+                        <div className="text-xl font-bold text-gray-900">{metric.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Liquidity & Buffer Metrics */}
+                <div>
+                  <h4 className="text-md font-semibold text-purple-800 mb-4 flex items-center">
+                    <DollarSign className="w-4 h-4 mr-2" />
+                    Liquidity & Buffer Metrics
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {cashFlowMetrics.filter(metric => metric.category === 'liquidity').map((metric, index) => (
+                      <div key={index} className="border border-purple-200 rounded-lg p-4 bg-purple-50">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-medium text-purple-800">{metric.name}</span>
+                        </div>
+                        <div className="text-xl font-bold text-gray-900">{metric.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Revenue & Cost Impact Metrics */}
+                <div>
+                  <h4 className="text-md font-semibold text-amber-800 mb-4 flex items-center">
+                    <TrendingUp className="w-4 h-4 mr-2" />
+                    Revenue & Cost Impact Metrics
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {cashFlowMetrics.filter(metric => metric.category === 'impact').map((metric, index) => (
+                      <div key={index} className="border border-amber-200 rounded-lg p-4 bg-amber-50">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-medium text-amber-800">{metric.name}</span>
+                        </div>
+                        <div className="text-xl font-bold text-gray-900">{metric.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Financing & Debt-Related */}
+                <div>
+                  <h4 className="text-md font-semibold text-indigo-800 mb-4 flex items-center">
+                    <Target className="w-4 h-4 mr-2" />
+                    Financing & Debt-Related
+                  </h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {cashFlowMetrics.filter(metric => metric.category === 'financing').map((metric, index) => (
+                      <div key={index} className="border border-indigo-200 rounded-lg p-4 bg-indigo-50">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-medium text-indigo-800">{metric.name}</span>
+                        </div>
+                        <div className="text-xl font-bold text-gray-900">{metric.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -734,51 +822,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                   </tbody>
                 </table>
               </div>
-              
-              {/* Corrective Actions Section - Moved from Scenario Stress Tester */}
-              <div className="mt-8">
-                <div className="flex items-center mb-6">
-                  <Zap className="w-5 h-5 text-purple-600 mr-2" />
-                  <h3 className="text-lg font-semibold text-gray-900">Prioritized Corrective Actions</h3>
-                </div>
-                
-                <div className="space-y-4">
-                  {correctiveActions.map((action, index) => (
-                    <div key={index} className={`border rounded-lg p-4 ${getPriorityColor(action.priority)}`}>
-                      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
-                        <div className="flex items-center mb-2 md:mb-0">
-                          <div className={`p-2 rounded-full ${
-                            action.priority === 'high' ? 'bg-red-200' : 
-                            action.priority === 'medium' ? 'bg-yellow-200' : 
-                            'bg-green-200'
-                          }`}>
-                            {index + 1}
-                          </div>
-                          <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
-                            action.priority === 'high' ? 'bg-red-200 text-red-800' : 
-                            action.priority === 'medium' ? 'bg-yellow-200 text-yellow-800' : 
-                            'bg-green-200 text-green-800'
-                          }`}>
-                            {action.priority.charAt(0).toUpperCase() + action.priority.slice(1)} Priority
-                          </span>
-                        </div>
-                        <div className="flex items-center">
-                          <span className="text-sm mr-3">Impact: <strong>{action.impact}</strong></span>
-                          <span className="text-sm">Timeframe: <strong>{action.timeframe}</strong></span>
-                        </div>
-                      </div>
-                      <h4 className="font-semibold text-gray-900 mb-2">{action.action}</h4>
-                      <p className="text-sm mb-2">{action.details}</p>
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs">Difficulty: <span className={getDifficultyColor(action.difficulty)}>{action.difficulty.charAt(0).toUpperCase() + action.difficulty.slice(1)}</span></span>
-                        <button className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors flex items-center">
-                          Implement <ArrowRight className="w-3 h-3 ml-1" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           )}
 
@@ -825,6 +868,51 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     </div>
                   </div>
                 ))}
+              </div>
+              
+              {/* Corrective Actions Section - Moved from Scenario Stress Tester */}
+              <div className="mt-8">
+                <div className="flex items-center mb-6">
+                  <Zap className="w-5 h-5 text-purple-600 mr-2" />
+                  <h3 className="text-lg font-semibold text-gray-900">Prioritized Corrective Actions</h3>
+                </div>
+                
+                <div className="space-y-4">
+                  {correctiveActions.map((action, index) => (
+                    <div key={index} className={`border rounded-lg p-4 ${getPriorityColor(action.priority)}`}>
+                      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3">
+                        <div className="flex items-center mb-2 md:mb-0">
+                          <div className={`p-2 rounded-full ${
+                            action.priority === 'high' ? 'bg-red-200' : 
+                            action.priority === 'medium' ? 'bg-yellow-200' : 
+                            'bg-green-200'
+                          }`}>
+                            {index + 1}
+                          </div>
+                          <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
+                            action.priority === 'high' ? 'bg-red-200 text-red-800' : 
+                            action.priority === 'medium' ? 'bg-yellow-200 text-yellow-800' : 
+                            'bg-green-200 text-green-800'
+                          }`}>
+                            {action.priority.charAt(0).toUpperCase() + action.priority.slice(1)} Priority
+                          </span>
+                        </div>
+                        <div className="flex items-center">
+                          <span className="text-sm mr-3">Impact: <strong>{action.impact}</strong></span>
+                          <span className="text-sm">Timeframe: <strong>{action.timeframe}</strong></span>
+                        </div>
+                      </div>
+                      <h4 className="font-semibold text-gray-900 mb-2">{action.action}</h4>
+                      <p className="text-sm mb-2">{action.details}</p>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs">Difficulty: <span className={getDifficultyColor(action.difficulty)}>{action.difficulty.charAt(0).toUpperCase() + action.difficulty.slice(1)}</span></span>
+                        <button className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 transition-colors flex items-center">
+                          Implement <ArrowRight className="w-3 h-3 ml-1" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
