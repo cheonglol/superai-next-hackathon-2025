@@ -23,8 +23,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [lastUpdate, setLastUpdate] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'metrics' | 'leakage' | 'onepercent' | 'actions'>('metrics');
-  const [startDate, setStartDate] = useState<string>('2025-01-01');
-  const [endDate, setEndDate] = useState<string>('2025-01-31');
+  const [fyEndingDate, setFyEndingDate] = useState<string>('2024-12-31');
 
   // Financial data for calculations
   const financialData = {
@@ -250,12 +249,11 @@ const CashFlowDiagnosticianPage: React.FC = () => {
   const runAnalysis = async () => {
     setLoading(true);
     try {
-      // Update the mock data with the selected date range
+      // Update the mock data with the selected FY ending date
       const updatedMockData = {
         ...mockCashFlowData,
-        startDate,
-        endDate,
-        period: `${startDate.substring(0, 7)}` // Extract YYYY-MM format
+        endDate: fyEndingDate,
+        period: `${fyEndingDate.substring(0, 4)}` // Extract YYYY format for the period
       };
       
       const result = await agentService.analyzeCashFlow(updatedMockData);
@@ -268,7 +266,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
     }
   };
 
-  const handleDateRangeChange = () => {
+  const handleFYEndingDateChange = () => {
     runAnalysis();
   };
 
@@ -357,7 +355,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
           icon={<Activity className="w-8 h-8 text-blue-600" />} 
         />
 
-        {/* Agent Header with Date Range Selector */}
+        {/* Agent Header with FY Ending Date Selector */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="flex items-center mb-4 md:mb-0">
@@ -370,27 +368,20 @@ const CashFlowDiagnosticianPage: React.FC = () => {
               </div>
             </div>
             
-            {/* Date Range Selector */}
+            {/* FY Ending Date Selector */}
             <div className="flex flex-wrap gap-3 items-center">
               <div className="flex items-center">
                 <Calendar className="w-4 h-4 mr-2 text-gray-600" />
-                <span className="text-sm text-gray-600 mr-2">Date Range:</span>
+                <span className="text-sm text-gray-600 mr-2">Latest FY Ending Date:</span>
                 <input 
                   type="date" 
-                  value={startDate} 
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm"
-                />
-                <span className="mx-2 text-gray-600">to</span>
-                <input 
-                  type="date" 
-                  value={endDate} 
-                  onChange={(e) => setEndDate(e.target.value)}
+                  value={fyEndingDate} 
+                  onChange={(e) => setFyEndingDate(e.target.value)}
                   className="px-3 py-2 border border-gray-300 rounded-md text-sm"
                 />
               </div>
               <button
-                onClick={handleDateRangeChange}
+                onClick={handleFYEndingDateChange}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
               >
                 <RefreshCw className="w-4 h-4 mr-2" />
@@ -551,16 +542,16 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                   <thead className="bg-gray-50">
                     <tr>
                       <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Your Power of One
+                        Your Current Position
                       </th>
                       <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Value
+                        
                       </th>
                       <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Impact on<br />Cash Flow
+                        Net Cash Flow
                       </th>
                       <th scope="col" className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Impact on<br />Operating Profit
+                        Operating Profit
                       </th>
                     </tr>
                   </thead>
