@@ -25,6 +25,20 @@ const CashFlowDiagnosticianPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'metrics' | 'leakage' | 'onepercent' | 'actions'>('metrics');
   const [fyEndingDate, setFyEndingDate] = useState<string>('2024-12-31');
 
+  // Helper function - defined early to avoid initialization issues
+  const formatCurrency = (amount: number | string) => {
+    if (typeof amount === 'string') {
+      if (amount.startsWith('$')) return amount;
+      return amount;
+    }
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
   // Financial data from the provided image
   const financialData = {
     // Latest year data (2018)
@@ -374,19 +388,6 @@ const CashFlowDiagnosticianPage: React.FC = () => {
 
   const handleFYEndingDateChange = () => {
     runAnalysis();
-  };
-
-  const formatCurrency = (amount: number | string) => {
-    if (typeof amount === 'string') {
-      if (amount.startsWith('$')) return amount;
-      return amount;
-    }
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
   };
 
   const getStatusColor = (status: string) => {
