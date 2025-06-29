@@ -170,7 +170,7 @@ const LoginPage: React.FC = () => {
             <div className="flex items-center">
               <BarChart3 className="w-12 h-12 text-oxford_blue-600 mr-3" />
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">JSLW Bistro</h1>
+                <h1 className="text-2xl font-bold text-gray-900">ScaleUp.AI</h1>
                 <p className="text-sm text-gray-600">Business Intelligence</p>
               </div>
             </div>
