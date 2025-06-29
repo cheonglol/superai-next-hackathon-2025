@@ -10,6 +10,7 @@ import financialsReducer from "./slices/financialsSlice";
 import uiReducer from "./slices/uiSlice";
 import insightsReducer from "./slices/insightsSlice";
 import notificationsReducer from "./slices/notificationsSlice";
+import aiAgentsReducer from "./slices/aiAgentsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -23,6 +24,7 @@ export const store = configureStore({
     ui: uiReducer,
     insights: insightsReducer,
     notifications: notificationsReducer,
+    aiAgents: aiAgentsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
