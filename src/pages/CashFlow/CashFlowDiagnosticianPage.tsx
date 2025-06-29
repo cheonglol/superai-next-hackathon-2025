@@ -424,7 +424,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
               }`}
             >
               <Percent className="w-4 h-4 mr-2 inline" />
-              Your 1% Fix
+              Margin Movers
             </button>
             <button
               onClick={() => setActiveTab('actions')}
@@ -520,7 +520,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
             </div>
           )}
 
-          {/* Your 1% Fix Tab */}
+          {/* Margin Movers Tab (formerly Your 1% Fix) */}
           {activeTab === 'onepercent' && (
             <div>
               <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
@@ -590,7 +590,7 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                       </td>
                     </tr>
                     
-                    {/* 1% Fix rows */}
+                    {/* Margin Movers rows */}
                     <tr>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         Price Increase %
@@ -690,10 +690,10 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                       </td>
                     </tr>
                     
-                    {/* Your 1% Fix Impact row */}
+                    {/* Margin Movers Impact row */}
                     <tr className="bg-green-50 font-bold">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        Your 1% Fix Impact
+                        Margin Movers Impact
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
                         
