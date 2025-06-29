@@ -225,13 +225,12 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'on-time':
-        return <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">On Time</span>;
       case 'due-today':
-        return <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Due Today</span>;
+        return <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">On Time</span>;
       case 'overdue':
-        return <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">⚠️ Overdue</span>;
+        return <span className="px-2 py-1 bg-amber-100 text-amber-800 text-xs rounded-full">Overdue</span>;
       case 'collections':
-        return <span className="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">🚨 Collections</span>;
+        return <span className="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Critical</span>;
       default:
         return <span className="px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">Unknown</span>;
     }
