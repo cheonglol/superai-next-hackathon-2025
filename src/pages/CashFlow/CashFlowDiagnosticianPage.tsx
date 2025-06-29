@@ -151,25 +151,27 @@ const CashFlowDiagnosticianPage: React.FC = () => {
     const revenue = financialData.revenue;
     const cogs = financialData.cogs;
     const overheads = financialData.overheads;
-    const grossMargin = financialData.grossMargin;
+    const grossProfit = revenue - cogs;
+    const operatingProfit = grossProfit - overheads;
+    const grossMarginRatio = grossProfit / revenue;
     const ar = financialData.accountsReceivable;
     const inventory = financialData.inventory;
     const ap = financialData.accountsPayable;
 
     // 1. Price Increase
     const priceIncreaseProfitImpact = 0.01 * revenue;
-    const priceIncreaseCashFlowImpact = 0.01 * revenue * (1 - ar / revenue);
+    const priceIncreaseCashFlowImpact = (0.01 * revenue) * (1 - ar / revenue);
 
     // 2. Volume Increase
-    const volumeIncreaseProfitImpact = 0.01 * revenue * grossMargin;
-    const volumeIncreaseCashFlowImpact = volumeIncreaseProfitImpact - (cogs/365) - (ar/365);
+    const volumeIncreaseProfitImpact = 0.01 * revenue * (grossProfit / revenue);
+    const volumeIncreaseCashFlowImpact = (0.01 * revenue * (grossProfit / revenue)) - (0.01 * revenue * ((ar / revenue) + (inventory / cogs)));
 
     // 3. COGS Reduction
     const cogsReductionProfitImpact = 0.01 * cogs;
-    const cogsReductionCashFlowImpact = cogsReductionProfitImpact + (0.01 * inventory);
+    const cogsReductionCashFlowImpact = (0.01 * cogs) + ((0.01 * cogs) * (inventory / cogs) * 0.2045);
 
     // 4. Overheads Reduction
-    const overheadsReductionProfitImpact = 0.01 * overheads;
+    const overheadsReductionProfitImpact = 0.01 * (grossProfit - operatingProfit);
     const overheadsReductionCashFlowImpact = overheadsReductionProfitImpact;
 
     // 5. AR Days Reduction
@@ -610,6 +612,22 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
+                    {/* Your current position row */}
+                    <tr className="bg-gray-100">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        Your current position
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                        
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-red-600">
+                        -$193,000
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
+                        $701,300
+                      </td>
+                    </tr>
+                    
                     {onePercentFixes.map((fix, index) => (
                       <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
@@ -630,6 +648,23 @@ const CashFlowDiagnosticianPage: React.FC = () => {
                         </td>
                       </tr>
                     ))}
+                    
+                    {/* Your adjusted position row */}
+                    <tr className="bg-gray-100">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                        Your adjusted position
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-900">
+                        
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-red-600">
+                        -$33,619
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-center font-medium text-green-600">
+                        $845,702
+                      </td>
+                    </tr>
+                    
                     {/* Total Row */}
                     <tr className="bg-green-50 font-bold">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
