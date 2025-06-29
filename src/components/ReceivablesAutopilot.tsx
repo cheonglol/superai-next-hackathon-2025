@@ -565,29 +565,6 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
               </h3>
             </div>
             
-            {/* Customer Health Score */}
-            <div className="mb-6">
-              <h4 className="text-sm font-medium text-gray-700 mb-3">Customer Health Score</h4>
-              {data.customerHealthScores.map((customer, index) => (
-                <div key={index} className="mb-3 last:mb-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <div className="flex items-center">
-                      <Search className="w-4 h-4 text-purple-600 mr-1" />
-                      <span className="text-sm font-medium text-gray-900">{customer.customer}</span>
-                    </div>
-                    <span className={`text-sm font-medium ${
-                      customer.score > 70 ? 'text-green-600' : 
-                      customer.score > 50 ? 'text-yellow-600' : 
-                      'text-red-600'
-                    }`}>
-                      {customer.score}/100
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-600">{customer.insight}</p>
-                </div>
-              ))}
-            </div>
-            
             {/* Trend Alerts */}
             <div className="mb-6">
               <h4 className="text-sm font-medium text-gray-700 mb-3">Trend Alerts</h4>
