@@ -356,7 +356,7 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
               <Target className="w-5 h-5 text-green-600 mr-2" />
               Affordability Thresholds
             </h3>
-            <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
               <div className="bg-green-50 rounded-lg p-3 border border-green-200">
                 <div className="text-sm text-green-700 mb-1">Max Sustainable Rent</div>
                 <div className="text-xl font-bold text-green-800">{affordabilityThresholds.maxRent}/mo</div>
