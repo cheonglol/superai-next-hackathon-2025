@@ -663,40 +663,6 @@ const ScenarioStressTester: React.FC<ScenarioStressTesterProps> = ({ mockFinanci
                   </tbody>
                 </table>
               </div>
-              
-              {/* Cash Flow Visualization */}
-              <div className="mt-6">
-                <div className="w-full bg-gray-100 rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">Cash Runway Visualization</span>
-                    <span className="text-xs text-gray-500">Months →</span>
-                  </div>
-                  <div className="relative h-12 w-full bg-gray-200 rounded-lg overflow-hidden">
-                    {projection.map((month, index) => (
-                      <div 
-                        key={index}
-                        className={`absolute h-full ${month.runningCash >= safetyBuffer ? 'bg-green-500' : 'bg-red-500'}`}
-                        style={{ 
-                          left: `${(index / timeHorizon) * 100}%`, 
-                          width: `${(1 / timeHorizon) * 100}%`,
-                          opacity: 0.7 + (0.3 * (index / timeHorizon))
-                        }}
-                      >
-                      </div>
-                    ))}
-                    
-                    {/* Safety threshold line */}
-                    <div className="absolute top-1/2 left-0 w-full border-t-2 border-dashed border-yellow-500"></div>
-                  </div>
-                  <div className="flex justify-between mt-1">
-                    {Array.from({ length: Math.min(6, timeHorizon) }).map((_, index) => (
-                      <div key={index} className="text-xs text-gray-500">
-                        {getMonthName(index)}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
           
