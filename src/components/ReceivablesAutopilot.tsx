@@ -246,6 +246,12 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
     }
   };
 
+  // Check if human intervention is needed (15+ days overdue)
+  const needsHumanIntervention = (invoice: any) => {
+    return (invoice.status === 'overdue' && invoice.daysLate && invoice.daysLate >= 15) || 
+           invoice.status === 'collections';
+  };
+
   return (
     <div className="space-y-6">
       {/* Key Metrics Bar */}
@@ -387,17 +393,13 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
                       </td>
                       <td className="py-3 px-4 text-right">
                         <div className="flex items-center justify-end space-x-2">
-                          {invoice.status === 'collections' ? (
+                          {needsHumanIntervention(invoice) ? (
                             <button className="px-3 py-1 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 transition-colors">
-                              Initiate Collections
-                            </button>
-                          ) : invoice.status === 'overdue' ? (
-                            <button className="px-3 py-1 bg-yellow-600 text-white text-xs rounded-lg hover:bg-yellow-700 transition-colors">
-                              Send Reminder
+                              Human Intervention
                             </button>
                           ) : (
                             <button className="px-3 py-1 bg-blue-600 text-white text-xs rounded-lg hover:bg-blue-700 transition-colors">
-                              View History
+                              Send Reminder
                             </button>
                           )}
                         </div>
