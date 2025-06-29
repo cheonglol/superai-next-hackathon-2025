@@ -262,15 +262,6 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
            invoice.status === 'collections';
   };
 
-  // Get status text for the Status column
-  const getStatusText = (invoice: any) => {
-    if (invoice.remindersSent === 0) {
-      return "No reminders sent";
-    } else {
-      return `${invoice.remindersSent} reminder${invoice.remindersSent > 1 ? 's' : ''} sent${invoice.responseReceived ? ', response received' : ', no response'}`;
-    }
-  };
-
   return (
     <div className="space-y-6">
       {/* Key Metrics Bar */}
@@ -393,11 +384,21 @@ const ReceivablesAutopilot: React.FC<ReceivablesAutopilotProps> = ({ mockFinanci
                     {invoice.dueDate}
                   </td>
                   <td className="py-3 px-4 text-center">
-                    {getStatusBadge(invoice.status)}
+                    {invoice.status === 'on-time' || invoice.status === 'due-today' ? (
+                      <span className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">On Time</span>
+                    ) : invoice.status === 'overdue' ? (
+                      <span className="px-2 py-1 bg-amber-100 text-amber-800 text-xs rounded-full">Overdue</span>
+                    ) : (
+                      <span className="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Critical</span>
+                    )}
                   </td>
                   <td className="py-3 px-4 text-center">
                     <div className="text-xs text-gray-700">
-                      {getStatusText(invoice)}
+                      {invoice.remindersSent === 0 ? (
+                        "No reminders sent"
+                      ) : (
+                        `${invoice.remindersSent} reminder${invoice.remindersSent > 1 ? 's' : ''} sent${invoice.responseReceived ? ', response received' : ', no response'}`
+                      )}
                     </div>
                   </td>
                   <td className="py-3 px-4 text-right">
