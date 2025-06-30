@@ -1,5 +1,5 @@
-import React from "react";
-import { TrendingUp, Target, Zap } from "lucide-react";
+import React, { useState } from "react";
+import { TrendingUp, Target, Zap, ArrowUpDown, ChevronDown, Calculator, TrendingDown } from "lucide-react";
 
 interface SensitivityAnalysisData {
   scenarios?: Array<{
@@ -29,6 +29,9 @@ interface SensitivityAnalysisProps {
 }
 
 const SensitivityAnalysis: React.FC<SensitivityAnalysisProps> = ({ mockFinancialData, formatCurrency }) => {
+  const [sortBy, setSortBy] = useState<"cashFlow" | "profit" | "timeframe" | "difficulty">("cashFlow");
+  const [showSortDropdown, setShowSortDropdown] = useState(false);
+
   // Provide default values if mockFinancialData is undefined
   const financialData = mockFinancialData || {
     revenue: 0,
@@ -102,19 +105,49 @@ const SensitivityAnalysis: React.FC<SensitivityAnalysisProps> = ({ mockFinancial
     },
   };
 
-  // Get top 3 opportunities by profit impact
-  const topProfitOpportunities = [
-    { name: "1% Price Increase", ...sensitivityAnalysis.priceIncrease1Percent },
-    { name: "1% COGS Decrease", ...sensitivityAnalysis.cogsDecrease1Percent },
-    { name: "1% Operating Expenses Decrease", ...sensitivityAnalysis.opexDecrease1Percent },
-  ].sort((a, b) => b.profitImpact - a.profitImpact);
+  // Get opportunities sorted by the selected metric
+  const getOpportunities = () => {
+    const opportunities = [
+      { name: "1% Price Increase", ...sensitivityAnalysis.priceIncrease1Percent },
+      { name: "1% COGS Decrease", ...sensitivityAnalysis.cogsDecrease1Percent },
+      { name: "1% Operating Expenses Decrease", ...sensitivityAnalysis.opexDecrease1Percent },
+      { name: "1% Volume Increase", ...sensitivityAnalysis.volumeIncrease1Percent },
+      { name: "1 Day Accounts Receivable Decrease", ...sensitivityAnalysis.arDecrease1Day },
+      { name: "1 Day Inventory Decrease", ...sensitivityAnalysis.inventoryDecrease1Day },
+      { name: "1 Day Accounts Payable Increase", ...sensitivityAnalysis.apIncrease1Day },
+    ];
 
-  // Get top 3 opportunities by cash flow impact
-  const topCashFlowOpportunities = [
-    { name: "1% Price Increase", ...sensitivityAnalysis.priceIncrease1Percent },
-    { name: "1% COGS Decrease", ...sensitivityAnalysis.cogsDecrease1Percent },
-    { name: "1% Operating Expenses Decrease", ...sensitivityAnalysis.opexDecrease1Percent },
-  ].sort((a, b) => b.cashFlowImpact - a.cashFlowImpact);
+    if (sortBy === "cashFlow") {
+      return opportunities.sort((a, b) => b.cashFlowImpact - a.cashFlowImpact);
+    } else if (sortBy === "profit") {
+      return opportunities.sort((a, b) => b.profitImpact - a.profitImpact);
+    } else if (sortBy === "timeframe") {
+      // Sort by timeframe (Immediate first, then by months)
+      return opportunities.sort((a, b) => {
+        if (a.timeframe === "Immediate" && b.timeframe !== "Immediate") return -1;
+        if (a.timeframe !== "Immediate" && b.timeframe === "Immediate") return 1;
+        
+        // Extract numbers from timeframe strings
+        const aMonths = a.timeframe.match(/\d+/g);
+        const bMonths = b.timeframe.match(/\d+/g);
+        
+        if (!aMonths || !bMonths) return 0;
+        return parseInt(aMonths[0]) - parseInt(bMonths[0]);
+      });
+    } else if (sortBy === "difficulty") {
+      // Sort by difficulty (Easy first, then Medium, then Hard)
+      const difficultyOrder = { "Easy": 1, "Medium": 2, "Hard": 3 };
+      return opportunities.sort((a, b) => {
+        return difficultyOrder[a.difficulty as keyof typeof difficultyOrder] - difficultyOrder[b.difficulty as keyof typeof difficultyOrder];
+      });
+    }
+    
+    return opportunities;
+  };
+
+  const sortedOpportunities = getOpportunities();
+  const topProfitOpportunities = [...sortedOpportunities].sort((a, b) => b.profitImpact - a.profitImpact).slice(0, 3);
+  const topCashFlowOpportunities = [...sortedOpportunities].sort((a, b) => b.cashFlowImpact - a.cashFlowImpact).slice(0, 3);
 
   return (
     <div className="space-y-6">
@@ -256,6 +289,128 @@ const SensitivityAnalysis: React.FC<SensitivityAnalysisProps> = ({ mockFinancial
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* Corrective Actions */}
+      <div className="bg-white rounded-lg p-6 border border-gray-200">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center">
+            <Target className="w-5 h-5 text-purple-600 mr-2" />
+            <h3 className="text-lg font-semibold text-gray-900">Corrective Actions</h3>
+          </div>
+          <div className="relative">
+            <button 
+              onClick={() => setShowSortDropdown(!showSortDropdown)}
+              className="flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            >
+              <ArrowUpDown className="w-4 h-4 mr-2" />
+              Sort by: {sortBy === "cashFlow" ? "Cash Flow Impact" : 
+                        sortBy === "profit" ? "Profit Impact" : 
+                        sortBy === "timeframe" ? "Timeframe" : "Difficulty"}
+              <ChevronDown className="w-4 h-4 ml-2" />
+            </button>
+            
+            {showSortDropdown && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+                <ul className="py-1">
+                  <li>
+                    <button
+                      onClick={() => {
+                        setSortBy("cashFlow");
+                        setShowSortDropdown(false);
+                      }}
+                      className={`block px-4 py-2 text-sm w-full text-left ${
+                        sortBy === "cashFlow" ? "bg-blue-50 text-blue-700" : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      Cash Flow Impact
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setSortBy("profit");
+                        setShowSortDropdown(false);
+                      }}
+                      className={`block px-4 py-2 text-sm w-full text-left ${
+                        sortBy === "profit" ? "bg-green-50 text-green-700" : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      Profit Impact
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setSortBy("timeframe");
+                        setShowSortDropdown(false);
+                      }}
+                      className={`block px-4 py-2 text-sm w-full text-left ${
+                        sortBy === "timeframe" ? "bg-purple-50 text-purple-700" : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      Timeframe
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => {
+                        setSortBy("difficulty");
+                        setShowSortDropdown(false);
+                      }}
+                      className={`block px-4 py-2 text-sm w-full text-left ${
+                        sortBy === "difficulty" ? "bg-orange-50 text-orange-700" : "text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      Difficulty
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-200">
+                <th className="text-left py-3 px-4 font-medium text-gray-900">Action</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-900">Cash Flow Impact</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-900">Profit Impact</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-900">Difficulty</th>
+                <th className="text-center py-3 px-4 font-medium text-gray-900">Timeframe</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {sortedOpportunities.map((opportunity, index) => (
+                <tr key={index} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                  <td className="py-3 px-4 font-medium text-gray-900">{opportunity.name}</td>
+                  <td className="py-3 px-4 text-center">
+                    <span className={`font-semibold ${opportunity.cashFlowImpact >= 0 ? "text-green-600" : "text-red-600"}`}>
+                      {opportunity.cashFlowImpact >= 0 ? "+" : ""}{formatCurrency(opportunity.cashFlowImpact)}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 text-center">
+                    <span className={`font-semibold ${opportunity.profitImpact >= 0 ? "text-green-600" : "text-red-600"}`}>
+                      {opportunity.profitImpact > 0 ? "+" : ""}{formatCurrency(opportunity.profitImpact)}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 text-center">
+                    <span className={`px-2 py-1 text-xs rounded-full ${
+                      opportunity.difficulty === "Easy" ? "bg-green-100 text-green-800" :
+                      opportunity.difficulty === "Medium" ? "bg-yellow-100 text-yellow-800" :
+                      "bg-red-100 text-red-800"
+                    }`}>
+                      {opportunity.difficulty}
+                    </span>
+                  </td>
+                  <td className="py-3 px-4 text-center text-sm text-gray-600">{opportunity.timeframe}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 

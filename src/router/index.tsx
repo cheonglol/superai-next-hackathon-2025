@@ -2,18 +2,16 @@ import MainLayout from "@/layout/MainLayout";
 import {
   DashboardPage,
   ErrorBoundaryPage,
-  DataInputPage,
-  PerformanceInsightsPage,
-  NextStepsPage,
-  ReviewAnalyticsPage,
-  SocialMediaFootprintPage,
-  TrendingContentPage,
-  GrowthCoachPage,
   LoginPage,
 } from "@/pages";
 import { ReactElement } from "react";
 import { createBrowserRouter, RouteObject } from "react-router-dom";
 import AuthProtectedRouteLogic from "./logic/AuthProtectedRouteLogic";
+import { BarChart3, Activity, TrendingUp, Shield, Zap, Calculator } from "lucide-react";
+import CashFlowDiagnosticianPage from "@/pages/CashFlow/CashFlowDiagnosticianPage";
+import ScenarioStressTesterPage from "@/pages/CashFlow/ScenarioStressTrackerPage";
+import LiquidityGuardianPage from "@/pages/CashFlow/LiquidityGuardianPage";
+import ReceivablesAutopilotPage from "@/pages/CashFlow/ReceivablesAutopilotPage";
 
 const ROOT_PATH = "";
 
@@ -25,7 +23,7 @@ export interface ExtendedRouteObject {
   hidden?: boolean;
   title: string;
   logicType: ROUTE_LOGIC_TYPE | undefined;
-  routeObject: RouteObject;
+  routeObject: RouteObject & { icon?: React.ComponentType<{ className?: string }> };
   category?: string;
 }
 
@@ -51,104 +49,67 @@ export const routes: ExtendedRouteObject[] = [
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,
+      icon: BarChart3,
     },
   },
   {
-    title: "Review Analytics",
+    title: "Cash Flow Diagnostician",
     logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
-    category: "Social Media",
+    category: "AI Agents",
     routeObject: {
-      path: `${ROOT_PATH}/review`,
+      path: `${ROOT_PATH}/cash-flow-diagnostician`,
       element: (
         <MainLayout>
-          <ReviewAnalyticsPage />
+          <CashFlowDiagnosticianPage />
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,
+      icon: Activity,
     },
   },
   {
-    title: "Social Media Footprint",
+    title: "Scenario Stress Tester",
     logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
-    category: "Social Media",
+    category: "AI Agents",
     routeObject: {
-      path: `${ROOT_PATH}/social-media-footprint`,
+      path: `${ROOT_PATH}/scenario-stress-tester`,
       element: (
         <MainLayout>
-          <SocialMediaFootprintPage />
+          <ScenarioStressTesterPage />
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,
+      icon: Calculator,
     },
   },
   {
-    title: "Trending Content",
+    title: "Liquidity Guardian",
     logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
-    category: "Social Media",
+    category: "AI Agents",
     routeObject: {
-      path: `${ROOT_PATH}/trending-content`,
+      path: `${ROOT_PATH}/liquidity-guardian`,
       element: (
         <MainLayout>
-          <TrendingContentPage />
+          <LiquidityGuardianPage />
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,
+      icon: Shield,
     },
   },
   {
-    title: "Data Input",
+    title: "Receivables Autopilot",
     logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
-    category: "Financials",
+    category: "AI Agents",
     routeObject: {
-      path: `${ROOT_PATH}/financials/data-input`,
+      path: `${ROOT_PATH}/receivables-autopilot`,
       element: (
         <MainLayout>
-          <DataInputPage />
+          <ReceivablesAutopilotPage />
         </MainLayout>
       ),
       errorElement: <ErrorBoundaryPage />,
-    },
-  },
-  {
-    title: "Performance Insights",
-    logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
-    category: "Financials",
-    routeObject: {
-      path: `${ROOT_PATH}/financials/performance-insights`,
-      element: (
-        <MainLayout>
-          <PerformanceInsightsPage />
-        </MainLayout>
-      ),
-      errorElement: <ErrorBoundaryPage />,
-    },
-  },
-  {
-    title: "Next Steps",
-    logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
-    category: "Financials",
-    routeObject: {
-      path: `${ROOT_PATH}/financials/next-steps`,
-      element: (
-        <MainLayout>
-          <NextStepsPage />
-        </MainLayout>
-      ),
-      errorElement: <ErrorBoundaryPage />,
-    },
-  },
-  {
-    title: "Growth Coach AI",
-    logicType: ROUTE_LOGIC_TYPE.AUTH_CHECK,
-    category: "Growth Coach",
-    routeObject: {
-      path: `${ROOT_PATH}/growth-coach`,
-      element: (
-        <MainLayout>
-          <GrowthCoachPage />
-        </MainLayout>
-      ),
-      errorElement: <ErrorBoundaryPage />,
+      icon: Zap,
     },
   },
 ];

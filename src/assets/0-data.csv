@@ -1,0 +1,28 @@
+Section,Item,Period 1,Period 2,Period 3,Period 4
+Section,Subsection,31-Dec-21,31-Dec-22,31-Dec-23,31-Dec-24
+
+Period,Period Length (months),12,12,12,12
+
+Income Statement/Profit & Loss,Revenue,3400000,5000000,5800000,6612000
+Income Statement/Profit & Loss,Gross Profit,865000,1300000,1650000,1917500
+Income Statement/Profit & Loss,Operating Profit,360000,467000,625000,701300
+Income Statement/Profit & Loss,Net Profit (After Tax),195400,280000,350000,410000
+
+Other Information,Depreciation & Amortisation,74000,100000,100000,100000
+Other Information,Interest Paid,50000,100000,150000,176000
+Other Information,Extraordinary Income/Expenses,0,0,0,0
+Other Information,Distributions/Dividends,45400,180000,100000,150000
+
+Balance Sheet,Total Assets,2700000,3600000,4450000,5014000
+Balance Sheet,Cash,160000,75000,0,0
+Balance Sheet,Accounts Receivable,570000,900000,1200000,1443000
+Balance Sheet,Inventory,600000,920000,1250000,1550000
+Balance Sheet,Total Current Assets,1500000,2100000,2500000,3064000
+Balance Sheet,Fixed Assets,1000000,1400000,1800000,1800000
+
+Liabilities,Total Liabilities,2000000,2800000,3400000,3704000
+Liabilities,Accounts Payable,300000,450000,500000,590000
+Liabilities,Total Current Liabilities,800000,1600000,2150000,2454000
+
+Funding,Bank Loans - Current,400000,1000000,1450000,1643000
+Funding,Bank Loans - Non Current,1000000,1200000,1200000,1200000

@@ -1,7 +1,7 @@
 {
-  "name": "scaleup-ai-app",
+  "name": "agentic-ai-sme-platform",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "engines": {
     "node": "22.x"
@@ -14,25 +14,18 @@
     "preview": "vite preview",
     "start": "npm run preview",
     "type-check": "tsc --noEmit",
-    "deploy-package": "npm run build && powershell Compress-Archive -Path dist,package.json -DestinationPath deploy.zip -Force",
-    "deploy": "node scripts/deploy.js",
-    "deploy:help": "type scripts\\AWS_SETUP.md"
+    "deploy": "npm run build"
   },
   "dependencies": {
-    "@aws-sdk/client-elastic-beanstalk": "^3.830.0",
-    "@aws-sdk/client-s3": "^3.830.0",
     "@reduxjs/toolkit": "^2.0.1",
-    "@types/dotenv": "^8.2.3",
     "axios": "^1.6.2",
-    "dotenv": "^16.5.0",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-markdown": "^10.1.0",
+    "react-markdown": "^9.0.1",
     "react-redux": "^9.0.4",
     "react-router-dom": "^6.30.1",
-    "rehype-highlight": "^7.0.2",
-    "remark-gfm": "^4.0.1"
+    "remark-gfm": "^4.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
@@ -41,7 +34,6 @@
     "@types/node": "^22.15.21",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
-    "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react-swc": "^3.9.0",
     "autoprefixer": "^10.4.21",
     "eslint": "^9.25.0",

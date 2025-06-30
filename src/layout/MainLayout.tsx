@@ -1,10 +1,10 @@
+import { useAppDispatch, useAppSelector } from "@/store";
+import { logout } from "@/store/slices/authSlice";
+import { setSidebarOpen, toggleSidebar } from "@/store/slices/uiSlice";
+import { BarChart3, LogOut, Menu, X } from "lucide-react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { BarChart3, MessageSquare, Share2, TrendingUp, Menu, X, DollarSign, PieChart, Target, Bot, LogOut } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/store";
-import { toggleSidebar, setSidebarOpen } from "@/store/slices/uiSlice";
-import { logout } from "@/store/slices/authSlice";
-import { RightSidebar } from "@/components/layout/RightSidebar";
+import { routes } from "../router";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -23,22 +23,22 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const { sidebarOpen } = useAppSelector((state) => state.ui);
   const { user } = useAppSelector((state) => state.auth);
 
-  const navigationItems: NavigationItem[] = [
-    { path: "/", icon: BarChart3, label: "Dashboard" },
+  const handleLogout = async () => {
+    try {
+      await dispatch(logout()).unwrap();
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
-    // Social Media Group
-    { path: "/review", icon: MessageSquare, label: "Review Analytics", category: "Social Media" },
-    { path: "/social-media-footprint", icon: Share2, label: "Social Media Footprint", category: "Social Media" },
-    { path: "/trending-content", icon: TrendingUp, label: "Trending Content", category: "Social Media" },
-
-    // Financials Group
-    { path: "/financials/data-input", icon: DollarSign, label: "Data Input", category: "Financials" },
-    { path: "/financials/performance-insights", icon: PieChart, label: "Performance Insights", category: "Financials" },
-    { path: "/financials/next-steps", icon: Target, label: "Next Steps", category: "Financials" },
-
-    // Growth Coach Group
-    { path: "/growth-coach", icon: Bot, label: "Growth Coach AI", category: "Growth Coach" },
-  ];
+  const navigationItems: NavigationItem[] = routes
+    .filter((route) => typeof route.routeObject.path === "string" && route.routeObject.path)
+    .map((route) => ({
+      path: route.routeObject.path as string,
+      icon: route.routeObject.icon || BarChart3,
+      label: route.title,
+      category: route.category,
+    }));
 
   const isActivePath = (path: string) => {
     if (path === "/") {
@@ -50,15 +50,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const handleMenuToggle = () => {
     dispatch(toggleSidebar());
   };
+  
   const handleLinkClick = () => {
     dispatch(setSidebarOpen(false));
-  };
-  const handleLogout = async () => {
-    try {
-      await dispatch(logout()).unwrap();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
   };
 
   // Group items by category
@@ -96,10 +90,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
           <div className="flex items-center px-6 py-8 border-b border-charcoal-600">
             <BarChart3 className="w-8 h-8 text-caribbean_current-400 mr-3" />
             <div>
-              <h1 className="text-xl font-bold text-white">JSLW Bistro</h1>
-              <p className="text-sm text-charcoal-200">Business Intelligence</p>
+              <h1 className="text-xl font-bold text-white">ScaleUp.AI</h1>
+              {/* <p className="text-sm text-charcoal-200">SME Financial Platform</p> */}
             </div>
           </div>
+          
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
             {/* Dashboard - standalone */}
@@ -122,17 +117,17 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               );
             })}
 
-            {/* Social Media Group */}
-            {groupedItems["Social Media"] && (
+            {/* AI Agents Group */}
+            {groupedItems["AI Agents"] && (
               <>
                 <div className="pt-6 pb-2">
                   <div className="flex items-center">
                     <div className="flex-1 border-t border-charcoal-600"></div>
-                    <span className="px-3 text-xs font-medium text-caribbean_current-300 bg-charcoal-700 uppercase tracking-wider">Social Media</span>
+                    <span className="px-3 text-xs font-medium text-caribbean_current-300 bg-charcoal-700 uppercase tracking-wider">AI Agents</span>
                     <div className="flex-1 border-t border-charcoal-600"></div>
                   </div>
                 </div>
-                {groupedItems["Social Media"].map((item) => {
+                {groupedItems["AI Agents"].map((item) => {
                   const Icon = item.icon;
                   const isActive = isActivePath(item.path);
 
@@ -152,69 +147,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 })}
               </>
             )}
-
-            {/* Financials Group */}
-            {groupedItems["Financials"] && (
-              <>
-                <div className="pt-6 pb-2">
-                  <div className="flex items-center">
-                    <div className="flex-1 border-t border-charcoal-600"></div>
-                    <span className="px-3 text-xs font-medium text-prussian_blue-300 bg-charcoal-700 uppercase tracking-wider">Financials</span>
-                    <div className="flex-1 border-t border-charcoal-600"></div>
-                  </div>
-                </div>
-                {groupedItems["Financials"].map((item) => {
-                  const Icon = item.icon;
-                  const isActive = isActivePath(item.path);
-
-                  return (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      onClick={handleLinkClick}
-                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
-                        isActive ? "bg-prussian_blue-600 text-white shadow-lg" : "text-charcoal-100 hover:bg-charcoal-600 hover:text-white"
-                      }`}
-                    >
-                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-white" : "text-charcoal-200"}`} />
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </>
-            )}
-
-            {/* Growth Coach Group */}
-            {groupedItems["Growth Coach"] && (
-              <>
-                <div className="pt-6 pb-2">
-                  <div className="flex items-center">
-                    <div className="flex-1 border-t border-charcoal-600"></div>
-                    <span className="px-3 text-xs font-medium text-purple-300 bg-charcoal-700 uppercase tracking-wider">Growth Coach</span>
-                    <div className="flex-1 border-t border-charcoal-600"></div>
-                  </div>
-                </div>
-                {groupedItems["Growth Coach"].map((item) => {
-                  const Icon = item.icon;
-                  const isActive = isActivePath(item.path);
-
-                  return (
-                    <Link
-                      key={item.path}
-                      to={item.path}
-                      onClick={handleLinkClick}
-                      className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
-                        isActive ? "bg-purple-600 text-white shadow-lg" : "text-charcoal-100 hover:bg-charcoal-600 hover:text-white"
-                      }`}
-                    >
-                      <Icon className={`w-5 h-5 mr-3 ${isActive ? "text-white" : "text-charcoal-200"}`} />
-                      {item.label}
-                    </Link>
-                  );
-                })}
-              </>
-            )}
-          </nav>{" "}
+          </nav>
+          
           {/* Footer */}
           <div className="px-6 py-4 border-t border-charcoal-600">
             {user && (
@@ -235,7 +169,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                 </div>
               </div>
             )}
-            <p className="text-xs text-charcoal-300">© 2025 JSLW Bistro</p>
+            <p className="text-xs text-charcoal-300">© 2025 ScaleUp.AI Platform</p>
           </div>
         </div>
       </div>
@@ -243,13 +177,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       {/* Mobile overlay */}
       {sidebarOpen && <div className="fixed inset-0 z-30 bg-black bg-opacity-50 lg:hidden" onClick={() => dispatch(setSidebarOpen(false))} />}
 
-      {/* Main content area */}
-      <div className="flex-1 flex">
-        <main className="flex-1 min-h-screen bg-gray-100">{children}</main>
-
-        {/* Right Sidebar */}
-        <RightSidebar />
-      </div>
+      {/* Main content area - no right sidebar */}
+      <main className="flex-1 min-h-screen bg-gray-100">{children}</main>
     </div>
   );
 };

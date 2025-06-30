@@ -1,25 +1,12 @@
 // Dashboard
 export { default as DashboardPage } from "./Dashboard/DashboardPage";
+export { default as AgenticDashboardPage } from "./Dashboard/AgenticDashboardPage";
 
 // Auth
 export { default as LoginPage } from "./Auth/LoginPage";
 
-// Reviews
-export { default as ReviewAnalyticsPage } from "./Reviews/ReviewAnalyticsPage";
-
-// Social Media
-export { default as SocialMediaFootprintPage } from "./SocialMedia/SocialMediaFootprintPage";
-
-// Trending
-export { TrendingContent as TrendingContentPage } from "./Trending/TrendingContentPage";
-
-// Financials
-export { default as DataInputPage } from "./Financials/DataInputPage";
-export { default as PerformanceInsightsPage } from "./Financials/PerformanceInsightsPage";
-export { default as NextStepsPage } from "./Financials/NextStepsPage";
-
-// Growth Coach
-export { default as GrowthCoachPage } from "./GrowthCoach/GrowthCoachPage";
+// Cash Flow
+export { default as CashFlowDiagnosticianPage } from "./CashFlow/CashFlowDiagnosticianPage";
 
 // Error
 export { default as ErrorBoundaryPage } from "./Error/ErrorBoundaryPage";
